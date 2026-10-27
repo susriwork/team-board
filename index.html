@@ -431,8 +431,12 @@ const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); retu
 const diffDays = (a, b) => Math.round((parse(a) - parse(b)) / 864e5);
 const fmtD = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]}` : ""; };
 const fmtDY = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]} ${String(d.getFullYear() + 543).slice(2)}` : ""; };
-const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-const recall = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const store = (k, v) => { const j = JSON.stringify(v); try { sessionStorage.setItem(k, j); } catch {} try { localStorage.setItem(k, j); } catch {} };
+const recall = k => { try { const x = sessionStorage.getItem(k); if (x !== null) return JSON.parse(x); } catch {} try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+// แต่ละแท็บจำหน้าของตัวเองผ่านลิงก์ (#v=หน้า&t=เรื่อง) เปิดหลายแท็บได้อิสระ
+const linkFor = (v, id) => { const p = new URLSearchParams(); p.set("v", v); if (id) p.set("t", id); return location.pathname + location.search + "#" + p; };
+const syncHash = () => { try { const u = linkFor(S.view, S.openId); if (location.pathname + location.search + location.hash !== u) history.replaceState(null, "", u); } catch {} };
+const openNewTab = (v, id) => { const w = window.open(linkFor(v, id), "_blank"); if (w) w.opener = null; };
 const safeUrl = u => /^https:\/\//i.test(u || "") ? u : "";
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2600); }
 
@@ -764,6 +768,7 @@ function renderFilters() {
 }
 function applyWriteMode() { $("#addBtn").hidden = !S.canWrite; }
 function render() {
+  syncHash();
   renderTabs(); renderFilters();
   const views = { files: vFiles, home: vHome, table: vTable, board: vBoard, follow: vFollow, cal: vCal, matrix: vMatrix, report: vReport, kpi: vKpi, settings: vSettings };
   S.myName = myNameOf();
@@ -1310,7 +1315,7 @@ function openItem(id, preset = {}) {
         </div></fieldset>`,
       task: ""
     }[type];
-    f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">${id ? "แก้ไขเรื่อง" : "เพิ่มเรื่อง"}</h2><button class="dlg-x" type="button" id="t_x" aria-label="ปิด">×</button></div>
+    f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">${id ? "แก้ไขเรื่อง" : "เพิ่มเรื่อง"}</h2><span style="display:flex;gap:6px">${id ? `<button class="btn sm" type="button" id="t_newtab" title="เปิดเรื่องนี้ในแท็บใหม่ แล้วใช้แท็บนี้ทำอย่างอื่นต่อ">↗ เปิดในแท็บใหม่</button>` : ""}<button class="dlg-x" type="button" id="t_x" aria-label="ปิด">×</button></span></div>
     <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-ttype="${k}" aria-pressed="${k === type}" ${ro}>${TYPES[k].label}</button>`).join("")}</div>
     <div class="form">
       ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
@@ -1387,6 +1392,7 @@ function openItem(id, preset = {}) {
     document.querySelectorAll("[data-ttype]").forEach(b => b.onclick = () => { collect(); type = b.dataset.ttype; draw(); });
     $("#t_cancel").onclick = () => $("#dlg").close();
     $("#t_x").onclick = () => $("#dlg").close();
+    const nt = $("#t_newtab"); if (nt) nt.onclick = () => openNewTab(S.view, id);
     document.querySelectorAll("[data-plat]").forEach(el => el.onchange = () => { collect(); draw(); });
     const sm = $("#t_sendMethod"); if (sm) sm.onchange = () => { collect(); draw(); const x = $("#t_sendMethod"); if (x) x.focus(); };
     const wa = $("#whoAll");
@@ -1485,7 +1491,9 @@ function openItem(id, preset = {}) {
                   : await write(() => api.add(stamp({ ...patch, createdAt: new Date().toISOString() })), "เพิ่มเรื่องแล้ว");
     if (ok) { saved = true; pending = []; $("#dlg").close(); learnChoices(d); }
   };
+  S.openId = id || ""; syncHash();
   $("#dlg").onclose = () => {
+    S.openId = ""; syncHash();
     if (!saved && pending.length && S.assets) pending.forEach(pid => S.assets.delete(pid).catch(() => {}));
     pending = [];
   };
@@ -1537,7 +1545,18 @@ function bindDnd() {
 }
 
 /* ---------- events ---------- */
+// Ctrl/⌘ + คลิก หรือคลิกปุ่มกลางเมาส์ ที่แท็บหรือเรื่อง = เปิดในแท็บใหม่
+function newTabClick(e) {
+  if (e.target.closest("dialog") || e.target.closest("a, select, input, textarea")) return false;
+  const tab = e.target.closest(".tab"), o = e.target.closest("[data-open]");
+  if (tab) { e.preventDefault(); openNewTab(tab.dataset.v); return true; }
+  if (o && !e.target.closest("button")) { e.preventDefault(); openNewTab(S.view, o.dataset.open); return true; }
+  return false;
+}
+document.addEventListener("auxclick", e => { if (e.button === 1) newTabClick(e); });
+document.addEventListener("mousedown", e => { if (e.button === 1 && e.target.closest(".tab, [data-open]")) e.preventDefault(); });
 document.addEventListener("click", e => {
+  if ((e.ctrlKey || e.metaKey) && newTabClick(e)) return;
   if (e.target.closest("dialog")) return;
   const tab = e.target.closest(".tab");
   if (tab) { S.view = tab.dataset.v; store("tb.view", S.view); render(); return; }
@@ -1585,6 +1604,9 @@ $("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.
 (function boot() {
   const d = new Date(); S.calY = d.getFullYear(); S.calM = d.getMonth();
   const v = recall("tb.view"); if (v && TABS.some(t => t[0] === v)) S.view = v;
+  const hp = new URLSearchParams(location.hash.slice(1)), hv = hp.get("v"), ht = hp.get("t");
+  if (hv && TABS.some(t => t[0] === hv)) S.view = hv;
+  S.pendingOpen = ht || "";
   const bt = recall("tb.btype"); if (TYPES[bt]) S.boardType = bt;
   const r = recall("tb.range");
   if (Array.isArray(r)) { S.from = r[0] || ""; S.to = r[1] || ""; }
@@ -1595,7 +1617,8 @@ $("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.
   const start = a => {
     api = a;
     api.subCfg(c => { S.cfg = { ...structuredClone(DEFAULT_CFG), ...(c || {}), weights: (c && c.weights && "done" in c.weights) ? { done: +c.weights.done || 0, ontime: +c.weights.ontime || 0 } : { ...DEFAULT_CFG.weights } }; render(); });
-    api.subItems(list => { S.items = list; render(); });
+    api.subItems(list => { S.items = list; render();
+      if (S.pendingOpen && list.length) { const pid = S.pendingOpen; S.pendingOpen = ""; if (list.some(x => x.id === pid)) openItem(pid); else toast("ไม่พบเรื่องนี้ หรือไม่มีสิทธิ์ดู"); } });
   };
   const demo = msg => { showBanner(msg); start(memoryApi()); };
   const URL_ = window.SUPABASE_URL || "", KEY_ = window.SUPABASE_ANON_KEY || "";
