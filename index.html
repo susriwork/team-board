@@ -435,7 +435,8 @@ function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = fal
 const typeOf = t => TYPES[t.type] ? t.type : "task";
 const byAttr = (k, v) => [...document.querySelectorAll(`[${k}]`)].find(e => e.getAttribute(k) === v);
 const who = t => Array.isArray(t.assignees) ? t.assignees : (t.assignee ? [t.assignee] : []);
-const whoTxt = t => who(t).join(", ");
+const isAll = list => S.cfg.assignees.length > 1 && S.cfg.assignees.every(n => list.includes(n));
+const whoTxt = t => { const w = who(t); return isAll(w) ? "ทุกคน" : w.join(", "); };
 const postsOf = t => Array.isArray(t.posts) ? t.posts : (t.platform ? [{ platform: t.platform, date: t.postDate || "", url: t.postUrl || "" }] : []);
 const stages = type => TYPES[type].stages;
 const stageOf = t => stages(typeOf(t)).find(s => s[0] === t.status) || stages(typeOf(t))[0];
@@ -834,7 +835,7 @@ function mItem(t, extraHtml = "") {
   </div>`;
 }
 function card(t) {
-  const extra = typeOf(t) === "letter" && t.agency ? `<span>${esc(t.agency)}</span>` : typeOf(t) === "event" && t.eventDate ? `<span>จัด ${fmtD(t.eventDate)}</span>` : typeOf(t) === "appt" && t.apptDate ? `<span>นัด ${fmtD(t.apptDate)}${t.time ? " " + esc(t.time) : ""}${t.venue ? " · " + esc(t.venue) : ""}</span>` : typeOf(t) === "content" && postsOf(t).length ? `<span>${esc(postsOf(t).map(x => x.platform).join(" · "))}</span>` : "";
+  const extra = typeOf(t) === "letter" && t.agency ? `<span>${esc(t.agency)}</span>` : typeOf(t) === "event" && t.eventDate ? `<span>จัด ${fmtD(t.eventDate)}</span>` : typeOf(t) === "appt" && t.apptDate ? `<span>นัด ${fmtD(t.apptDate)}${t.time ? " " + esc(t.time) : ""}${t.venue ? " · " + esc(t.venue) : ""}</span>${safeUrl(t.mapUrl) ? ` <a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" data-nolink="1">แผนที่</a>` : ""}` : typeOf(t) === "content" && postsOf(t).length ? `<span>${esc(postsOf(t).map(x => x.platform).join(" · "))}</span>` : "";
   const wait = isAgency(t) && t.letterDate ? `<span class="when ${followDue(t) ? "over" : "week"}">รอ ${waitDays(t)} วัน</span>` : "";
   return `<div class="card ${isClosed(t) ? "closed" : ""} ${bucket(t) === "over" ? "overdue" : ""}" draggable="${S.canWrite}" data-id="${t.id}" data-open="${t.id}">
     <div class="ct">${esc(t.title)}</div>
@@ -1195,6 +1196,8 @@ function openItem(id, preset = {}) {
         ${field("apptDate", "วันนัด", inp("apptDate", "date"))}
         ${field("time", "เวลา", inp("time", "time"))}
         ${field("venue", "สถานที่", inp("venue", "text", 'placeholder="เช่น สำนักงานเขตบางซื่อ ห้องประชุม 2"'), "full")}
+        ${field("mapUrl", "ลิงก์แผนที่ของสถานที่", inp("mapUrl", "url", 'placeholder="วางลิงก์จาก Google Maps เช่น https://maps.app.goo.gl/..."'), "full")}
+        ${safeUrl(t.mapUrl) ? `<a class="full" href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
         ${field("organizer", "ผู้นัด / หน่วยงาน", inp("organizer", "text", 'placeholder="เช่น ผอ.เขตบางซื่อ, ชุมชนวงศ์สว่าง"'), "full")}</fieldset>`,
       event: `<fieldset><legend>กิจกรรม</legend>
         ${field("eventDate", "วันจัดกิจกรรม", inp("eventDate", "date"))}
@@ -1216,19 +1219,19 @@ function openItem(id, preset = {}) {
       ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
       ${field("project", "โครงการ", `<select id="t_project" ${ro}>${opts(S.cfg.projects, t.project, "—")}</select>`, "full")}
       <div class="full"><span class="muted" style="font-size:12.5px">ผู้รับผิดชอบ (เลือกได้หลายคน)</span>
-        <div class="picks" style="margin-top:4px">${[...S.cfg.assignees, ...people.filter(n => !S.cfg.assignees.includes(n))].map(n => `<label class="pick"><input type="checkbox" data-who="${esc(n)}" ${people.includes(n) ? "checked" : ""} ${ro}>${esc(n)}</label>`).join("") || `<span class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</span>`}</div></div>
+        <div class="picks" style="margin-top:4px">${S.cfg.assignees.length > 1 ? `<label class="pick"><input type="checkbox" id="whoAll" ${isAll(people) ? "checked" : ""} ${ro}>ทุกคน</label>` : ""}${[...S.cfg.assignees, ...people.filter(n => !S.cfg.assignees.includes(n))].map(n => `<label class="pick"><input type="checkbox" data-who="${esc(n)}" ${people.includes(n) ? "checked" : ""} ${ro}>${esc(n)}</label>`).join("") || `<span class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</span>`}</div></div>
       ${field("status", "ขั้นตอน", `<select id="t_status" ${ro}>${stageOpts(type, t.status)}</select>`)}
       ${field("area", "พื้นที่", `<select id="t_area" ${ro}>${opts(S.cfg.areas, t.area, "—")}</select>`)}
       ${field("category", "หมวดหมู่", `<select id="t_category" ${ro}>${opts(S.cfg.categories, t.category, "—")}</select>`)}
       ${isAppt ? "" : field("location", "จุด / ที่ตั้ง", inp("location", "text", 'placeholder="เช่น ป้ายหน้าตลาดเตาปูน ฝั่งขาออก"'))}
-      ${field("mapUrl", "ลิงก์แผนที่", inp("mapUrl", "url", 'placeholder="https://maps.google.com/..."'))}
+      ${isAppt ? "" : field("mapUrl", "ลิงก์แผนที่", inp("mapUrl", "url", 'placeholder="https://maps.google.com/..."'))}
       ${isAppt ? "" : field("start", "วันเริ่ม", inp("start", "date"))}
       ${isAppt ? "" : field("due", type === "letter" ? "กำหนดส่งหนังสือ (ทีม)" : "กำหนดเสร็จ (ทีม)", inp("due", "date"))}
       ${isAppt ? "" : field("time", "เวลา", inp("time", "time"))}
       <div class="full" style="display:flex;gap:16px;flex-wrap:wrap">
         <label class="chk"><input type="checkbox" id="t_important" ${t.important ? "checked" : ""} ${ro}> สำคัญ</label>
         <label class="chk"><input type="checkbox" id="t_urgent" ${t.urgent ? "checked" : ""} ${ro}> ด่วน</label>
-        ${safeUrl(t.mapUrl) ? `<a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
+        ${!isAppt && safeUrl(t.mapUrl) ? `<a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
       </div>
       ${typeSec}
       <div class="full"${isAppt && !checklist.length ? " hidden" : ""}><span class="muted" style="font-size:12.5px">เช็กลิสต์</span>
@@ -1286,6 +1289,11 @@ function openItem(id, preset = {}) {
     $("#t_cancel").onclick = () => $("#dlg").close();
     $("#t_x").onclick = () => $("#dlg").close();
     document.querySelectorAll("[data-plat]").forEach(el => el.onchange = () => { collect(); draw(); });
+    const wa = $("#whoAll");
+    if (wa) {
+      wa.onchange = () => document.querySelectorAll("[data-who]").forEach(el => { if (S.cfg.assignees.includes(el.dataset.who)) el.checked = wa.checked; });
+      document.querySelectorAll("[data-who]").forEach(el => el.addEventListener("change", () => { wa.checked = S.cfg.assignees.every(n => { const b = byAttr("data-who", n); return b && b.checked; }); }));
+    }
     const add = $("#clAdd"); if (add) add.onclick = () => { collect(); checklist.push({ t: "", done: false }); draw(); const last = document.querySelector(`[data-clt="${checklist.length - 1}"]`); if (last) last.focus(); };
     document.querySelectorAll("[data-clr]").forEach(b => b.onclick = () => { collect(); checklist.splice(+b.dataset.clr, 1); draw(); });
     const fa = $("#fuAdd"); if (fa) fa.onclick = () => { collect(); const note = $("#fuNote").value.trim(); if (!note) { $("#fuNote").focus(); return; }
@@ -1439,6 +1447,7 @@ document.addEventListener("click", e => {
   if (vb) { const t = S.items.find(x => x.id === vb.dataset.view); if (t) openViewer(attOf(t).map(a => ({ ...a, item: t.title })), +vb.dataset.vi); return; }
   const gb = e.target.closest("[data-gview]");
   if (gb) { openViewer(S.gallery || [], +gb.dataset.gview); return; }
+  if (e.target.closest("a[data-nolink]")) return;
   const o = e.target.closest("[data-open]");
   if (o) openItem(o.dataset.open);
 });
