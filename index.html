@@ -1146,7 +1146,8 @@ function dl(name, text, type) {
 }
 function toCsv() {
   const cols = [["ประเภท", t => TYPES[typeOf(t)].label], ["เรื่อง", t => t.title], ["โครงการ", t => t.project], ["ผู้รับผิดชอบ", whoTxt], ["ขั้นตอน", stageLabel],
-    ["พื้นที่", t => t.area], ["จุด/ที่ตั้ง", t => t.location], ["หน่วยงาน", t => t.agency], ["เลขที่หนังสือ", t => t.letterNo], ["วันส่งหนังสือ", t => t.letterDate],
+    ["พื้นที่", t => t.area], ["จุด/ที่ตั้ง", t => t.location], ["หน่วยงาน", t => t.agency], ["วิธีส่ง", t => ({ hand: "ส่งมอบที่หน่วยงาน", email: "ส่งทาง E-mail", person: "ฝากกับบุคคล" })[t.sendMethod] || ""], ["แผนก", t => t.dept],
+    ["ผู้รับเรื่อง", t => [t.receiverName, t.receiverPosition].filter(Boolean).join(" / ")], ["อีเมลที่ส่ง", t => t.sendEmail], ["ติดต่อติดตามเรื่อง", t => [t.followPhone, t.receiverContact, t.receiverPlace].filter(Boolean).join(" / ")], ["เลขที่หนังสือ", t => t.letterNo], ["วันส่งหนังสือ", t => t.letterDate],
     ["นัดติดตาม", t => t.followUpDate], ["วันหน่วยงานตอบ", t => t.replyDate], ["วันเริ่ม", t => t.start], ["กำหนด (ทีม)", t => t.due], ["วันปิดเรื่อง", t => t.doneAt],
     ["สำคัญ", t => t.important ? "ใช่" : ""], ["ด่วน", t => t.urgent ? "ใช่" : ""], ["หมายเหตุ", t => t.note], ["จำนวนไฟล์แนบ", t => attOf(t).length],
     ["ลิงก์", t => linksOf(t).map(l => l.url).join(" ")], ["แก้ไขล่าสุด", t => t.updatedAt], ["แก้ไขโดย", t => t.updatedBy]];
@@ -1156,7 +1157,7 @@ function toCsv() {
 function setSee(list) { document.querySelectorAll("[data-msee]").forEach(el => el.checked = list.includes(el.dataset.msee)); }
 function syncSee() { const w = $("#mSeeWrap"), r = $("#mRole"); if (w && r) w.style.display = r.value === "member" ? "" : "none"; }
 // ช่องที่พิมพ์เองได้ และจำเป็นตัวเลือกครั้งถัดไป
-const CHOICE_KEYS = { agency: "agencies", project: "projects", area: "areas", category: "categories" };
+const CHOICE_KEYS = { agency: "agencies", project: "projects", area: "areas", category: "categories", dept: "depts" };
 function suggest(k) {
   const seen = new Set(), out = [];
   [...(S.cfg[CHOICE_KEYS[k]] || []), ...S.items.map(x => x[k])].forEach(v => { v = (v || "").trim(); if (v && !seen.has(v)) { seen.add(v); out.push(v); } });
@@ -1264,6 +1265,20 @@ function openItem(id, preset = {}) {
     const typeSec = {
       letter: `<fieldset><legend>หนังสือและการติดตาม</legend>
         ${field("agency", "หน่วยงานปลายทาง", combo("agency", t.agency, ro))}
+        ${field("sendMethod", "วิธีส่ง", `<select id="t_sendMethod" ${ro}>${[["", "—"], ["hand", "ส่งมอบที่หน่วยงาน"], ["email", "ส่งทาง E-mail"], ["person", "ฝากกับบุคคล"]].map(([v, l]) => `<option value="${v}"${(t.sendMethod || "") === v ? " selected" : ""}>${l}</option>`).join("")}</select>`)}
+        ${t.sendMethod === "hand" ? `
+        ${field("dept", "แผนก", combo("dept", t.dept, ro))}
+        ${field("receiverName", "ชื่อเจ้าหน้าที่ที่รับเรื่อง", inp("receiverName"))}
+        ${field("followPhone", "เบอร์โทรติดตามเรื่อง (ถ้ามี)", inp("followPhone", "tel"))}` : ""}
+        ${t.sendMethod === "email" ? `
+        ${field("sendEmail", "อีเมลที่ส่งไป", inp("sendEmail", "email", 'placeholder="name@bangkok.go.th"'))}
+        ${field("followPhone", "เบอร์โทรติดตามเรื่อง (ถ้ามี)", inp("followPhone", "tel"))}
+        <p class="full muted" style="font-size:12.5px;margin:0">แนบไฟล์ที่ส่งไปได้ในหัวข้อ "ไฟล์แนบ" ด้านล่าง</p>` : ""}
+        ${t.sendMethod === "person" ? `
+        ${field("receiverName", "ชื่อผู้รับเรื่อง", inp("receiverName"))}
+        ${field("receiverPosition", "ตำแหน่ง", inp("receiverPosition"))}
+        ${field("receiverPlace", "สถานที่", inp("receiverPlace"))}
+        ${field("receiverContact", "ช่องทางการติดต่อ", inp("receiverContact", "text", 'placeholder="เบอร์โทร / LINE / อีเมล"'))}` : ""}
         ${field("letterNo", "เลขที่หนังสือ", inp("letterNo"))}
         ${field("letterDate", "วันที่ส่งหนังสือ", inp("letterDate", "date"))}
         ${field("followUpDate", "นัดติดตามครั้งถัดไป", inp("followUpDate", "date"))}
@@ -1353,9 +1368,9 @@ function openItem(id, preset = {}) {
   const collect = () => {
     const v = k => { const el = $("#t_" + k); return el ? el.value : t[k]; };
     ["title", "project", "status", "area", "category", "location", "mapUrl", "start", "due", "time", "note", "doneAt",
-      "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered", "apptDate", "organizer"]
+      "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered", "apptDate", "organizer", "sendMethod", "dept", "receiverName", "followPhone", "sendEmail", "receiverPosition", "receiverPlace", "receiverContact"]
       .forEach(k => { if ($("#t_" + k)) t[k] = v(k); });
-    ["agency", "project", "area", "category"].forEach(k => { if (typeof t[k] === "string") t[k] = t[k].trim().replace(/\s+/g, " "); });
+    ["agency", "project", "area", "category", "dept"].forEach(k => { if (typeof t[k] === "string") t[k] = t[k].trim().replace(/\s+/g, " "); });
     if (document.querySelector("[data-who]")) people = [...document.querySelectorAll("[data-who]")].filter(el => el.checked).map(el => el.dataset.who);
     if (document.querySelector("[data-plat]")) posts = [...document.querySelectorAll("[data-plat]")].filter(el => el.checked).map(el => {
       const pl = el.dataset.plat, d = byAttr("data-pdate", pl), u = byAttr("data-purl", pl), old = posts.find(q => q.platform === pl) || {};
@@ -1373,6 +1388,7 @@ function openItem(id, preset = {}) {
     $("#t_cancel").onclick = () => $("#dlg").close();
     $("#t_x").onclick = () => $("#dlg").close();
     document.querySelectorAll("[data-plat]").forEach(el => el.onchange = () => { collect(); draw(); });
+    const sm = $("#t_sendMethod"); if (sm) sm.onchange = () => { collect(); draw(); const x = $("#t_sendMethod"); if (x) x.focus(); };
     const wa = $("#whoAll");
     if (wa) {
       wa.onchange = () => document.querySelectorAll("[data-who]").forEach(el => { if (S.cfg.assignees.includes(el.dataset.who)) el.checked = wa.checked; });
