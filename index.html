@@ -687,7 +687,7 @@ function sbApi() {
       const id = crypto.randomUUID();
       const { error } = await SB.from("tasks").insert({ id, data: d });
       if (error) throw sbErr(error);
-      if (S.seeAll || d.allTeam || (Array.isArray(d.assignees) && d.assignees.includes(S.myName))) { put({ id, data: d }); emit(); }
+      if (S.seeAll || d.allTeam || (Array.isArray(d.assignees) && (d.assignees.includes(S.myName) || d.assignees.some(n => (S.seeNames || []).includes(n))))) { put({ id, data: d }); emit(); }
     },
     async save(id, d) { const { error } = await SB.rpc("patch_task", { p_id: id, p_patch: d }); if (error) throw sbErr(error); const cur = map.get(id); if (cur) { map.set(id, { ...cur, ...d, id }); emit(); } },
     async del(id) { const { error } = await SB.from("tasks").delete().eq("id", id); if (error) throw sbErr(error); map.delete(id); emit(); },
@@ -1091,7 +1091,7 @@ function vSettings() {
   <div class="store" id="storeBox"><p class="muted" style="margin:0">${S.assets ? "กำลังตรวจสอบ…" : "ดูได้เมื่อเข้าสู่ระบบ"}</p></div>
   ${SB ? `<h3 style="margin-top:28px">บัญชีของฉัน</h3>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px;margin-bottom:12px">
-    <div class="set-row" style="flex:1 1 220px">ชื่อของฉันในทีม<b style="color:var(--ink);font-size:15px">${S.myName ? esc(S.myName) + (S.isAdmin ? " · ผู้ดูแล (เห็นงานทั้งหมด)" : S.seeAll ? " · เห็นงานทั้งหมด" : "") : "ยังไม่ได้ผูกชื่อ ให้ผู้ดูแลเพิ่มอีเมลนี้ในรายชื่อสมาชิก"}</b></div>
+    <div class="set-row" style="flex:1 1 220px">ชื่อของฉันในทีม<b style="color:var(--ink);font-size:15px">${S.myName ? esc(S.myName) + (S.isAdmin ? " · ผู้ดูแล (เห็นงานทั้งหมด)" : S.seeAll ? " · เห็นงานทั้งหมด" : (S.seeNames || []).length ? " · เห็นงานของ " + esc(S.seeNames.join(", ")) + " ด้วย" : "") : "ยังไม่ได้ผูกชื่อ ให้ผู้ดูแลเพิ่มอีเมลนี้ในรายชื่อสมาชิก"}</b></div>
     <span class="muted" style="font-size:12.5px;flex:1 1 220px">${esc(S.myEmail || "")}</span>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px">
@@ -1099,12 +1099,13 @@ function vSettings() {
     <button class="btn" type="button" id="pwBtn">เปลี่ยนรหัสผ่าน</button>
   </div>` : ""}
   ${SB && S.isAdmin ? `<h3 style="margin-top:28px">สมาชิกและสิทธิ์การมองเห็น</h3>
-  <p class="hint">ผูกอีเมลที่ใช้ล็อกอินกับชื่อในทีม · <b>สมาชิก</b> เห็นเฉพาะงานที่ตนรับผิดชอบ และงานของทุกคน/ไม่ระบุผู้รับผิดชอบ · <b>เห็นงานทั้งหมด</b> เห็นงานของทุกคน แต่แก้สิทธิ์สมาชิกไม่ได้ · <b>ผู้ดูแล</b> มีบัญชีเดียว เห็นงานทั้งหมดและจัดการสมาชิกได้ · บัญชีที่ไม่ได้อยู่ในรายชื่อนี้จะเห็นเฉพาะงานของทุกคน</p>
-  <div class="tbl-wrap" style="max-width:760px"><table><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
+  <p class="hint">ผูกอีเมลที่ใช้ล็อกอินกับชื่อในทีม · <b>สมาชิก</b> เห็นงานที่ตนรับผิดชอบ งานของทุกคน/ไม่ระบุผู้รับผิดชอบ และงานของคนที่ติ๊กใน "เห็นงานของ" · <b>เห็นงานทั้งหมด</b> เห็นงานของทุกคน แต่แก้สิทธิ์สมาชิกไม่ได้ · <b>ผู้ดูแล</b> มีบัญชีเดียว เห็นงานทั้งหมดและจัดการสมาชิกได้ · บัญชีที่ไม่ได้อยู่ในรายชื่อนี้จะเห็นเฉพาะงานของทุกคน</p>
+  <div class="tbl-wrap" style="max-width:760px"><table><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th>เห็นงานของ</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="5" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;max-width:760px">
     <label class="set-row" for="mEmail" style="flex:2 1 220px">อีเมล<input type="text" id="mEmail" inputmode="email" placeholder="name@gmail.com"></label>
     <label class="set-row" for="mName" style="flex:1 1 140px">ชื่อในทีม<select id="mName">${opts(S.cfg.assignees, "", "— เลือก —")}</select></label>
     <label class="set-row" for="mRole" style="flex:1 1 120px">สิทธิ์<select id="mRole"><option value="member">สมาชิก</option><option value="viewall">เห็นงานทั้งหมด</option></select></label>
+    <div class="set-row" id="mSeeWrap" style="flex:1 1 100%">เห็นงานของ (นอกจากงานของตัวเองและงานของทุกคน)<div class="picks" id="mSee">${S.cfg.assignees.map(n => `<label class="pick"><input type="checkbox" data-msee="${esc(n)}">${esc(n)}</label>`).join("")}</div></div>
     <button class="btn primary" type="button" id="mAdd">บันทึกสมาชิก</button>
   </div>` : ""}
   <h3 style="margin-top:28px">สำรองและย้ายข้อมูล</h3>
@@ -1152,20 +1153,24 @@ function toCsv() {
   const q = v => { const x = String(v ?? ""); return /[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x; };
   return "\ufeff" + [cols.map(c => q(c[0])).join(","), ...S.items.map(t => cols.map(c => q(c[1](t))).join(","))].join("\r\n");
 }
+function setSee(list) { document.querySelectorAll("[data-msee]").forEach(el => el.checked = list.includes(el.dataset.msee)); }
+function syncSee() { const w = $("#mSeeWrap"), r = $("#mRole"); if (w && r) w.style.display = r.value === "member" ? "" : "none"; }
 async function bindMembers() {
   const body = $("#memRows"); if (!body || !SB) return;
-  const { data, error } = await SB.from("members").select("email,name,role").order("name");
+  const { data, error } = await SB.from("members").select("email,name,role,see_names").order("name");
   if (!$("#memRows")) return;
-  if (error) { body.innerHTML = `<tr><td colspan="4" class="muted">โหลดรายชื่อไม่สำเร็จ: ${esc(error.message)}</td></tr>`; return; }
-  body.innerHTML = (data || []).map(m => `<tr><td>${esc(m.email)}</td><td>${esc(m.name)}</td><td>${ROLE_TXT[m.role] || "สมาชิก"}</td>
-    <td>${m.email === (S.myEmail || "").toLowerCase() || m.role === "admin" ? `<span class="muted" style="font-size:12px">${m.email === (S.myEmail || "").toLowerCase() ? "บัญชีนี้" : "บัญชีผู้ดูแล"}</span>` : `<button class="btn ghost sm" type="button" data-medit="${esc(m.email)}" data-mname="${esc(m.name)}" data-mrole="${m.role}">แก้</button><button class="btn ghost sm" type="button" data-mdel="${esc(m.email)}">ลบ</button>`}</td></tr>`).join("")
-    || `<tr><td colspan="4" class="muted">ยังไม่มีสมาชิก</td></tr>`;
-  body.querySelectorAll("[data-medit]").forEach(b => b.onclick = () => { $("#mEmail").value = b.dataset.medit; $("#mName").value = b.dataset.mname; $("#mRole").value = b.dataset.mrole; $("#mEmail").focus(); });
+  if (error) { body.innerHTML = `<tr><td colspan="5" class="muted">โหลดรายชื่อไม่สำเร็จ: ${esc(error.message)}</td></tr>`; return; }
+  body.innerHTML = (data || []).map(m => `<tr><td>${esc(m.email)}</td><td>${esc(m.name)}</td><td>${ROLE_TXT[m.role] || "สมาชิก"}</td><td>${m.role === "admin" || m.role === "viewall" ? "ทุกคน" : (m.see_names || []).length ? esc(m.see_names.join(", ")) : `<span class="muted">เฉพาะของตัวเอง</span>`}</td>
+    <td>${m.email === (S.myEmail || "").toLowerCase() || m.role === "admin" ? `<span class="muted" style="font-size:12px">${m.email === (S.myEmail || "").toLowerCase() ? "บัญชีนี้" : "บัญชีผู้ดูแล"}</span>` : `<button class="btn ghost sm" type="button" data-medit="${esc(m.email)}" data-mname="${esc(m.name)}" data-mrole="${m.role}" data-msees="${esc(JSON.stringify(m.see_names || []))}">แก้</button><button class="btn ghost sm" type="button" data-mdel="${esc(m.email)}">ลบ</button>`}</td></tr>`).join("")
+    || `<tr><td colspan="5" class="muted">ยังไม่มีสมาชิก</td></tr>`;
+  body.querySelectorAll("[data-medit]").forEach(b => b.onclick = () => { $("#mEmail").value = b.dataset.medit; $("#mName").value = b.dataset.mname; $("#mRole").value = b.dataset.mrole; setSee(JSON.parse(b.dataset.msees || "[]")); syncSee(); $("#mEmail").focus(); });
   body.querySelectorAll("[data-mdel]").forEach(b => b.onclick = async () => {
     if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "ยืนยันลบ"; b.classList.add("danger"); return; }
     const { error } = await SB.from("members").delete().eq("email", b.dataset.mdel);
     toast(error ? "ลบไม่สำเร็จ: " + error.message : "ลบสมาชิกแล้ว"); bindMembers();
   });
+  const role0 = $("#mRole"); if (role0) role0.onchange = syncSee;
+  syncSee();
   const add = $("#mAdd");
   if (add) add.onclick = async () => {
     const email = $("#mEmail").value.trim().toLowerCase(), name = $("#mName").value, role = $("#mRole").value;
@@ -1173,10 +1178,11 @@ async function bindMembers() {
     if (!name) { toast("เลือกชื่อในทีม"); return; }
     if (email === "admin@team-board.local" || role === "admin") { toast("บัญชีผู้ดูแลแก้ไขจากหน้านี้ไม่ได้"); return; }
     add.disabled = true;
-    const { error } = await SB.from("members").upsert({ email, name, role, updated_at: new Date().toISOString() });
+    const see_names = role === "member" ? [...document.querySelectorAll("[data-msee]")].filter(el => el.checked && el.dataset.msee !== name).map(el => el.dataset.msee) : [];
+    const { error } = await SB.from("members").upsert({ email, name, role, see_names, updated_at: new Date().toISOString() });
     add.disabled = false;
     if (error) { toast("บันทึกไม่สำเร็จ: " + error.message); return; }
-    toast("บันทึกสมาชิกแล้ว"); $("#mEmail").value = ""; $("#mName").value = ""; $("#mRole").value = "member"; bindMembers();
+    toast("บันทึกสมาชิกแล้ว"); $("#mEmail").value = ""; $("#mName").value = ""; $("#mRole").value = "member"; setSee([]); bindMembers();
   };
 }
 function bindSettings() {
@@ -1576,8 +1582,8 @@ $("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.
     S.mine = recall("tb.mine") === true;
     S.assets = sbAssets(); S.downloads = true;
     applyWriteMode();
-    SB.from("members").select("name,role").eq("email", S.myEmail).maybeSingle().then(({ data }) => {
-      S.me = data || null; S.isAdmin = !!(data && data.role === "admin"); S.seeAll = !!(data && (data.role === "admin" || data.role === "viewall"));
+    SB.from("members").select("name,role,see_names").eq("email", S.myEmail).maybeSingle().then(({ data }) => {
+      S.me = data || null; S.seeNames = (data && Array.isArray(data.see_names)) ? data.see_names : []; S.isAdmin = !!(data && data.role === "admin"); S.seeAll = !!(data && (data.role === "admin" || data.role === "viewall"));
       if (!data) showBanner("บัญชีนี้ยังไม่ได้ผูกชื่อในทีม จึงเห็นเฉพาะงานของทุกคน ให้ผู้ดูแลเพิ่มอีเมลนี้ในตั้งค่า → สมาชิกและสิทธิ์");
       render();
     });
