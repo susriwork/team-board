@@ -1155,6 +1155,21 @@ function toCsv() {
 }
 function setSee(list) { document.querySelectorAll("[data-msee]").forEach(el => el.checked = list.includes(el.dataset.msee)); }
 function syncSee() { const w = $("#mSeeWrap"), r = $("#mRole"); if (w && r) w.style.display = r.value === "member" ? "" : "none"; }
+// ช่องที่พิมพ์เองได้ และจำเป็นตัวเลือกครั้งถัดไป
+const CHOICE_KEYS = { agency: "agencies", project: "projects", area: "areas", category: "categories" };
+function suggest(k) {
+  const seen = new Set(), out = [];
+  [...(S.cfg[CHOICE_KEYS[k]] || []), ...S.items.map(x => x[k])].forEach(v => { v = (v || "").trim(); if (v && !seen.has(v)) { seen.add(v); out.push(v); } });
+  return out;
+}
+function learnChoices(d) {
+  const next = { ...S.cfg }; let changed = false;
+  Object.entries(CHOICE_KEYS).forEach(([k, ck]) => {
+    const v = (d[k] || "").trim(), list = next[ck] || [];
+    if (v && !list.includes(v)) { next[ck] = [...list, v]; changed = true; }
+  });
+  if (changed) api.saveCfg(next).catch(() => {});
+}
 async function bindMembers() {
   const body = $("#memRows"); if (!body || !SB) return;
   const { data, error } = await SB.from("members").select("email,name,role,see_names").order("name");
@@ -1241,13 +1256,14 @@ function openItem(id, preset = {}) {
   const f = $("#tf");
   delete f.dataset.warned;
   const field = (k, label, html, cls = "") => `<label class="${cls}">${label}${html}</label>`;
+  const combo = (k, val, ro) => `<input type="text" id="t_${k}" list="dl_${k}" value="${esc(val || "")}" autocomplete="off" maxlength="120" placeholder="พิมพ์หรือเลือก" ${ro}><datalist id="dl_${k}">${suggest(k).map(v => `<option value="${esc(v)}"></option>`).join("")}</datalist>`;
   const inp = (k, typ = "text", extra = "") => `<input type="${typ}" id="t_${k}" value="${esc(t[k] ?? "")}" ${ro} ${extra}>`;
   const draw = () => {
     if (!stages(type).some(s => s[0] === t.status)) t.status = stages(type)[0][0];
     const isAppt = type === "appt";
     const typeSec = {
       letter: `<fieldset><legend>หนังสือและการติดตาม</legend>
-        ${field("agency", "หน่วยงานปลายทาง", `<select id="t_agency" ${ro}>${opts(S.cfg.agencies, t.agency, "—")}</select>`)}
+        ${field("agency", "หน่วยงานปลายทาง", combo("agency", t.agency, ro))}
         ${field("letterNo", "เลขที่หนังสือ", inp("letterNo"))}
         ${field("letterDate", "วันที่ส่งหนังสือ", inp("letterDate", "date"))}
         ${field("followUpDate", "นัดติดตามครั้งถัดไป", inp("followUpDate", "date"))}
@@ -1283,13 +1299,13 @@ function openItem(id, preset = {}) {
     <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-ttype="${k}" aria-pressed="${k === type}" ${ro}>${TYPES[k].label}</button>`).join("")}</div>
     <div class="form">
       ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
-      ${field("project", "โครงการ", `<select id="t_project" ${ro}>${opts(S.cfg.projects, t.project, "—")}</select>`, "full")}
+      ${field("project", "โครงการ", combo("project", t.project, ro), "full")}
       <div class="full"><span class="muted" style="font-size:12.5px">ผู้รับผิดชอบ (เลือกได้หลายคน)</span>
         <div class="picks" style="margin-top:4px">${S.cfg.assignees.length > 1 ? `<label class="pick"><input type="checkbox" id="whoAll" ${isAll(people) ? "checked" : ""} ${ro}>ทุกคน</label>` : ""}${[...S.cfg.assignees, ...people.filter(n => !S.cfg.assignees.includes(n))].map(n => `<label class="pick"><input type="checkbox" data-who="${esc(n)}" ${people.includes(n) ? "checked" : ""} ${ro}>${esc(n)}</label>`).join("") || `<span class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</span>`}</div>
         ${ro ? "" : `<div class="who-add"><input type="text" id="whoNew" placeholder="พิมพ์ชื่ออื่น เช่น คนนอกทีม หน่วยงาน" maxlength="60" aria-label="เพิ่มชื่อผู้รับผิดชอบอื่น"><button type="button" class="btn" id="whoNewAdd">+ เพิ่มชื่อ</button></div>`}</div>
       ${field("status", "ขั้นตอน", `<select id="t_status" ${ro}>${stageOpts(type, t.status)}</select>`)}
-      ${field("area", "พื้นที่", `<select id="t_area" ${ro}>${opts(S.cfg.areas, t.area, "—")}</select>`)}
-      ${field("category", "หมวดหมู่", `<select id="t_category" ${ro}>${opts(S.cfg.categories, t.category, "—")}</select>`)}
+      ${field("area", "พื้นที่", combo("area", t.area, ro))}
+      ${field("category", "หมวดหมู่", combo("category", t.category, ro))}
       ${isAppt ? "" : field("location", "จุด / ที่ตั้ง", inp("location", "text", 'placeholder="เช่น ป้ายหน้าตลาดเตาปูน ฝั่งขาออก"'))}
       ${isAppt ? "" : field("mapUrl", "ลิงก์แผนที่", inp("mapUrl", "url", 'placeholder="https://maps.google.com/..."'))}
       ${isAppt ? "" : field("start", "วันเริ่ม", inp("start", "date"))}
@@ -1339,6 +1355,7 @@ function openItem(id, preset = {}) {
     ["title", "project", "status", "area", "category", "location", "mapUrl", "start", "due", "time", "note", "doneAt",
       "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered", "apptDate", "organizer"]
       .forEach(k => { if ($("#t_" + k)) t[k] = v(k); });
+    ["agency", "project", "area", "category"].forEach(k => { if (typeof t[k] === "string") t[k] = t[k].trim().replace(/\s+/g, " "); });
     if (document.querySelector("[data-who]")) people = [...document.querySelectorAll("[data-who]")].filter(el => el.checked).map(el => el.dataset.who);
     if (document.querySelector("[data-plat]")) posts = [...document.querySelectorAll("[data-plat]")].filter(el => el.checked).map(el => {
       const pl = el.dataset.plat, d = byAttr("data-pdate", pl), u = byAttr("data-purl", pl), old = posts.find(q => q.platform === pl) || {};
@@ -1450,7 +1467,7 @@ function openItem(id, preset = {}) {
     const patch = autoPatch(id ? src : { status: "" }, d);
     const ok = id ? await write(() => api.save(id, stamp(patch)), "บันทึกแล้ว")
                   : await write(() => api.add(stamp({ ...patch, createdAt: new Date().toISOString() })), "เพิ่มเรื่องแล้ว");
-    if (ok) { saved = true; pending = []; $("#dlg").close(); }
+    if (ok) { saved = true; pending = []; $("#dlg").close(); learnChoices(d); }
   };
   $("#dlg").onclose = () => {
     if (!saved && pending.length && S.assets) pending.forEach(pid => S.assets.delete(pid).catch(() => {}));
