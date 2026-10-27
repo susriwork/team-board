@@ -387,20 +387,20 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 /* ---------- workflows: owner = team | agency | done | cancel | hold ; reject marks a send-back ---------- */
 const TYPES = {
   letter: { label: "เรื่องส่งหนังสือ", short: "หนังสือ", stages: [
-    ["intake", "รับเรื่อง/สำรวจ", "team"], ["gather", "รวบรวมข้อมูล", "team"], ["draft", "ร่างหนังสือ", "team"],
+    ["none", "—", "team"], ["intake", "รับเรื่อง/สำรวจ", "team"], ["gather", "รวบรวมข้อมูล", "team"], ["draft", "ร่างหนังสือ", "team"],
     ["sign", "รอ ส.ก. ลงนาม", "team"], ["sent", "ส่งแล้ว รอหน่วยงาน", "agency"], ["acting", "หน่วยงานรับเรื่อง/กำลังแก้", "agency"],
     ["escalate", "ยกระดับในสภา", "team"], ["resolved", "แก้ไขแล้ว ปิดเรื่อง", "done"], ["unresolved", "ไม่ได้รับการแก้ไข ปิดเรื่อง", "done"],
     ["cancel", "ยกเลิก", "cancel"]] },
   task: { label: "งานทั่วไป", short: "งาน", stages: [
-    ["todo", "รอดำเนินการ", "team"], ["doing", "กำลังทำ", "team"], ["review", "รอตรวจ", "team"], ["rework", "ถูกตีกลับ", "team", 1],
+    ["none", "—", "team"], ["todo", "รอดำเนินการ", "team"], ["doing", "กำลังทำ", "team"], ["review", "รอตรวจ", "team"], ["rework", "ถูกตีกลับ", "team", 1],
     ["hold", "พักไว้ก่อน", "hold"], ["done", "เสร็จแล้ว", "done"], ["cancel", "ยกเลิก", "cancel"]] },
   event: { label: "กิจกรรม", short: "กิจกรรม", stages: [
-    ["plan", "วางแผน", "team"], ["prep", "เตรียมงาน", "team"], ["ready", "พร้อมจัด", "team"], ["held", "จัดแล้ว รอสรุป", "team"],
+    ["none", "—", "team"], ["plan", "วางแผน", "team"], ["prep", "เตรียมงาน", "team"], ["ready", "พร้อมจัด", "team"], ["held", "จัดแล้ว รอสรุป", "team"],
     ["done", "สรุปผลแล้ว", "done"], ["hold", "เลื่อน/พักไว้", "hold"], ["cancel", "ยกเลิก", "cancel"]] },
   appt: { label: "นัดหมาย", short: "นัดหมาย", stages: [
     ["none", "—", "appt"], ["booked", "รอวันนัด", "appt"], ["waitjoin", "รอร่วมงาน", "appt"], ["attended", "ไปแล้ว", "done"], ["postponed", "เลื่อนนัด", "hold"], ["cancel", "ยกเลิก", "cancel"]] },
   content: { label: "คอนเทนต์/คลิป", short: "คอนเทนต์", stages: [
-    ["idea", "ไอเดีย", "team"], ["shoot", "ถ่ายทำ/เก็บภาพ", "team"], ["edit", "ตัดต่อ/ทำกราฟิก", "team"], ["review", "รอตรวจ", "team"],
+    ["none", "—", "team"], ["idea", "ไอเดีย", "team"], ["shoot", "ถ่ายทำ/เก็บภาพ", "team"], ["edit", "ตัดต่อ/ทำกราฟิก", "team"], ["review", "รอตรวจ", "team"],
     ["rework", "ถูกตีกลับ", "team", 1], ["posted", "โพสต์แล้ว", "done"], ["cancel", "ยกเลิก", "cancel"]] }
 };
 const TYPE_KEYS = ["letter", "task", "event", "appt", "content"];
