@@ -904,7 +904,7 @@ function vFollow() {
 function calEntries() {
   const out = [];
   filtered().forEach(t => {
-    if (t.due && isTeamOpen(t)) out.push([t.due, "due", "กำหนด", t]);
+    if (t.due && isTeamOpen(t)) out.push([t.due, "due", "กำหนดส่ง", t]);
     if (t.followUpDate && isAgency(t)) out.push([t.followUpDate, "follow", "ตาม", t]);
     if (typeOf(t) === "event" && t.eventDate && ownerOf(t) !== "cancel") out.push([t.eventDate, "event", "จัดงาน", t]);
     if (typeOf(t) === "appt" && t.apptDate && !["cancel", "hold"].includes(ownerOf(t))) out.push([t.apptDate, "appt", "นัด" + (t.time ? " " + t.time : ""), t]);
