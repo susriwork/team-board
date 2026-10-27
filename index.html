@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>บอร์ดงานทีม</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: sticky top bar with tabs + filter strip; each view is a full-width working surface. Case-tracking office tool for a district council team. */
+:root{
+  --bg:#f3f6f5; --surface:#ffffff; --sunk:#e9eeec; --line:#d5ddda;
+  --ink:#16242a; --muted:#5c6b70; --accent:#1d6e58; --accent-ink:#ffffff; --accent-soft:#dcece6;
+  --danger:#b3261e; --danger-soft:#fbe4e1; --warn:#8a5a00; --warn-soft:#fdf0d5; --info:#235b8f; --info-soft:#e1ecf7;
+  --violet:#6b4fa0; --violet-soft:#ece6f6; --done:#8a979b;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:8px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c;
+  --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
+  --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c;
+  --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
+  --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+img{max-width:100%}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1400px;margin:0 auto}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:12px 0}
+.brand{font:700 20px/1.2 var(--f-display);margin-right:auto;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand small{font:500 12px var(--f-body);color:var(--muted)}
+.tabs{display:flex;gap:2px;overflow-x:auto;padding-block:8px 0;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:8px 13px 10px;border-bottom:2px solid transparent;color:var(--muted);font-weight:500;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab .badge{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:99px;background:var(--danger);color:#fff;font:600 11px/18px var(--f-mono);text-align:center}
+.filters{display:flex;gap:8px;flex-wrap:wrap;padding-block:10px;border-top:1px solid var(--line);align-items:center}
+.filters input[type=search]{flex:1 1 180px;min-width:0}
+.filters select{max-width:min(100%,240px)}
+select,input[type=text],input[type=url],input[type=search],input[type=date],input[type=time],input[type=number],textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-height:36px;min-width:0}
+textarea{resize:vertical;width:100%}
+label.chk{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 14px;cursor:pointer;font-weight:500;min-height:36px}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--danger);border-color:var(--danger)}
+.btn.ghost{border-color:transparent;background:none}
+.btn.sm{min-height:30px;padding:3px 10px;font-size:13px}
+main{padding-block:20px 48px}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:var(--r);padding:10px 14px;font-size:13.5px;margin-bottom:16px}
+h2{font:600 18px/1.3 var(--f-display);margin:0 0 12px;text-wrap:balance}
+h3{font:600 15px/1.3 var(--f-display);margin:0 0 8px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.hint{font-size:13px;color:var(--muted);margin:0 0 12px;max-width:80ch}
+.empty{border:1.5px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;color:var(--muted)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg button{border:0;background:none;padding:6px 12px;cursor:pointer;font-size:14px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+
+/* type badges */
+.ty{font:600 11px var(--f-body);padding:1px 7px;border-radius:4px;white-space:nowrap;letter-spacing:.2px}
+.ty.task{background:var(--sunk);color:var(--muted)}
+.ty.letter{background:var(--info-soft);color:var(--info)}
+.ty.event{background:var(--warn-soft);color:var(--warn)}
+.ty.content{background:var(--violet-soft);color:var(--violet)}
+
+/* overview */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.stat b{display:block;font:600 28px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.stat.alert b{color:var(--danger)} .stat.wait b{color:var(--info)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.alist{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.alist li{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:6px;cursor:pointer;flex-wrap:wrap}
+.alist li:hover{background:var(--sunk)}
+.alist .t{flex:1 1 160px;min-width:0;overflow-wrap:anywhere}
+.when{font:500 12px var(--f-mono);padding:1px 7px;border-radius:99px;white-space:nowrap}
+.when.over{background:var(--danger-soft);color:var(--danger)}
+.when.today,.when.tmr{background:var(--warn-soft);color:var(--warn)}
+.when.week{background:var(--info-soft);color:var(--info)}
+.when.plain{color:var(--muted)}
+.proj{display:grid;gap:12px}
+.proj-row{display:grid;gap:4px;cursor:pointer;padding:6px;border-radius:6px}
+.proj-row:hover{background:var(--sunk)}
+.proj-row .top{display:flex;gap:8px;justify-content:space-between;align-items:baseline;font-size:14px}
+.proj-row .top span:first-child{min-width:0;overflow-wrap:anywhere}
+.stack{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--sunk)}
+.stack i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted);margin-bottom:10px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}
+.load{display:grid;grid-template-columns:minmax(60px,auto) 1fr auto;gap:6px 10px;align-items:center;font-size:14px}
+.meter{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+.meter i.bad{background:var(--danger)}
+
+/* table */
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+table.wide{min-width:980px}
+th{font:600 12px var(--f-body);letter-spacing:.3px;color:var(--muted);text-align:left;padding:10px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
+th[data-sort]{cursor:pointer}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--sunk)}
+tr.closed td{color:var(--done)}
+tr.closed td.title b{text-decoration:line-through}
+td.title{min-width:220px}
+td.title b{font-weight:500}
+td.title .sub{font-size:12.5px;color:var(--muted)}
+td select{min-height:30px;padding:3px 6px;font-size:13px;max-width:190px}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.flags{display:inline-flex;gap:4px}
+.flag{font:600 11px var(--f-body);padding:1px 6px;border-radius:4px}
+.flag.imp{background:var(--accent-soft);color:var(--accent)}
+.flag.urg{background:var(--danger-soft);color:var(--danger)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:2px 9px;border-radius:99px;background:var(--sunk);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;flex:none}
+.prog{font:500 12px var(--f-mono);color:var(--muted)}
+
+/* kanban */
+.board-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px;align-items:start}
+.col{background:var(--sunk);border-radius:var(--r);padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px}
+.col.agency{background:var(--info-soft)}
+.col.over{outline:2px dashed var(--accent);outline-offset:-2px}
+.col-h{display:flex;align-items:center;gap:8px;font:600 14px var(--f-display);padding:2px 4px}
+.col-h .n{margin-left:auto;font:500 12px var(--f-mono);color:var(--muted)}
+.col-h small{font:500 11px var(--f-body);color:var(--info)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 11px;cursor:grab;display:grid;gap:6px;font-size:13.5px}
+.card .ct{font-weight:500;overflow-wrap:anywhere}
+.card .meta{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--muted);font-size:12.5px;align-items:center}
+.card.closed .ct{color:var(--done);text-decoration:line-through}
+.card.overdue{border-left:3px solid var(--danger)}
+
+/* calendar */
+.cal-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.cal-h h2{margin:0 auto 0 0}
+.cal-scroll{overflow-x:auto}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(108px,1fr));border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--line);gap:1px;min-width:760px}
+.dow{background:var(--surface);font:600 12px var(--f-body);color:var(--muted);padding:8px;text-align:center}
+.day{background:var(--surface);min-height:112px;padding:6px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.day.out{background:var(--sunk)}
+.day.out .dn{color:var(--done)}
+.dn{font:500 13px var(--f-mono)}
+.day.today .dn{background:var(--accent);color:var(--accent-ink);border-radius:99px;width:24px;height:24px;display:grid;place-items:center}
+.chip{font-size:12px;padding:2px 6px;border-radius:4px;background:var(--sunk);border-left:3px solid var(--muted);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip b{font:600 10.5px var(--f-body);margin-right:4px}
+.chip.k-due{border-left-color:var(--accent)} .chip.k-follow{border-left-color:var(--info)} .chip.k-event{border-left-color:var(--warn)} .chip.k-post{border-left-color:var(--violet)}
+.day.out .chip{background:var(--surface)}
+.more{font-size:11.5px;color:var(--accent);cursor:pointer;border:0;background:none;padding:0;text-align:left}
+
+/* matrix */
+.matrix{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.matrix{grid-template-columns:1fr}}
+.quad{border-radius:var(--r);padding:14px;min-height:200px;border:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.quad.q1{background:var(--danger-soft)} .quad.q2{background:var(--accent-soft)} .quad.q3{background:var(--warn-soft)} .quad.q4{background:var(--sunk)}
+.quad.over{outline:2px dashed var(--ink);outline-offset:-4px}
+.quad h3 small{font:400 12.5px var(--f-body);color:var(--muted);margin-left:6px}
+
+/* kpi / summary */
+.ctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin-bottom:16px}
+.ctl label{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}
+.ctl input[type=number]{width:80px}
+.wsum{font-size:13px;padding:6px 10px;border-radius:6px}
+.wsum.ok{background:var(--accent-soft);color:var(--accent)} .wsum.bad{background:var(--danger-soft);color:var(--danger)}
+.score{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.score .meter{width:80px}
+.sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;margin-top:16px}
+.sumgrid .panel table{min-width:0}
+
+/* settings */
+.set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.set-grid textarea{min-height:160px;font-size:14px}
+.set-row{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin-bottom:10px}
+.flow .arrow{color:var(--muted)}
+
+/* dialog */
+dialog{overflow-x:hidden;border:1px solid var(--line);border-radius:12px;padding:0;background:var(--surface);color:var(--ink);width:min(720px,calc(100vw - 32px));max-height:calc(100vh - 48px)}
+dialog::backdrop{background:rgba(10,20,22,.45)}
+.dlg{padding:20px;display:grid;gap:14px}
+.form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form .full{grid-column:1/-1}
+.form label{display:grid;gap:4px;font-size:12.5px;color:var(--muted);min-width:0}
+.form input:not([type=checkbox]),.form select{width:100%}
+.form .cl-row input[type=text]{width:auto;flex:1 1 auto;min-width:0}
+.form .cl-row input[type=date]{width:auto;flex:none}
+.form .cl-row input[type=checkbox]{flex:none;width:18px;height:18px;margin:0}
+.dlg-h{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.dlg-x{border:1px solid var(--line);background:var(--surface);border-radius:8px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;font-size:20px;line-height:1;color:var(--muted);flex:none}
+.dlg-x:hover{color:var(--ink);border-color:var(--muted)}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.pick{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 12px 4px 8px;cursor:pointer;font-size:14px;color:var(--ink);background:var(--surface)}
+.pick input{width:16px;height:16px;margin:0;accent-color:var(--accent)}
+.pick:has(input:checked){background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:500}
+.prow{display:grid;grid-template-columns:150px minmax(0,170px) minmax(0,1fr);gap:8px;align-items:center}
+.prow .pick{justify-content:flex-start}
+.prow input[type=date],.prow input[type=url]{width:100%}
+@media (max-width:560px){.prow{grid-template-columns:1fr 1fr}.prow .pick{grid-column:1/-1;justify-self:start}}
+.form fieldset{grid-column:1/-1;border:1px solid var(--line);border-radius:8px;padding:12px;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.form legend{font:600 13px var(--f-display);color:var(--ink);padding:0 6px}
+@media (max-width:560px){.form,.form fieldset{grid-template-columns:minmax(0,1fr)}}
+.cl{display:grid;gap:6px}
+.cl-row{display:flex;gap:8px;align-items:center}
+.cl-row input[type=text]{flex:1}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px}
+.log li{display:flex;gap:10px;align-items:baseline}
+.dlg-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dlg-f .sp{margin-right:auto}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:8px;font-size:14px;z-index:20;max-width:calc(100vw - 32px)}
+@media (prefers-reduced-motion:no-preference){.card,.chip,.alist li{transition:background .12s}}
+.dlg{grid-template-columns:minmax(0,1fr)}
+.dlg>*{min-width:0}
+.form fieldset{min-width:0;min-inline-size:0}
+.form label.pick,.form label.chk{display:inline-flex;align-items:center;gap:6px}
+.form label.chk{font-size:14px;color:var(--ink)}
+.form label.pick input,.form label.chk input{width:16px;height:16px;margin:0;flex:none}
+.cl-row.fu{flex-wrap:wrap}
+.cl-row.fu #fuNote{flex:1 1 160px}
+.cl-row .btn{white-space:nowrap}
+.board-h .hint{flex:1 1 220px;min-width:0}
+.att{display:grid;gap:8px}
+.att-i{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--surface)}
+.att-th{width:64px;height:64px;border-radius:6px;background:var(--sunk);display:grid;place-items:center;overflow:hidden;font:600 12px var(--f-mono);color:var(--muted);text-decoration:none}
+.att-th img,.att-th video{width:100%;height:100%;object-fit:cover;display:block}
+.att-b{display:grid;gap:3px;min-width:0}
+.att-b input{width:100%;min-height:32px;padding:4px 8px}
+.att-b .nm{overflow-wrap:anywhere;font-size:14px}
+.att-b .mt{font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.upl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.upl label.btn{display:inline-flex;align-items:center;cursor:pointer}
+.upl .pickbtn{position:relative;overflow:hidden;display:inline-flex;align-items:center;cursor:pointer}
+.upl .pickbtn input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px}
+.upl .pickbtn:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.thumbs{display:flex;gap:4px;flex-wrap:wrap}
+.thumbs button{width:44px;height:44px;padding:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--sunk);cursor:zoom-in;display:grid;place-items:center;font:600 10px var(--f-mono);color:var(--muted)}
+.thumbs button img,.thumbs button video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.att-th{border:0;padding:0;cursor:zoom-in}
+.att-b .mt button{border:0;background:none;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit}
+#viewer{width:min(1100px,calc(100vw - 24px));max-width:100%;height:min(92vh,900px);max-height:100%;padding:0;background:#0d1214;color:#e9efee;border:0;border-radius:12px;overflow:hidden}
+#viewer::backdrop{background:rgba(5,10,12,.8)}
+.vw{display:grid;grid-template-rows:auto minmax(0,1fr);height:100%}
+.vw-h{display:flex;align-items:center;gap:8px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top,0px));border-bottom:1px solid #26302f;flex-wrap:wrap}
+.vw-h .nm{flex:1 1 160px;min-width:0;overflow-wrap:anywhere;font-size:14px}
+.vw-h .nm small{display:block;color:#9fb0ae;font-size:12px}
+.vw-h button{background:#1c2626;color:#e9efee;border:1px solid #33403f;border-radius:8px;min-height:36px;padding:4px 12px;cursor:pointer;font:inherit}
+.vw-b{position:relative;display:grid;place-items:center;overflow:auto;min-height:0;padding:12px}
+.vw-b img,.vw-b video{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.vw-b .pdf{display:grid;gap:12px;justify-items:center;align-self:start;width:100%}
+.vw-b .pdf canvas{max-width:100%;height:auto;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.vw-b pre{white-space:pre-wrap;align-self:start;width:100%;font:13px/1.5 var(--f-mono);color:#e9efee}
+.vw-b .msg{color:#9fb0ae;text-align:center;max-width:46ch}
+.vw-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:8px;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:28px;cursor:pointer}
+.vw-nav.prev{left:8px}.vw-nav.next{right:8px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.gal-i{display:grid;gap:4px;min-width:0}
+.gal-i>.gal-th{aspect-ratio:1;width:100%;max-width:100%;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--sunk);padding:0;cursor:zoom-in;display:grid;place-items:center;font:600 14px var(--f-mono);color:var(--muted)}
+.gal-i>.gal-th img,.gal-i>.gal-th video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.gal-i .nm{font-size:13px;overflow-wrap:anywhere}
+.gal-i .it{font-size:12px;color:var(--muted);border:0;background:none;padding:0;text-align:left;cursor:pointer;text-decoration:underline;overflow-wrap:anywhere}
+@media (max-width:640px){#viewer{width:100%;height:100%;border-radius:0}}
+.busy{font-size:13px;color:var(--info);background:var(--info-soft);padding:6px 10px;border-radius:6px}
+.errs{font-size:13px;color:var(--danger);background:var(--danger-soft);padding:6px 10px;border-radius:6px;margin:0;list-style:none;display:grid;gap:2px}
+.lk-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:6px;align-items:center}
+@media (max-width:560px){.lk-row{grid-template-columns:minmax(0,1fr) auto}.lk-row input[data-lurl]{grid-column:1/-1;grid-row:2}}
+.store{display:grid;gap:8px;max-width:560px}
+@media (max-width:560px){.prow .nopost{display:none}.prow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.form>*{min-width:0}
+.dlg-h{position:sticky;top:0;z-index:3;background:var(--surface);margin:-20px -20px 0;padding:12px 20px;border-bottom:1px solid var(--line)}
+.seg{display:flex;max-width:100%}
+.seg button{flex:1 1 auto}
+.only-narrow{display:none!important}
+#fBtn{display:none}
+.mlist{display:grid;gap:8px}
+.mitem{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:6px;cursor:pointer}
+.mitem.closed .ct{color:var(--done);text-decoration:line-through}
+.mitem.overdue{border-left:3px solid var(--danger)}
+.mitem .ct{font-weight:500;overflow-wrap:anywhere}
+.mitem .meta{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--muted);font-size:12.5px;align-items:center}
+.mitem .act{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mitem select{min-height:34px;font-size:13px;max-width:100%}
+.agenda{display:grid;gap:10px}
+.agenda .ad{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;align-items:start}
+.agenda .ad-d{text-align:center;border-radius:8px;padding:4px 0;background:var(--sunk)}
+.agenda .ad-d b{display:block;font:600 20px/1.1 var(--f-display)}
+.agenda .ad-d span{font-size:11.5px;color:var(--muted)}
+.agenda .ad.today .ad-d{background:var(--accent);color:var(--accent-ink)}
+.agenda .ad.today .ad-d span{color:var(--accent-ink)}
+.agenda .chip{white-space:normal}
+@media (max-width:640px){
+  .only-wide{display:none!important}
+  span.only-narrow,p.only-narrow,div.only-narrow{display:block!important}
+  .mlist.only-narrow,.agenda.only-narrow{display:grid!important}
+  select.only-narrow{display:inline-block!important}
+  #fBtn{display:inline-flex}
+  .filters:not(.open){display:none}
+  .bar{padding-block:10px 0}
+  .brand{font-size:18px}
+  .board{grid-auto-columns:82%;scroll-snap-type:x mandatory}
+  .col{scroll-snap-align:start}
+  .card{cursor:pointer}
+  dialog{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border:0;border-radius:0}
+  .dlg{padding:0 16px calc(16px + env(safe-area-inset-bottom,0px))}
+  .dlg-h{margin:0 -16px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+  .dlg-f{position:sticky;bottom:0;background:var(--surface);padding-block:10px;border-top:1px solid var(--line);margin:0 -16px;padding-inline:16px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stat b{font-size:24px}
+}
+.login{min-height:80vh;display:grid;place-items:center;padding:24px 16px}
+.login form{width:min(380px,100%);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:12px}
+.login label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.login input{width:100%}
+.login .err{color:var(--danger);font-size:13.5px;margin:0}
+.setup{max-width:640px;margin:40px auto;padding:0 16px}
+.setup code{font-family:var(--f-mono);background:var(--sunk);padding:1px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="login" id="login" hidden>
+  <form id="loginForm" autocomplete="on">
+    <h2 style="margin:0">บอร์ดงานทีม</h2>
+    <p class="muted" style="margin:0;font-size:14px">เข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ผู้ดูแลสร้างให้</p>
+    <label for="lgEmail">อีเมล<input type="email" id="lgEmail" autocomplete="username" required></label>
+    <label for="lgPass">รหัสผ่าน<input type="password" id="lgPass" autocomplete="current-password" required></label>
+    <p class="err" id="lgErr" hidden></p>
+    <button class="btn primary" type="submit" id="lgBtn">เข้าสู่ระบบ</button>
+    <p class="muted" style="margin:0;font-size:12.5px">ลืมรหัสผ่าน ให้แจ้งผู้ดูแลบอร์ดตั้งรหัสใหม่ให้</p>
+  </form>
+</div>
+<div id="app">
+<header class="top">
+  <div class="wrap">
+    <div class="bar">
+      <div class="brand">บอร์ดงานทีม <small id="who"></small></div>
+      <button class="btn" id="fBtn" type="button" aria-expanded="false" aria-controls="filters">ตัวกรอง</button>
+      <button class="btn primary" id="addBtn" type="button">+ เพิ่มเรื่อง</button>
+      <button class="btn ghost sm" id="logoutBtn" type="button" hidden>ออกจากระบบ</button>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+  <div class="wrap">
+    <div class="filters" id="filters">
+      <input type="search" id="fq" placeholder="ค้นหาเรื่อง / จุด / เลขหนังสือ" aria-label="ค้นหา">
+      <select id="ft" aria-label="ประเภท"></select>
+      <select id="fa" aria-label="ผู้รับผิดชอบ"></select>
+      <select id="fp" aria-label="โครงการ"></select>
+      <select id="fr" aria-label="พื้นที่"></select>
+      <label class="chk"><input type="checkbox" id="fh"> ซ่อนเรื่องที่ปิดแล้ว</label>
+    </div>
+  </div>
+</header>
+
+<main class="wrap" id="main"></main>
+
+<dialog id="dlg"><form class="dlg" id="tf" method="dialog"></form></dialog>
+<dialog id="viewer" aria-label="ดูไฟล์"><div class="vw" id="vw"></div></dialog>
+<div class="toast" id="toast" hidden></div>
+</div>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.10/dist/umd/supabase.js"></script>
+<script>
+(() => {
+"use strict";
+/* ---------- workflows: owner = team | agency | done | cancel | hold ; reject marks a send-back ---------- */
+const TYPES = {
+  letter: { label: "เรื่องส่งหนังสือ", short: "หนังสือ", stages: [
+    ["intake", "รับเรื่อง/สำรวจ", "team"], ["gather", "รวบรวมข้อมูล", "team"], ["draft", "ร่างหนังสือ", "team"],
+    ["sign", "รอ ส.ก. ลงนาม", "team"], ["sent", "ส่งแล้ว รอหน่วยงาน", "agency"], ["acting", "หน่วยงานรับเรื่อง/กำลังแก้", "agency"],
+    ["escalate", "ยกระดับในสภา", "team"], ["resolved", "แก้ไขแล้ว ปิดเรื่อง", "done"], ["unresolved", "ไม่ได้รับการแก้ไข ปิดเรื่อง", "done"],
+    ["cancel", "ยกเลิก", "cancel"]] },
+  task: { label: "งานทั่วไป", short: "งาน", stages: [
+    ["todo", "รอดำเนินการ", "team"], ["doing", "กำลังทำ", "team"], ["review", "รอตรวจ", "team"], ["rework", "ถูกตีกลับ", "team", 1],
+    ["hold", "พักไว้ก่อน", "hold"], ["done", "เสร็จแล้ว", "done"], ["cancel", "ยกเลิก", "cancel"]] },
+  event: { label: "กิจกรรม", short: "กิจกรรม", stages: [
+    ["plan", "วางแผน", "team"], ["prep", "เตรียมงาน", "team"], ["ready", "พร้อมจัด", "team"], ["held", "จัดแล้ว รอสรุป", "team"],
+    ["done", "สรุปผลแล้ว", "done"], ["hold", "เลื่อน/พักไว้", "hold"], ["cancel", "ยกเลิก", "cancel"]] },
+  content: { label: "คอนเทนต์/คลิป", short: "คอนเทนต์", stages: [
+    ["idea", "ไอเดีย", "team"], ["shoot", "ถ่ายทำ/เก็บภาพ", "team"], ["edit", "ตัดต่อ/ทำกราฟิก", "team"], ["review", "รอตรวจ", "team"],
+    ["rework", "ถูกตีกลับ", "team", 1], ["posted", "โพสต์แล้ว", "done"], ["cancel", "ยกเลิก", "cancel"]] }
+};
+const TYPE_KEYS = ["letter", "task", "event", "content"];
+const PLATFORMS = ["TikTok", "Facebook", "Instagram", "YouTube", "LINE", "X"];
+const DEFAULT_CFG = {
+  projects: [], categories: ["งานเอกสาร", "ออกแบบ", "ประสานงาน", "ลงพื้นที่", "การเงิน", "คลิป"], assignees: [],
+  areas: ["แขวงบางซื่อ", "แขวงวงศ์สว่าง", "นอกเขต"],
+  agencies: ["สำนักงานเขตบางซื่อ", "สำนักการจราจรและขนส่ง (สจส.)", "สำนักการโยธา", "สำนักอนามัย", "สำนักงาน กสทช.", "ขสมก.", "การไฟฟ้านครหลวง", "การประปานครหลวง"],
+  followupDays: 15, weekStart: "mon", weights: { done: 50, ontime: 50 }
+};
+const STAGE_COLORS = ["#7d8a8f", "#c58a14", "#2f7fbf", "#8a6fb8", "#235b8f", "#4f9aa0", "#c0453b", "#1d8a68", "#9aa3a6", "#b0b7bb"];
+const TABS = [["home", "ภาพรวม"], ["table", "รายการเรื่อง"], ["board", "บอร์ด"], ["follow", "ติดตามหนังสือ"], ["cal", "ปฏิทิน"],
+  ["matrix", "จัดลำดับ"], ["files", "ไฟล์แนบ"], ["report", "สรุปผลงาน"], ["kpi", "ประเมินทีม"], ["settings", "ตั้งค่า"]];
+const TMON = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+const TMON_FULL = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+const DOW = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+
+const S = { cfg: structuredClone(DEFAULT_CFG), items: [], view: "home", sort: "due", boardType: "letter", calY: 0, calM: 0,
+  from: "", to: "", filters: { t: "", a: "", p: "", r: "", h: false }, canWrite: true, myId: null, names: {}, user: null };
+const $ = s => document.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { if (!s) return null; const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const todayISO = () => iso(new Date());
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const diffDays = (a, b) => Math.round((parse(a) - parse(b)) / 864e5);
+const fmtD = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]}` : ""; };
+const fmtDY = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]} ${String(d.getFullYear() + 543).slice(2)}` : ""; };
+const store = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const recall = k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
+const safeUrl = u => /^https:\/\//i.test(u || "") ? u : "";
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 2600); }
+
+/* ---------- item helpers ---------- */
+const typeOf = t => TYPES[t.type] ? t.type : "task";
+const byAttr = (k, v) => [...document.querySelectorAll(`[${k}]`)].find(e => e.getAttribute(k) === v);
+const who = t => Array.isArray(t.assignees) ? t.assignees : (t.assignee ? [t.assignee] : []);
+const whoTxt = t => who(t).join(", ");
+const postsOf = t => Array.isArray(t.posts) ? t.posts : (t.platform ? [{ platform: t.platform, date: t.postDate || "", url: t.postUrl || "" }] : []);
+const stages = type => TYPES[type].stages;
+const stageOf = t => stages(typeOf(t)).find(s => s[0] === t.status) || stages(typeOf(t))[0];
+const ownerOf = t => stageOf(t)[2];
+const stageLabel = t => stageOf(t)[1];
+const stageColor = t => STAGE_COLORS[Math.max(0, stages(typeOf(t)).indexOf(stageOf(t))) % STAGE_COLORS.length];
+const isClosed = t => ["done", "cancel"].includes(ownerOf(t));
+const isTeamOpen = t => ownerOf(t) === "team";
+const isAgency = t => ownerOf(t) === "agency";
+const teamDone = t => ["agency", "done"].includes(ownerOf(t));
+const teamDoneDate = t => typeOf(t) === "letter" ? (t.letterDate || t.doneAt || "") : (t.doneAt || "");
+function bucket(t) {
+  if (!t.due || !isTeamOpen(t)) return "";
+  const d = diffDays(t.due, todayISO());
+  if (d < 0) return "over"; if (d === 0) return "today"; if (d === 1) return "tmr"; if (d <= 7) return "week"; return "";
+}
+function whenTag(t) {
+  const b = bucket(t);
+  if (!b) return t.due && isTeamOpen(t) ? `<span class="when plain">${fmtD(t.due)}</span>` : "";
+  const d = diffDays(t.due, todayISO());
+  const txt = b === "over" ? `เลย ${-d} วัน` : b === "today" ? "วันนี้" : b === "tmr" ? "พรุ่งนี้" : `อีก ${d} วัน`;
+  return `<span class="when ${b}">${txt}</span>`;
+}
+const waitDays = t => t.letterDate ? diffDays(todayISO(), t.letterDate) : null;
+const followDue = t => isAgency(t) && t.followUpDate && t.followUpDate <= todayISO();
+const tyBadge = t => `<span class="ty ${typeOf(t)}">${TYPES[typeOf(t)].short}</span>`;
+const pill = t => `<span class="pill"><i style="background:${stageColor(t)}"></i>${esc(stageLabel(t))}</span>`;
+const flags = t => `<span class="flags">${t.important ? '<span class="flag imp">สำคัญ</span>' : ""}${t.urgent ? '<span class="flag urg">ด่วน</span>' : ""}</span>`;
+const quad = t => t.important && t.urgent ? "q1" : t.important ? "q2" : t.urgent ? "q3" : "q4";
+const BUCKET = "attachments";
+const FREE_STORAGE = 1024 * 1024 * 1024;
+const OK_TYPES = new Set(["image/png", "image/jpeg", "image/gif", "image/webp", "video/mp4", "video/webm", "application/pdf"]);
+const EXT_TYPES = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", gif: "image/gif", webp: "image/webp", mp4: "video/mp4", webm: "video/webm", pdf: "application/pdf",
+  csv: "text/csv", txt: "text/plain", md: "text/markdown", json: "application/json" };
+const MAX_FILE = 50 * 1024 * 1024;
+function fileType(f) {
+  const ext = (f.name.split(".").pop() || "").toLowerCase();
+  if (["csv", "txt", "md", "json"].includes(ext)) return EXT_TYPES[ext];
+  return f.type || EXT_TYPES[ext] || "application/octet-stream";
+}
+const fmtSize = n => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(n / 1024)) + " KB";
+/* signed URLs for private files (valid 1 hour, cached) */
+const URLS = new Map();
+const blobUrl = id => { const c = URLS.get(id); return c && c.exp > Date.now() ? c.url : ""; };
+async function signUrls(ids) {
+  const need = [...new Set(ids)].filter(id => id && !blobUrl(id));
+  if (!need.length || !SB) return;
+  for (let i = 0; i < need.length; i += 100) {
+    const { data } = await SB.storage.from(BUCKET).createSignedUrls(need.slice(i, i + 100), 3600);
+    (data || []).forEach(x => { if (x.signedUrl && x.path) URLS.set(x.path, { url: x.signedUrl, exp: Date.now() + 3300e3 }); });
+  }
+}
+async function getUrl(id) { await signUrls([id]); return blobUrl(id); }
+async function hydrate(root = document) {
+  const els = [...root.querySelectorAll("[data-aid]")]; if (!els.length) return;
+  try { await signUrls(els.map(e => e.dataset.aid)); } catch { return; }
+  els.forEach(e => { const u = blobUrl(e.dataset.aid); if (u) { e.src = e.tagName === "VIDEO" ? u + "#t=0.1" : u; e.removeAttribute("data-aid"); } });
+}
+function assetErr(e) {
+  const c = e && e.code;
+  return { too_large: "ไฟล์ใหญ่เกิน 50 MB", unsupported_type: "ไม่รองรับไฟล์ประเภทนี้", quota_or_state: "พื้นที่เก็บไฟล์ของบอร์ดเต็มหรือยังไม่พร้อม",
+    rate_limited: "อัปโหลดถี่เกินไป รอสักครู่แล้วลองใหม่", not_uploader: "ลบได้เฉพาะไฟล์ที่คุณอัปโหลดเอง ให้เจ้าของบอร์ดหรือคนที่อัปโหลดเป็นคนลบ",
+    upstream_auth: "ระบบยืนยันตัวตนไม่ผ่าน ลองโหลดหน้าใหม่", not_granted: "บัญชีนี้ไม่มีสิทธิ์จัดการไฟล์", store_unavailable: "ระบบเก็บไฟล์ขัดข้องชั่วคราว ลองใหม่" }[c] || "ทำรายการไม่สำเร็จ ลองใหม่";
+}
+const attOf = t => Array.isArray(t.attachments) ? t.attachments : [];
+const linksOf = t => Array.isArray(t.links) ? t.links : [];
+const attCount = t => { const n = attOf(t).length + linksOf(t).length; return n ? `<span class="prog">ไฟล์ ${n}</span>` : ""; };
+const isMedia = a => /^(image|video)\//.test(a.type || "");
+function thumbHtml(a) {
+  const k = (a.type || "").split("/")[0], previewable = /^image\/(png|jpeg|gif|webp|svg\+xml|avif)$/.test(a.type || "");
+  return previewable ? `<img data-aid="${esc(a.id)}" alt="" loading="lazy">` : k === "video" && a.type !== "video/quicktime" ? `<video data-aid="${esc(a.id)}" preload="metadata" muted playsinline></video>`
+    : esc(a.type === "application/pdf" ? "PDF" : ((a.name || "").split(".").pop() || "ไฟล์").toUpperCase().slice(0, 4));
+}
+function thumbs(t) {
+  const fs = attOf(t); if (!fs.length) return "";
+  const show = fs.slice(0, 4);
+  return `<span class="thumbs">${show.map((a, i) => `<button type="button" data-view="${t.id}" data-vi="${i}" aria-label="ดู ${esc(a.name)}">${thumbHtml(a)}</button>`).join("")}${fs.length > 4 ? `<button type="button" data-view="${t.id}" data-vi="4" aria-label="ดูไฟล์ทั้งหมด">+${fs.length - 4}</button>` : ""}</span>`;
+}
+/* ---------- file viewer ---------- */
+const V = { list: [], i: 0, tok: 0 };
+function openViewer(list, i) { if (!list.length) return; V.list = list; V.i = Math.max(0, Math.min(i, list.length - 1)); drawViewer(); const d = $("#viewer"); if (!d.open) d.showModal(); }
+function drawViewer() {
+  const a = V.list[V.i], k = (a.type || "").split("/")[0], tok = ++V.tok;
+  const many = V.list.length > 1, isText = /^(text\/|application\/json)/.test(a.type || "");
+  let body;
+  if (k === "image") body = `<img data-aid="${esc(a.id)}" alt="${esc(a.name)}">`;
+  else if (k === "video") body = `<video data-aid="${esc(a.id)}" controls playsinline preload="metadata"></video>`;
+  else if (a.type === "application/pdf") body = `<div class="pdf" id="pdfBox"><p class="msg">กำลังเปิด PDF…</p></div>`;
+  else if (isText) body = `<pre id="txtBox">กำลังโหลด…</pre>`;
+  else body = `<p class="msg">ไฟล์ชนิดนี้ (${esc(((a.name || "").split(".").pop() || "").toUpperCase())}) แสดงในหน้าเว็บไม่ได้ กด "ดาวน์โหลด" ด้านบนเพื่อเปิดด้วยแอปในเครื่อง</p>`;
+  $("#vw").innerHTML = `<div class="vw-h"><div class="nm">${esc(a.name)}<small>${fmtSize(a.size || 0)}${a.item ? " · " + esc(a.item) : ""}${many ? ` · ${V.i + 1}/${V.list.length}` : ""}</small></div>
+    ${S.downloads ? `<button type="button" id="vwSave">ดาวน์โหลด</button>` : ""}<button type="button" id="vwX" aria-label="ปิด">✕ ปิด</button></div>
+    <div class="vw-b">${body}${many ? `<button class="vw-nav prev" type="button" id="vwPrev" aria-label="ก่อนหน้า">‹</button><button class="vw-nav next" type="button" id="vwNext" aria-label="ถัดไป">›</button>` : ""}</div>`;
+  $("#vwX").onclick = () => $("#viewer").close();
+  if (many) { $("#vwPrev").onclick = () => step(-1); $("#vwNext").onclick = () => step(1); }
+  const sv = $("#vwSave"); if (sv) sv.onclick = () => saveFile(a, sv);
+  hydrate($("#vw"));
+  if (a.type === "application/pdf") getUrl(a.id).then(u => renderPdf(u, tok));
+  else if (isText) getUrl(a.id).then(u => fetch(u)).then(r => r.ok ? r.text() : Promise.reject()).then(tx => { if (tok === V.tok) $("#txtBox").textContent = tx.slice(0, 200000); })
+    .catch(() => { if (tok === V.tok) $("#txtBox").textContent = "เปิดไฟล์นี้ไม่ได้"; });
+}
+function step(n) { V.i = (V.i + n + V.list.length) % V.list.length; drawViewer(); }
+$("#viewer").addEventListener("keydown", e => { if (V.list.length > 1 && e.key === "ArrowRight") step(1); if (V.list.length > 1 && e.key === "ArrowLeft") step(-1); });
+$("#viewer").addEventListener("close", () => { V.tok++; $("#vw").innerHTML = ""; });
+async function saveFile(a, btn) {
+  btn.disabled = true;
+  try {
+    let name = a.name || "file"; const ext = Object.keys(EXT_TYPES).find(k => EXT_TYPES[k] === a.type) || (a.id.split(".").pop() || "");
+    if (!/\.[a-z0-9]{2,5}$/i.test(name) && ext) name += "." + ext;
+    const { data, error } = await SB.storage.from(BUCKET).createSignedUrl(a.id, 120, { download: name });
+    if (error || !data) throw error;
+    const link = document.createElement("a"); link.href = data.signedUrl; link.rel = "noopener"; document.body.appendChild(link); link.click(); link.remove();
+  } catch { toast("ดาวน์โหลดไม่สำเร็จ ลองใหม่"); }
+  btn.disabled = false;
+}
+let pdfLib = null;
+function loadPdfJs() {
+  if (pdfLib) return pdfLib;
+  pdfLib = new Promise((res, rej) => {
+    const sc = document.createElement("script");
+    sc.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    sc.onload = () => { const L = window.pdfjsLib || window["pdfjs-dist/build/pdf"]; if (!L) return rej(); L.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; res(L); };
+    sc.onerror = rej; document.head.appendChild(sc);
+  });
+  pdfLib.catch(() => { pdfLib = null; });
+  return pdfLib;
+}
+async function renderPdf(u, tok) {
+  const box = () => tok === V.tok ? $("#pdfBox") : null;
+  try {
+    const [L, buf] = await Promise.all([loadPdfJs(), fetch(u).then(r => r.ok ? r.arrayBuffer() : Promise.reject())]);
+    const doc = await L.getDocument({ data: buf, isEvalSupported: false }).promise;
+    if (!box()) return;
+    box().innerHTML = "";
+    const maxPages = Math.min(doc.numPages, 30);
+    for (let n = 1; n <= maxPages; n++) {
+      const page = await doc.getPage(n); if (!box()) return;
+      const w = Math.min(box().clientWidth || 800, 1000), vp0 = page.getViewport({ scale: 1 }), scale = (w / vp0.width) * (window.devicePixelRatio || 1);
+      const vp = page.getViewport({ scale }), cv = document.createElement("canvas");
+      cv.width = vp.width; cv.height = vp.height; cv.style.width = Math.round(vp.width / (window.devicePixelRatio || 1)) + "px";
+      box().appendChild(cv);
+      await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+    }
+    if (doc.numPages > maxPages && box()) box().insertAdjacentHTML("beforeend", `<p class="msg">แสดง ${maxPages} จาก ${doc.numPages} หน้า กดดาวน์โหลดเพื่อดูทั้งหมด</p>`);
+  } catch {
+    if (box()) box().innerHTML = `<p class="msg">เปิด PDF ในหน้านี้ไม่ได้ กดปุ่ม "ดาวน์โหลด" ด้านบนเพื่อเปิดด้วยแอปในเครื่อง</p>`;
+  }
+}
+function vFiles() {
+  const L = filtered({ keepClosed: true });
+  const all = L.flatMap(t => attOf(t).map(a => ({ ...a, item: t.title, itemId: t.id }))).sort((a, b) => (b.at || "") < (a.at || "") ? -1 : 1);
+  const lk = L.flatMap(t => linksOf(t).map(l => ({ ...l, item: t.title, itemId: t.id })));
+  S.gallery = all;
+  return `<h2>ไฟล์แนบทั้งหมด <span class="muted mono" style="font-size:14px">${all.length}</span></h2>
+  <p class="hint">ไฟล์จากทุกเรื่อง เรียงจากล่าสุด · ใช้ตัวกรองด้านบนเลือกโครงการ/คน/พื้นที่ได้ · กดภาพเพื่อดูขนาดเต็ม · แนบไฟล์เพิ่มได้ในหน้าแก้ไขเรื่อง</p>
+  ${all.length ? `<div class="gal">${all.map((a, i) => `<div class="gal-i"><button class="gal-th" type="button" data-gview="${i}" aria-label="ดู ${esc(a.name)}">${thumbHtml(a)}</button><span class="nm">${esc(a.name)}</span><button class="it" type="button" data-open="${a.itemId}">${esc(a.item)}</button></div>`).join("")}</div>`
+    : `<div class="empty">ยังไม่มีไฟล์แนบ เปิดเรื่องที่ต้องการ แล้วกด "+ แนบไฟล์"</div>`}
+  ${lk.length ? `<h3 style="margin-top:24px">ลิงก์ไฟล์ภายนอก <span class="muted mono">${lk.length}</span></h3><ul class="alist">${lk.map(l => `<li>${safeUrl(l.url) ? `<a class="t" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">${esc(l.name || l.url)}</a>` : `<span class="t">${esc(l.name)}</span>`}<button class="it muted" type="button" data-open="${l.itemId}" style="border:0;background:none;cursor:pointer;text-decoration:underline">${esc(l.item)}</button></li>`).join("")}</ul>` : ""}`;
+}
+const prog = t => { const c = t.checklist || []; return c.length ? `<span class="prog">✓ ${c.filter(x => x.done).length}/${c.length}</span>` : ""; };
+const byDue = (a, b) => (a.due || "9999") < (b.due || "9999") ? -1 : (a.due || "9999") > (b.due || "9999") ? 1 : 0;
+const opts = (list, cur, blank) => (blank !== undefined ? `<option value="">${blank}</option>` : "") + list.map(v => `<option${v === cur ? " selected" : ""}>${esc(v)}</option>`).join("");
+const stageOpts = (type, cur) => stages(type).map(s => `<option value="${s[0]}"${s[0] === cur ? " selected" : ""}>${esc(s[1])}</option>`).join("");
+
+function filtered({ keepClosed = false, ignoreType = false } = {}) {
+  const q = $("#fq").value.trim().toLowerCase(), { t, a, p, r, h } = S.filters;
+  return S.items.filter(x =>
+    (!q || [x.title, x.note, x.location, x.letterNo, x.agency, x.traffyId, whoTxt(x), ...attOf(x).map(a => a.name), ...linksOf(x).map(l => l.name)].join(" ").toLowerCase().includes(q)) &&
+    (ignoreType || !t || typeOf(x) === t) && (!a || who(x).includes(a)) && (!p || x.project === p) && (!r || x.area === r) &&
+    (keepClosed || !h || !isClosed(x)));
+}
+
+/* ---------- automatic fields when the stage changes ---------- */
+function autoPatch(t, next) {
+  const type = next.type || typeOf(t);
+  const st = stages(type).find(s => s[0] === (next.status ?? t.status));
+  const p = { ...next };
+  const changed = (next.status !== undefined && next.status !== t.status) || (next.type !== undefined && t.type !== undefined && next.type !== t.type);
+  if (!st || !changed) return p;
+  const val = k => p[k] !== undefined ? p[k] : t[k];
+  const today = todayISO();
+  if (st[2] === "agency" && type === "letter") {
+    if (!val("letterDate")) p.letterDate = today;
+    if (!val("followUpDate")) p.followUpDate = addDays(val("letterDate"), +S.cfg.followupDays || 15);
+  }
+  if (st[0] === "acting" && !val("replyDate")) p.replyDate = today;
+  if (st[2] === "done" && !val("doneAt")) p.doneAt = today;
+  if (st[3]) p.rejectCount = (t.rejectCount || 0) + 1;
+  return p;
+}
+
+/* ---------- data layer ---------- */
+let api = null;
+function memoryApi() {
+  let items = [], cfg = null, icb = () => {}, ccb = () => {};
+  const emit = () => icb(items.map(t => ({ ...t })));
+  return {
+    subItems(cb) { icb = cb; emit(); }, subCfg(cb) { ccb = cb; cb(cfg); },
+    async add(d) { items.push({ ...d, id: "m" + Math.random().toString(36).slice(2) }); emit(); },
+    async save(id, d) { items = items.map(t => t.id === id ? { ...t, ...d } : t); emit(); },
+    async del(id) { items = items.filter(t => t.id !== id); emit(); },
+    async saveCfg(c) { cfg = c; ccb(cfg); }
+  };
+}
+let SB = null;
+function sbErr(error) {
+  const st = +(error && (error.status || error.statusCode)) || 0, code = error && error.code;
+  if (code === "42501" || st === 401 || st === 403) return { code: "invalid_argument", message: error.message };
+  if (st === 413) return { code: "too_large", message: error.message };
+  return { code: "upstream_error", message: (error && error.message) || "" };
+}
+function sbApi() {
+  const map = new Map(); let icb = () => {}, ccb = () => {};
+  const emit = () => icb([...map.values()]);
+  const put = row => map.set(row.id, { ...(row.data || {}), id: row.id });
+  async function loadAll() {
+    const all = []; let from = 0;
+    for (;;) {
+      const { data, error } = await SB.from("tasks").select("id,data").order("created_at").range(from, from + 999);
+      if (error) { showBanner("โหลดข้อมูลไม่สำเร็จ: " + error.message); return; }
+      all.push(...data); if (data.length < 1000) break; from += 1000;
+    }
+    map.clear(); all.forEach(put); emit();
+  }
+  async function loadCfg() { const { data } = await SB.from("config").select("data").eq("id", "main").maybeSingle(); ccb(data ? data.data : null); }
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { loadAll(); loadCfg(); } });
+  return {
+    subItems(cb) {
+      icb = cb; loadAll();
+      SB.channel("tasks-live").on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, p => {
+        if (p.eventType === "DELETE") map.delete(p.old.id); else put(p.new); emit();
+      }).subscribe(st => { if (st === "CHANNEL_ERROR" || st === "TIMED_OUT") showBanner("การอัปเดตอัตโนมัติขาดหาย กดรีเฟรชหน้าเพื่อดูข้อมูลล่าสุด"); if (st === "SUBSCRIBED") loadAll(); });
+    },
+    subCfg(cb) {
+      ccb = cb; loadCfg();
+      SB.channel("config-live").on("postgres_changes", { event: "*", schema: "public", table: "config" }, p => { if (p.new && p.new.id === "main") ccb(p.new.data); }).subscribe();
+    },
+    async add(d) { const { data, error } = await SB.from("tasks").insert({ data: d }).select("id,data").single(); if (error) throw sbErr(error); put(data); emit(); },
+    async save(id, d) { const { error } = await SB.rpc("patch_task", { p_id: id, p_patch: d }); if (error) throw sbErr(error); const cur = map.get(id); if (cur) { map.set(id, { ...cur, ...d, id }); emit(); } },
+    async del(id) { const { error } = await SB.from("tasks").delete().eq("id", id); if (error) throw sbErr(error); map.delete(id); emit(); },
+    async saveCfg(c) { const { error } = await SB.from("config").upsert({ id: "main", data: c, updated_at: new Date().toISOString() }); if (error) throw sbErr(error); ccb(c); },
+    async importAll(cfg, tasks) {
+      if (cfg) { const { error } = await SB.from("config").upsert({ id: "main", data: cfg }); if (error) throw sbErr(error); }
+      for (let i = 0; i < tasks.length; i += 200) {
+        const rows = tasks.slice(i, i + 200).map(t => { const { id, ...data } = t; return { id: String(id), data }; });
+        const { error } = await SB.from("tasks").upsert(rows); if (error) throw sbErr(error);
+      }
+      await loadAll(); await loadCfg();
+    }
+  };
+}
+function sbAssets() {
+  return {
+    async upload(file, { type }) {
+      const ext = ((file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "") || "bin").slice(0, 8);
+      const path = `${todayISO().slice(0, 7)}/${crypto.randomUUID()}.${ext}`;
+      const { error } = await SB.storage.from(BUCKET).upload(path, file, { contentType: type, upsert: false, cacheControl: "3600" });
+      if (error) throw sbErr(error);
+      return { id: path, contentType: type, sizeBytes: file.size };
+    },
+    async delete(id) { const { error } = await SB.storage.from(BUCKET).remove([id]); if (error) throw sbErr(error); URLS.delete(id); return { deleted: true }; },
+    async list() {
+      const out = [];
+      const { data: top, error } = await SB.storage.from(BUCKET).list("", { limit: 1000 });
+      if (error) throw sbErr(error);
+      for (const f of top || []) {
+        if (f.id) { out.push({ id: f.name, sizeBytes: (f.metadata && f.metadata.size) || 0 }); continue; }
+        for (let off = 0; ; off += 1000) {
+          const { data } = await SB.storage.from(BUCKET).list(f.name, { limit: 1000, offset: off });
+          (data || []).forEach(x => x.id && out.push({ id: f.name + "/" + x.name, sizeBytes: (x.metadata && x.metadata.size) || 0 }));
+          if (!data || data.length < 1000) break;
+        }
+      }
+      return { assets: out, usage: { files: out.length, bytes: out.reduce((s, a) => s + a.sizeBytes, 0), maxBytes: FREE_STORAGE } };
+    }
+  };
+}
+const stamp = d => ({ ...d, updatedAt: new Date().toISOString(), updatedBy: S.myEmail || "" });
+async function write(fn, okMsg) {
+  if (!S.canWrite) { toast("บัญชีนี้มีสิทธิ์ดูอย่างเดียว"); return false; }
+  try { await fn(); if (okMsg) toast(okMsg); return true; }
+  catch (e) {
+    if (e && e.code === "invalid_argument") { S.canWrite = false; applyWriteMode(); toast("บันทึกไม่ได้: ไม่มีสิทธิ์ หรือการล็อกอินหมดอายุ ลองออกจากระบบแล้วเข้าใหม่"); }
+    else if (e && e.code === "quota_exceeded") toast("พื้นที่เก็บข้อมูลเต็ม ลบเรื่องเก่าที่ไม่ใช้แล้วก่อน");
+    else toast("บันทึกไม่สำเร็จ ลองอีกครั้ง");
+    return false;
+  }
+}
+const patchItem = (t, d) => write(() => api.save(t.id, stamp(autoPatch(t, d))));
+function showBanner(msg) { S.bannerMsg = msg; const b = document.getElementById("banner"); if (b) { b.textContent = msg; b.hidden = false; } }
+
+/* ---------- shell ---------- */
+function renderTabs() {
+  const n = S.items.filter(followDue).length;
+  $("#tabs").innerHTML = TABS.map(([k, l]) => `<button class="tab" role="tab" type="button" data-v="${k}" aria-selected="${S.view === k}">${l}${k === "follow" && n ? `<span class="badge">${n}</span>` : ""}</button>`).join("");
+}
+function renderFilters() {
+  const F = S.filters;
+  $("#ft").innerHTML = `<option value="">ทุกประเภท</option>` + TYPE_KEYS.map(k => `<option value="${k}"${F.t === k ? " selected" : ""}>${TYPES[k].label}</option>`).join("");
+  $("#fa").innerHTML = opts(S.cfg.assignees, F.a, "ทุกคน");
+  $("#fp").innerHTML = opts(S.cfg.projects, F.p, "ทุกโครงการ");
+  $("#fr").innerHTML = opts(S.cfg.areas, F.r, "ทุกพื้นที่");
+  $("#fh").checked = !!F.h;
+  $("#filters").hidden = ["settings", "kpi", "report"].includes(S.view);
+  $("#ft").hidden = ["board", "follow"].includes(S.view);
+  const nAct = [F.t, F.a, F.p, F.r, F.h ? "1" : ""].filter(Boolean).length + ($("#fq").value.trim() ? 1 : 0);
+  $("#fBtn").textContent = nAct ? `ตัวกรอง (${nAct})` : "ตัวกรอง";
+  $("#fBtn").hidden = $("#filters").hidden;
+  $("#fBtn").setAttribute("aria-expanded", String(!!S.fOpen));
+  $("#filters").classList.toggle("open", !!S.fOpen);
+}
+function applyWriteMode() { $("#addBtn").hidden = !S.canWrite; }
+function render() {
+  renderTabs(); renderFilters();
+  const views = { files: vFiles, home: vHome, table: vTable, board: vBoard, follow: vFollow, cal: vCal, matrix: vMatrix, report: vReport, kpi: vKpi, settings: vSettings };
+  $("#main").innerHTML = `<div class="banner" id="banner"${S.bannerMsg ? "" : " hidden"}>${esc(S.bannerMsg || "")}</div>` + views[S.view]();
+  if (S.view === "settings") bindSettings();
+  if (S.view === "kpi" || S.view === "report") bindRange();
+  if (S.view === "kpi") bindWeights();
+  if (S.view === "board" || S.view === "matrix") bindDnd();
+  hydrate($("#main"));
+}
+const emptyState = () => `<div class="empty"><h3>ยังไม่มีเรื่องในบอร์ด</h3><p>กด <b>+ เพิ่มเรื่อง</b> แล้วเลือกประเภท: เรื่องส่งหนังสือ งานทั่วไป กิจกรรม หรือคอนเทนต์ ทุกคนที่เปิดลิงก์นี้จะเห็นข้อมูลเดียวกันทันที</p></div>`;
+
+/* ---------- views ---------- */
+function vHome() {
+  if (!S.items.length) return emptyState();
+  const L = filtered({ keepClosed: true });
+  const teamOpen = L.filter(isTeamOpen), over = L.filter(t => bucket(t) === "over");
+  const waiting = L.filter(isAgency), fdue = L.filter(followDue);
+  const today = todayISO();
+  const events = L.filter(t => typeOf(t) === "event" && t.eventDate && t.eventDate >= today && !isClosed(t)).sort((a, b) => a.eventDate < b.eventDate ? -1 : 1).slice(0, 8);
+  const li = (t, right) => `<li data-open="${t.id}">${tyBadge(t)}<span class="t">${esc(t.title)}</span><span class="muted">${esc(whoTxt(t) || "—")}</span>${right}</li>`;
+  const section = (b, title) => {
+    const items = L.filter(t => bucket(t) === b).sort(byDue);
+    return `<div class="panel"><h3>${title} <span class="muted mono">${items.length}</span></h3>${items.length ? `<ul class="alist">${items.map(t => li(t, whenTag(t))).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>`;
+  };
+  const projects = S.cfg.projects.map(p => {
+    const mine = L.filter(t => t.project === p && ownerOf(t) !== "cancel");
+    return [p, mine.filter(isTeamOpen).length, mine.filter(isAgency).length, mine.filter(t => ownerOf(t) === "done").length, mine.filter(t => ownerOf(t) === "hold").length, mine.length];
+  }).filter(r => r[5]);
+  const people = S.cfg.assignees.map(n => { const m = L.filter(t => who(t).includes(n) && isTeamOpen(t)); return [n, m.length, m.filter(t => bucket(t) === "over").length]; });
+  const maxLoad = Math.max(1, ...people.map(p => p[1]));
+  return `
+  <div class="stats">
+    <div class="stat"><span>งานทีมที่เปิดอยู่</span><b>${teamOpen.length}</b></div>
+    <div class="stat ${over.length ? "alert" : ""}"><span>งานทีมเลยกำหนด</span><b>${over.length}</b></div>
+    <div class="stat wait"><span>หนังสือรอหน่วยงาน</span><b>${waiting.length}</b></div>
+    <div class="stat ${fdue.length ? "alert" : ""}"><span>ถึงวันติดตามหนังสือ</span><b>${fdue.length}</b></div>
+  </div>
+  <div class="grid2">
+    ${section("over", "งานทีมเลยกำหนด")}
+    <div class="panel"><h3>ถึงวันโทรตามหน่วยงาน <span class="muted mono">${fdue.length}</span></h3>${fdue.length ? `<ul class="alist">${fdue.map(t => li(t, `<span class="when over">รอ ${waitDays(t) ?? "-"} วัน</span>`)).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
+    ${section("today", "ครบกำหนดวันนี้")}${section("tmr", "ครบกำหนดพรุ่งนี้")}${section("week", "ภายใน 7 วันข้างหน้า")}
+    <div class="panel"><h3>กิจกรรมที่จะถึง</h3>${events.length ? `<ul class="alist">${events.map(t => li(t, `<span class="when week">${fmtD(t.eventDate)}</span>`)).join("")}</ul>` : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
+    <div class="panel" style="grid-column:1/-1"><h3>ความคืบหน้ารายโครงการ</h3>
+      <div class="legend"><span><i style="background:var(--muted)"></i>ทีมกำลังทำ</span><span><i style="background:var(--info)"></i>รอหน่วยงาน</span><span><i style="background:var(--accent)"></i>ปิดแล้ว</span><span><i style="background:var(--line)"></i>พักไว้</span></div>
+      ${projects.length ? `<div class="proj">${projects.map(([p, a, w, d, h, n]) => `<div class="proj-row" data-proj="${esc(p)}"><div class="top"><span>${esc(p)}</span><span class="mono muted">${d}/${n}</span></div>
+        <div class="stack"><i style="width:${a / n * 100}%;background:var(--muted)"></i><i style="width:${w / n * 100}%;background:var(--info)"></i><i style="width:${d / n * 100}%;background:var(--accent)"></i><i style="width:${h / n * 100}%;background:var(--line)"></i></div></div>`).join("")}</div>` : `<p class="muted">ยังไม่มีเรื่องที่ผูกกับโครงการ</p>`}
+    </div>
+    <div class="panel"><h3>งานทีมค้างรายคน</h3>${people.length ? `<div class="load">${people.map(([n, c, o]) =>
+      `<span>${esc(n)}</span><span class="meter"><i class="${o ? "bad" : ""}" style="width:${c / maxLoad * 100}%"></i></span><span class="mono">${c}${o ? ` <span style="color:var(--danger)">(${o} เลย)</span>` : ""}</span>`).join("")}</div>` : `<p class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</p>`}</div>
+  </div>`;
+}
+
+function vTable() {
+  if (!S.items.length) return emptyState();
+  const L = filtered();
+  const sorters = { due: byDue, title: (a, b) => a.title.localeCompare(b.title, "th"),
+    status: (a, b) => typeOf(a).localeCompare(typeOf(b)) || stages(typeOf(a)).indexOf(stageOf(a)) - stages(typeOf(b)).indexOf(stageOf(b)),
+    assignee: (a, b) => whoTxt(a).localeCompare(whoTxt(b), "th"), project: (a, b) => (a.project || "").localeCompare(b.project || "", "th"),
+    area: (a, b) => (a.area || "").localeCompare(b.area || "", "th") };
+  L.sort(sorters[S.sort] || byDue);
+  const th = (k, l) => `<th data-sort="${k}">${l}${S.sort === k ? " ↓" : ""}</th>`;
+  return `<div class="mlist only-narrow">${L.map(t => mItem(t)).join("") || `<p class="muted">ไม่มีเรื่องตรงกับตัวกรอง</p>`}</div>
+  <div class="tbl-wrap only-wide"><table class="wide">
+    <thead><tr>${th("title", "เรื่อง")}${th("project", "โครงการ")}${th("area", "พื้นที่")}${th("assignee", "ผู้รับผิดชอบ")}${th("status", "ขั้นตอน")}<th>หน่วยงาน</th>${th("due", "กำหนด (ทีม)")}<th>ลำดับ</th></tr></thead>
+    <tbody>${L.map(t => `<tr class="row ${isClosed(t) ? "closed" : ""}" data-open="${t.id}">
+      <td class="title">${tyBadge(t)} <b>${esc(t.title)}</b> ${prog(t)} ${attCount(t)}${t.location ? `<div class="sub">${esc(t.location)}</div>` : ""}${attOf(t).length ? `<div style="margin-top:4px">${thumbs(t)}</div>` : ""}</td>
+      <td style="max-width:220px">${esc(t.project || "")}</td><td>${esc(t.area || "")}</td><td>${esc(whoTxt(t))}</td>
+      <td>${S.canWrite ? `<select data-status="${t.id}" aria-label="ขั้นตอน">${stageOpts(typeOf(t), stageOf(t)[0])}</select>` : pill(t)}</td>
+      <td>${esc(t.agency || "")}${isAgency(t) && t.letterDate ? `<div class="sub muted mono" style="font-size:12px">รอ ${waitDays(t)} วัน</div>` : ""}</td>
+      <td style="white-space:nowrap"><span class="mono">${isTeamOpen(t) ? fmtD(t.due) : ""}</span> ${bucket(t) ? whenTag(t) : ""}</td>
+      <td>${flags(t)}</td></tr>`).join("") || `<tr><td colspan="8" class="muted">ไม่มีเรื่องตรงกับตัวกรอง</td></tr>`}</tbody></table></div>
+    <p class="hint" style="margin-top:8px">${L.length} เรื่อง · คลิกแถวเพื่อแก้ไข · "กำหนด (ทีม)" แสดงเฉพาะเรื่องที่อยู่ในมือทีม เรื่องที่ส่งหนังสือแล้วไม่นับว่าทีมล่าช้า</p>`;
+}
+
+function mItem(t, extraHtml = "") {
+  return `<div class="mitem ${isClosed(t) ? "closed" : ""} ${bucket(t) === "over" ? "overdue" : ""}" data-open="${t.id}">
+    <div class="ct">${tyBadge(t)} ${esc(t.title)} ${prog(t)} ${attCount(t)}</div>
+    ${thumbs(t)}
+    <div class="meta">${who(t).length ? `<span>${esc(whoTxt(t))}</span>` : ""}${t.area ? `<span>${esc(t.area)}</span>` : ""}${t.agency ? `<span>${esc(t.agency)}</span>` : ""}${whenTag(t)}${flags(t)}</div>
+    <div class="act">${S.canWrite ? `<select data-status="${t.id}" aria-label="ขั้นตอน">${stageOpts(typeOf(t), stageOf(t)[0])}</select>` : pill(t)}${extraHtml}</div>
+  </div>`;
+}
+function card(t) {
+  const extra = typeOf(t) === "letter" && t.agency ? `<span>${esc(t.agency)}</span>` : typeOf(t) === "event" && t.eventDate ? `<span>จัด ${fmtD(t.eventDate)}</span>` : typeOf(t) === "content" && postsOf(t).length ? `<span>${esc(postsOf(t).map(x => x.platform).join(" · "))}</span>` : "";
+  const wait = isAgency(t) && t.letterDate ? `<span class="when ${followDue(t) ? "over" : "week"}">รอ ${waitDays(t)} วัน</span>` : "";
+  return `<div class="card ${isClosed(t) ? "closed" : ""} ${bucket(t) === "over" ? "overdue" : ""}" draggable="${S.canWrite}" data-id="${t.id}" data-open="${t.id}">
+    <div class="ct">${esc(t.title)}</div>
+    <div class="meta">${who(t).length ? `<span>${esc(whoTxt(t))}</span>` : ""}${t.area ? `<span>${esc(t.area)}</span>` : ""}${extra}${whenTag(t)}${wait}${flags(t)}${prog(t)}${attCount(t)}</div>
+    ${thumbs(t)}
+    ${S.canWrite && S.view === "board" ? `<select class="only-narrow" data-status="${t.id}" aria-label="ย้ายขั้นตอน">${stageOpts(typeOf(t), stageOf(t)[0])}</select>` : ""}
+  </div>`;
+}
+function vBoard() {
+  const type = S.boardType;
+  const L = filtered({ ignoreType: true }).filter(t => typeOf(t) === type);
+  return `<div class="board-h"><div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-btype="${k}" aria-pressed="${k === type}">${TYPES[k].label} <span class="mono">${S.items.filter(t => typeOf(t) === k).length}</span></button>`).join("")}</div>
+    <span class="hint only-wide" style="margin:0">ลากการ์ดเพื่อเปลี่ยนขั้นตอน</span><span class="hint only-narrow" style="margin:0">เลื่อนซ้าย-ขวาเพื่อดูขั้นตอนอื่น · เปลี่ยนขั้นตอนจากช่องเลือกใต้การ์ด</span></div>
+  ${L.length || S.items.length ? `<div class="board">${stages(type).map(st => {
+    const items = L.filter(t => stageOf(t)[0] === st[0]).sort(byDue);
+    return `<section class="col ${st[2] === "agency" ? "agency" : ""}" data-drop="status" data-val="${st[0]}"><div class="col-h"><span>${esc(st[1])}</span>${st[2] === "agency" ? "<small>ฝั่งหน่วยงาน</small>" : ""}<span class="n">${items.length}</span></div>${items.map(card).join("")}</section>`;
+  }).join("")}</div>` : emptyState()}`;
+}
+
+function vFollow() {
+  const L = filtered({ ignoreType: true, keepClosed: true }).filter(t => typeOf(t) === "letter");
+  const wait = L.filter(isAgency).sort((a, b) => (a.followUpDate || "9999") < (b.followUpDate || "9999") ? -1 : 1);
+  const before = L.filter(t => isTeamOpen(t)).sort(byDue);
+  const closed = L.filter(t => ownerOf(t) === "done").sort((a, b) => (b.doneAt || "") < (a.doneAt || "") ? -1 : 1).slice(0, 15);
+  const last = t => (t.followups || []).slice(-1)[0];
+  return `<h2>ติดตามหนังสือ</h2>
+  <p class="hint">เรื่องที่ส่งหนังสือแล้วจะได้วันนัดติดตามอัตโนมัติ (${S.cfg.followupDays} วันหลังวันส่ง แก้จำนวนวันได้ในตั้งค่า) · กด "บันทึกการติดตาม" ทุกครั้งที่โทร/ทวงถาม เพื่อเก็บประวัติและตั้งวันนัดครั้งถัดไป</p>
+  <h3>รอหน่วยงาน <span class="muted mono">${wait.length}</span></h3>
+  ${wait.length ? `<div class="mlist only-narrow">${wait.map(t => { const l = last(t); return `<div class="mitem" data-open="${t.id}">
+      <div class="ct">${esc(t.title)}</div>
+      <div class="meta"><span>${esc(t.agency || "ไม่ระบุหน่วยงาน")}</span>${t.letterNo ? `<span class="mono">${esc(t.letterNo)}</span>` : ""}<span>ส่ง ${fmtDY(t.letterDate)}${t.letterDate ? ` · รอ ${waitDays(t)} วัน` : ""}</span></div>
+      <div class="meta">${l ? `ตามล่าสุด <span class="mono">${fmtD(l.date)}</span> ${esc(l.note)}` : "ยังไม่เคยตาม"}</div>
+      <div class="act">${t.followUpDate ? `<span class="when ${followDue(t) ? "over" : "week"}">${followDue(t) ? "ถึงวันตาม " : "นัด "}${fmtD(t.followUpDate)}</span>` : ""}${S.canWrite ? `<button class="btn sm" type="button" data-follow="${t.id}">บันทึกการติดตาม</button>` : ""}</div></div>`; }).join("")}</div>
+  <div class="tbl-wrap only-wide"><table class="wide"><thead><tr><th>เรื่อง</th><th>หน่วยงาน</th><th>เลขที่หนังสือ</th><th>ส่งวันที่</th><th class="num">รอมาแล้ว</th><th>ติดตามล่าสุด</th><th>นัดติดตาม</th><th></th></tr></thead><tbody>
+    ${wait.map(t => { const l = last(t); return `<tr class="row" data-open="${t.id}">
+      <td class="title"><b>${esc(t.title)}</b><div class="sub">${esc(whoTxt(t))}${t.area ? " · " + esc(t.area) : ""}${t.traffyId ? " · Traffy " + esc(t.traffyId) : ""}</div></td>
+      <td>${esc(t.agency || "—")}</td><td class="mono">${esc(t.letterNo || "—")}</td><td class="mono">${fmtDY(t.letterDate)}</td>
+      <td class="num">${t.letterDate ? waitDays(t) + " วัน" : "–"}</td>
+      <td style="max-width:240px">${l ? `<span class="mono">${fmtD(l.date)}</span> ${esc(l.note)}` : `<span class="muted">ยังไม่เคยตาม</span>`}</td>
+      <td>${t.followUpDate ? `<span class="when ${followDue(t) ? "over" : "week"}">${followDue(t) ? "ถึงวันตาม " : ""}${fmtD(t.followUpDate)}</span>` : "–"}</td>
+      <td>${S.canWrite ? `<button class="btn sm" type="button" data-follow="${t.id}">บันทึกการติดตาม</button>` : ""}</td></tr>`; }).join("")}
+  </tbody></table></div>` : `<div class="empty">ไม่มีหนังสือที่รอหน่วยงาน</div>`}
+  <div class="grid2" style="margin-top:20px">
+    <div class="panel"><h3>ยังไม่ได้ส่ง (อยู่ในมือทีม) <span class="muted mono">${before.length}</span></h3>${before.length ? `<ul class="alist">${before.map(t => `<li data-open="${t.id}"><span class="t">${esc(t.title)}</span>${pill(t)}${whenTag(t)}</li>`).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
+    <div class="panel"><h3>ปิดเรื่องล่าสุด</h3>${closed.length ? `<ul class="alist">${closed.map(t => `<li data-open="${t.id}"><span class="t">${esc(t.title)}</span>${pill(t)}<span class="mono muted">${fmtD(t.doneAt)}</span></li>`).join("")}</ul>` : `<p class="muted">ยังไม่มี</p>`}</div>
+  </div>`;
+}
+
+function calEntries() {
+  const out = [];
+  filtered().forEach(t => {
+    if (t.due && isTeamOpen(t)) out.push([t.due, "due", "กำหนด", t]);
+    if (t.followUpDate && isAgency(t)) out.push([t.followUpDate, "follow", "ตาม", t]);
+    if (typeOf(t) === "event" && t.eventDate && ownerOf(t) !== "cancel") out.push([t.eventDate, "event", "จัดงาน", t]);
+    if (typeOf(t) === "content" && ownerOf(t) !== "cancel") postsOf(t).forEach(x => { if (x.date) out.push([x.date, "post", "โพสต์ " + x.platform, t]); });
+  });
+  return out;
+}
+function vCal() {
+  const today = todayISO(), startDow = S.cfg.weekStart === "sun" ? 0 : 1;
+  const first = new Date(S.calY, S.calM, 1), off = (first.getDay() - startDow + 7) % 7;
+  const start = new Date(S.calY, S.calM, 1 - off), byDay = {};
+  calEntries().forEach(e => (byDay[e[0]] = byDay[e[0]] || []).push(e));
+  const weeks = Math.ceil((off + new Date(S.calY, S.calM + 1, 0).getDate()) / 7);
+  let cells = "";
+  for (let i = 0; i < 7; i++) cells += `<div class="dow">${DOW[(i + startDow) % 7]}</div>`;
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const k = iso(d), items = byDay[k] || [];
+    cells += `<div class="day ${d.getMonth() !== S.calM ? "out" : ""} ${k === today ? "today" : ""}"><span class="dn">${d.getDate()}</span>
+      ${items.slice(0, 3).map(([, kind, lab, t]) => `<div class="chip k-${kind}" data-open="${t.id}" title="${esc(lab)}: ${esc(t.title)}"><b>${lab}</b>${esc(t.title)}</div>`).join("")}
+      ${items.length > 3 ? `<button class="more" type="button" data-day="${k}">+ อีก ${items.length - 3}</button>` : ""}</div>`;
+  }
+  return `<div class="cal-h"><h2>${TMON_FULL[S.calM]} ${S.calY + 543}</h2>
+    <button class="btn" type="button" data-cal="-1" aria-label="เดือนก่อน">‹</button><button class="btn" type="button" data-cal="0">เดือนนี้</button><button class="btn" type="button" data-cal="1" aria-label="เดือนถัดไป">›</button></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>กำหนดส่งงานทีม</span><span><i style="background:var(--info)"></i>นัดติดตามหนังสือ</span><span><i style="background:var(--warn)"></i>วันจัดกิจกรรม</span><span><i style="background:var(--violet)"></i>วันโพสต์</span></div>
+    <div class="cal-scroll only-wide"><div class="cal">${cells}</div></div><div id="dayList" class="only-wide"></div>
+    <div class="agenda only-narrow">${(() => { const days = Object.keys(byDay).filter(k => { const dd = parse(k); return dd.getFullYear() === S.calY && dd.getMonth() === S.calM; }).sort();
+      return days.length ? days.map(k => { const dd = parse(k); return `<div class="ad ${k === today ? "today" : ""}"><div class="ad-d"><b>${dd.getDate()}</b><span>${DOW[dd.getDay()]}</span></div>
+        <div style="display:grid;gap:4px;min-width:0">${byDay[k].map(([, kind, lab, t]) => `<div class="chip k-${kind}" data-open="${t.id}"><b>${esc(lab)}</b>${esc(t.title)}${who(t).length ? ` <span class="muted">· ${esc(whoTxt(t))}</span>` : ""}</div>`).join("")}</div></div>`; }).join("")
+        : `<p class="muted">ไม่มีรายการในเดือนนี้</p>`; })()}</div>`;
+}
+
+function vMatrix() {
+  if (!S.items.length) return emptyState();
+  const L = filtered().filter(isTeamOpen);
+  const Q = [["q1", "ทำทันที", "สำคัญ + ด่วน"], ["q2", "วางแผนทำ", "สำคัญ ไม่ด่วน"], ["q3", "ส่งต่อให้คนอื่น", "ด่วน ไม่สำคัญ"], ["q4", "พิจารณาตัดทิ้ง", "ไม่สำคัญ ไม่ด่วน"]];
+  return `<p class="hint">เฉพาะเรื่องที่อยู่ในมือทีม · จัดกลุ่มจากเครื่องหมาย "สำคัญ" และ "ด่วน" · ลากการ์ดข้ามช่องเพื่อเปลี่ยน</p>
+  <div class="matrix">${Q.map(([k, h, s]) => { const items = L.filter(t => quad(t) === k).sort(byDue);
+    return `<section class="quad ${k}" data-drop="quad" data-val="${k}"><h3>${h}<small>${s} · ${items.length}</small></h3>${items.map(card).join("") || `<p class="muted" style="font-size:13px">ว่าง</p>`}</section>`; }).join("")}</div>`;
+}
+
+const inRange = d => !!d && d >= (S.from || "0000") && d <= (S.to || "9999");
+const rangeCtl = () => `<label>ตั้งแต่<input type="date" id="rf" value="${S.from}"></label><label>ถึง<input type="date" id="rt" value="${S.to}"></label>
+  <div class="seg" role="group" aria-label="ช่วงเวลาด่วน"><button type="button" data-range="m">เดือนนี้</button><button type="button" data-range="q">3 เดือน</button><button type="button" data-range="fy">ปีงบประมาณ</button><button type="button" data-range="all">ทั้งหมด</button></div>`;
+function reportData() {
+  const all = S.items.filter(t => ownerOf(t) !== "cancel");
+  const letters = all.filter(t => typeOf(t) === "letter");
+  const sent = letters.filter(t => inRange(t.letterDate));
+  const replied = sent.filter(t => t.replyDate);
+  const resolved = sent.filter(t => stageOf(t)[0] === "resolved"), unresolved = sent.filter(t => stageOf(t)[0] === "unresolved");
+  const replyDays = replied.map(t => diffDays(t.replyDate, t.letterDate)).filter(n => n >= 0);
+  const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+  const byAgency = {};
+  sent.forEach(t => { const k = t.agency || "ไม่ระบุหน่วยงาน"; const r = byAgency[k] = byAgency[k] || { sent: 0, replied: 0, resolved: 0, waiting: 0, days: [] };
+    r.sent++; if (t.replyDate) { r.replied++; r.days.push(diffDays(t.replyDate, t.letterDate)); } if (stageOf(t)[0] === "resolved") r.resolved++; if (isAgency(t)) r.waiting++; });
+  const touched = all.filter(t => inRange(t.letterDate) || inRange(t.doneAt) || inRange(t.eventDate) || postsOf(t).some(x => inRange(x.date)) || inRange(t.due));
+  const byArea = {};
+  touched.forEach(t => { const k = t.area || "ไม่ระบุพื้นที่"; const r = byArea[k] = byArea[k] || { n: 0, letters: 0, closed: 0 }; r.n++; if (typeOf(t) === "letter") r.letters++; if (ownerOf(t) === "done") r.closed++; });
+  const events = all.filter(t => typeOf(t) === "event" && inRange(t.eventDate) && ["held", "done"].includes(stageOf(t)[0]));
+  const posted = all.filter(t => typeOf(t) === "content" && stageOf(t)[0] === "posted");
+  const postEntries = posted.flatMap(t => postsOf(t).filter(x => inRange(x.date || t.doneAt)));
+  const posts = posted.filter(t => postsOf(t).some(x => inRange(x.date || t.doneAt)) || (!postsOf(t).length && inRange(t.doneAt)));
+  const byPlat = {}; postEntries.forEach(x => byPlat[x.platform || "ไม่ระบุ"] = (byPlat[x.platform || "ไม่ระบุ"] || 0) + 1);
+  return { sent, replied, resolved, unresolved, avgReply: avg(replyDays), waitingNow: letters.filter(isAgency), byAgency, byArea, events,
+    people: events.reduce((s, t) => s + (+t.delivered || 0), 0), posts, postEntries, byPlat, avg };
+}
+function vReport() {
+  const R = reportData(), n = v => v == null ? "–" : v.toFixed(1);
+  const longWait = R.waitingNow.filter(t => t.letterDate && waitDays(t) > 30).length;
+  return `<h2>สรุปผลงาน</h2>
+  <div class="ctl">${rangeCtl()}<button class="btn" type="button" id="copySum">คัดลอกสรุปเป็นข้อความ</button></div>
+  <p class="hint">นับหนังสือตามวันที่ส่ง กิจกรรมตามวันจัด และคอนเทนต์ตามวันโพสต์ ภายในช่วงที่เลือก · ใช้รายงาน ส.ก. หรือทำโพสต์สรุปผลงานได้</p>
+  <div class="stats">
+    <div class="stat"><span>ส่งหนังสือ</span><b>${R.sent.length}</b></div>
+    <div class="stat"><span>หน่วยงานตอบรับ</span><b>${R.replied.length}</b></div>
+    <div class="stat"><span>แก้ไขแล้ว</span><b>${R.resolved.length}</b></div>
+    <div class="stat"><span>ตอบรับเฉลี่ย (วัน)</span><b>${n(R.avgReply)}</b></div>
+    <div class="stat wait"><span>ยังรอหน่วยงาน (ตอนนี้)</span><b>${R.waitingNow.length}</b></div>
+    <div class="stat ${longWait ? "alert" : ""}"><span>รอเกิน 30 วัน</span><b>${longWait}</b></div>
+    <div class="stat"><span>กิจกรรมที่จัด · ผู้รับ</span><b>${R.events.length} <small class="muted" style="font-size:15px">· ${R.people} คน</small></b></div>
+    <div class="stat"><span>คอนเทนต์ที่โพสต์ · ช่องทาง</span><b>${R.posts.length} <small class="muted" style="font-size:15px">· ${R.postEntries.length} โพสต์</small></b></div>
+  </div>
+  <div class="sumgrid">
+    <div class="panel"><h3>แยกตามหน่วยงาน</h3>${Object.keys(R.byAgency).length ? `<div class="tbl-wrap" style="border:0"><table><thead><tr><th>หน่วยงาน</th><th class="num">ส่ง</th><th class="num">ตอบ</th><th class="num">แก้แล้ว</th><th class="num">รอ</th><th class="num">ตอบเฉลี่ย</th></tr></thead><tbody>
+      ${Object.entries(R.byAgency).sort((a, b) => b[1].sent - a[1].sent).map(([k, r]) => `<tr><td>${esc(k)}</td><td class="num">${r.sent}</td><td class="num">${r.replied}</td><td class="num">${r.resolved}</td><td class="num">${r.waiting}</td><td class="num">${r.days.length ? n(R.avg(r.days)) + " วัน" : "–"}</td></tr>`).join("")}
+    </tbody></table></div>` : `<p class="muted">ไม่มีหนังสือที่ส่งในช่วงนี้</p>`}</div>
+    <div class="panel"><h3>แยกตามพื้นที่</h3>${Object.keys(R.byArea).length ? `<div class="tbl-wrap" style="border:0"><table><thead><tr><th>พื้นที่</th><th class="num">เรื่องทั้งหมด</th><th class="num">หนังสือ</th><th class="num">ปิดแล้ว</th></tr></thead><tbody>
+      ${Object.entries(R.byArea).sort((a, b) => b[1].n - a[1].n).map(([k, r]) => `<tr><td>${esc(k)}</td><td class="num">${r.n}</td><td class="num">${r.letters}</td><td class="num">${r.closed}</td></tr>`).join("")}
+    </tbody></table></div>` : `<p class="muted">ไม่มีเรื่องในช่วงนี้</p>`}</div>
+    <div class="panel"><h3>กิจกรรม</h3>${R.events.length ? `<ul class="alist">${R.events.map(t => `<li data-open="${t.id}"><span class="t">${esc(t.title)}</span><span class="mono muted">${fmtD(t.eventDate)}</span><span class="mono">${+t.delivered || 0}${t.target ? "/" + (+t.target) : ""} คน</span></li>`).join("")}</ul>` : `<p class="muted">ไม่มีกิจกรรมที่จัดในช่วงนี้</p>`}</div>
+    <div class="panel"><h3>โพสต์ตามแพลตฟอร์ม</h3>${R.postEntries.length ? `<div class="load">${Object.entries(R.byPlat).map(([k, v]) => `<span>${esc(k)}</span><span class="meter"><i style="width:${v / R.postEntries.length * 100}%;background:var(--violet)"></i></span><span class="mono">${v}</span>`).join("")}</div>` : `<p class="muted">ไม่มีโพสต์ในช่วงนี้</p>`}</div>
+  </div>`;
+}
+function reportText() {
+  const R = reportData(), rng = `${S.from ? fmtDY(S.from) : "เริ่มต้น"} – ${S.to ? fmtDY(S.to) : "ปัจจุบัน"}`;
+  const lines = [`สรุปผลงานทีม ${rng}`, `• ส่งหนังสือถึงหน่วยงาน ${R.sent.length} เรื่อง หน่วยงานตอบรับ ${R.replied.length} เรื่อง แก้ไขแล้ว ${R.resolved.length} เรื่อง`];
+  if (R.avgReply != null) lines.push(`• หน่วยงานตอบรับเฉลี่ย ${R.avgReply.toFixed(1)} วันหลังส่งหนังสือ`);
+  lines.push(`• ยังรอหน่วยงานดำเนินการ ${R.waitingNow.length} เรื่อง`);
+  Object.entries(R.byAgency).forEach(([k, r]) => lines.push(`   - ${k}: ส่ง ${r.sent} / แก้แล้ว ${r.resolved} / รอ ${r.waiting}`));
+  if (R.events.length) lines.push(`• จัดกิจกรรม ${R.events.length} ครั้ง ผู้ได้รับประโยชน์ ${R.people} คน`);
+  if (R.posts.length) lines.push(`• ผลิตคอนเทนต์ ${R.posts.length} ชิ้น เผยแพร่ ${R.postEntries.length} โพสต์ (${Object.entries(R.byPlat).map(([k, v]) => k + " " + v).join(", ")})`);
+  return lines.join("\n");
+}
+function bindRange() {
+  const set = (f, t) => { S.from = f; S.to = t; store("tb.range", [f, t]); render(); };
+  $("#rf").onchange = e => set(e.target.value, S.to);
+  $("#rt").onchange = e => set(S.from, e.target.value);
+  document.querySelectorAll("[data-range]").forEach(b => b.onclick = () => {
+    const d = new Date(), y = d.getFullYear(), m = d.getMonth();
+    if (b.dataset.range === "m") set(iso(new Date(y, m, 1)), iso(new Date(y, m + 1, 0)));
+    if (b.dataset.range === "q") set(iso(new Date(y, m - 2, 1)), iso(new Date(y, m + 1, 0)));
+    if (b.dataset.range === "fy") { const fy = m >= 9 ? y : y - 1; set(iso(new Date(fy, 9, 1)), iso(new Date(fy + 1, 8, 30))); }
+    if (b.dataset.range === "all") set("", "");
+  });
+  const c = $("#copySum");
+  if (c) c.onclick = () => {
+    const txt = reportText();
+    const fallback = () => { const box = document.createElement("textarea"); box.value = txt; box.rows = 8; box.style.marginTop = "12px"; c.after(box); box.select(); toast("เลือกข้อความไว้แล้ว กดคัดลอกเอง"); };
+    try { navigator.clipboard.writeText(txt).then(() => toast("คัดลอกสรุปแล้ว"), fallback); } catch { fallback(); }
+  };
+}
+
+function kpiRows() {
+  const w = S.cfg.weights, wsum = (+w.done || 0) + (+w.ontime || 0), today = todayISO();
+  return S.cfg.assignees.map(n => {
+    const counted = S.items.filter(t => who(t).includes(n) && inRange(t.due) && !["cancel", "hold"].includes(ownerOf(t)));
+    const done = counted.filter(teamDone);
+    const dated = done.filter(t => teamDoneDate(t) && t.due);
+    const ontime = dated.filter(t => teamDoneDate(t) <= t.due).length;
+    const rej = counted.filter(t => (t.rejectCount || 0) > 0).length;
+    const overdue = counted.filter(t => isTeamOpen(t) && t.due < today).length;
+    const pDone = counted.length ? done.length / counted.length : null, pOn = dated.length ? ontime / dated.length : null;
+    const score = counted.length && wsum === 100 ? w.done * (pDone || 0) + w.ontime * (pOn || 0) : null;
+    return { n, total: counted.length, done: done.length, pDone, ontime, dated: dated.length, pOn, rej, pRej: counted.length ? rej / counted.length : null, overdue, score };
+  });
+}
+function vKpi() {
+  const w = S.cfg.weights, wsum = (+w.done || 0) + (+w.ontime || 0), pct = v => v == null ? "–" : Math.round(v * 100) + "%", rows = kpiRows();
+  return `<h2>ประเมินทีม</h2>
+  <div class="ctl">${rangeCtl()}</div>
+  <div class="ctl">
+    <label>น้ำหนัก % ส่วนของทีมเสร็จ<input type="number" id="w1" min="0" max="100" value="${w.done}"></label>
+    <label>น้ำหนัก % ตรงเวลา<input type="number" id="w2" min="0" max="100" value="${w.ontime}"></label>
+    <span class="wsum ${wsum === 100 ? "ok" : "bad"}">รวม ${wsum}%${wsum === 100 ? "" : " ต้องเท่ากับ 100%"}</span>
+  </div>
+  ${rows.length ? `<div class="tbl-wrap"><table class="wide"><thead><tr><th>ชื่อ</th><th class="num">เรื่อง</th><th class="num">ทีมทำเสร็จ</th><th class="num">% เสร็จ</th><th class="num">ตรงเวลา</th><th class="num">เคยถูกตีกลับ</th><th class="num">เลยกำหนด</th><th class="num">คะแนน</th></tr></thead><tbody>
+    ${rows.map(r => `<tr><td><b>${esc(r.n)}</b></td><td class="num">${r.total}</td><td class="num">${r.done}</td><td class="num">${pct(r.pDone)}</td>
+      <td class="num">${r.dated ? `${r.ontime}/${r.dated} · ${pct(r.pOn)}` : "–"}</td>
+      <td class="num" style="${r.pRej >= .2 ? "color:var(--danger)" : ""}">${r.rej}${r.total ? " · " + pct(r.pRej) : ""}</td>
+      <td class="num" style="${r.overdue ? "color:var(--danger);font-weight:600" : ""}">${r.overdue}</td>
+      <td class="num"><div class="score">${r.score == null ? (r.total && wsum !== 100 ? "ตรวจน้ำหนัก" : "–") : `<span class="meter"><i class="${r.score < 50 ? "bad" : ""}" style="width:${r.score}%"></i></span><b>${r.score.toFixed(1)}</b>`}</div></td></tr>`).join("")}
+  </tbody></table></div>` : `<div class="empty">เพิ่มชื่อสมาชิกในแท็บตั้งค่าก่อน</div>`}
+  <p class="hint" style="margin-top:10px">นับเรื่องที่ "กำหนด (ทีม)" อยู่ในช่วงที่เลือก ไม่นับเรื่องยกเลิกและพักไว้ · <b>ทีมทำเสร็จ</b> = ปิดเรื่องแล้ว หรือส่งหนังสือออกไปแล้ว (ความล่าช้าของหน่วยงานไม่หักคะแนนทีม) · <b>ตรงเวลา</b> = วันส่งหนังสือ/วันเสร็จ ไม่เกินกำหนด · <b>เคยถูกตีกลับ</b> นับเรื่องที่เคยเข้าขั้น "ถูกตีกลับ" · เรื่องที่มีผู้รับผิดชอบหลายคน นับให้ทุกคน · คะแนน = น้ำหนัก × %เสร็จ + น้ำหนัก × %ตรงเวลา</p>`;
+}
+function bindWeights() {
+  ["w1", "w2"].forEach(id => $("#" + id).onchange = () => {
+    const weights = { done: +$("#w1").value || 0, ontime: +$("#w2").value || 0 };
+    if (!S.canWrite) { S.cfg.weights = weights; render(); return; }
+    write(() => api.saveCfg({ ...S.cfg, weights }), "บันทึกน้ำหนักแล้ว");
+  });
+}
+
+function vSettings() {
+  const ro = S.canWrite ? "" : "readonly";
+  const ta = (id, label, list, hint) => `<label class="set-row" for="${id}">${label}<textarea id="${id}" ${ro}>${esc(list.join("\n"))}</textarea><span>${hint}</span></label>`;
+  return `<h2>ตั้งค่า</h2><p class="hint">พิมพ์บรรทัดละหนึ่งรายการ · เปลี่ยนชื่อรายการแล้ว เรื่องเดิมที่ใช้ชื่อเก่าจะยังเก็บชื่อเก่าไว้</p>
+  <div class="set-grid">
+    ${ta("sA", "สมาชิกทีม", S.cfg.assignees, "")}
+    ${ta("sP", "โครงการ", S.cfg.projects, "")}
+    ${ta("sG", "หน่วยงานปลายทาง", S.cfg.agencies, "หน่วยงานที่ส่งหนังสือถึงบ่อย")}
+    ${ta("sR", "พื้นที่", S.cfg.areas, "แขวง ชุมชน หรือซอย ตามที่ทีมใช้แบ่งงาน")}
+    ${ta("sC", "หมวดหมู่", S.cfg.categories, "")}
+  </div>
+  <div class="set-grid" style="margin-top:16px">
+    <label class="set-row" for="sF">นัดติดตามหนังสืออัตโนมัติ (วันหลังวันส่ง)<input type="number" id="sF" min="1" max="120" value="${+S.cfg.followupDays || 15}" ${ro}></label>
+    <label class="set-row" for="sWeek">ปฏิทินเริ่มสัปดาห์วัน<select id="sWeek" ${S.canWrite ? "" : "disabled"}><option value="mon"${S.cfg.weekStart !== "sun" ? " selected" : ""}>จันทร์</option><option value="sun"${S.cfg.weekStart === "sun" ? " selected" : ""}>อาทิตย์</option></select></label>
+  </div>
+  ${S.canWrite ? `<div style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn primary" type="button" id="saveSet">บันทึกการตั้งค่า</button><span class="muted" style="font-size:13px">มีผลกับทุกคนในทีมทันที</span></div>` : `<p class="muted">บัญชีนี้มีสิทธิ์ดูอย่างเดียว</p>`}
+  <h3 style="margin-top:28px">พื้นที่เก็บไฟล์แนบ</h3>
+  <div class="store" id="storeBox"><p class="muted" style="margin:0">${S.assets ? "กำลังตรวจสอบ…" : "ดูได้เมื่อเข้าสู่ระบบ"}</p></div>
+  ${SB ? `<h3 style="margin-top:28px">บัญชีของฉัน</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;max-width:560px">
+    <label class="set-row" for="newPw" style="flex:1 1 220px">ตั้งรหัสผ่านใหม่ (อย่างน้อย 8 ตัว)<input type="password" id="newPw" autocomplete="new-password" minlength="8"></label>
+    <button class="btn" type="button" id="pwBtn">เปลี่ยนรหัสผ่าน</button>
+  </div>` : ""}
+  <h3 style="margin-top:28px">สำรองและย้ายข้อมูล</h3>
+  <p class="hint">ดาวน์โหลดไฟล์สำรองเก็บไว้เป็นระยะ (เช่น สัปดาห์ละครั้ง) ไฟล์ JSON ใช้นำเข้ากลับได้ ไฟล์ CSV เปิดด้วย Excel หรือ Google Sheets · ไฟล์แนบดาวน์โหลดทั้งหมดได้จากหน้า Storage ใน Supabase</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button class="btn" type="button" id="expJson">ดาวน์โหลดไฟล์สำรอง (JSON)</button>
+    <button class="btn" type="button" id="expCsv">ดาวน์โหลดตารางเรื่อง (CSV)</button>
+    ${S.canWrite && api && api.importAll ? `<span class="btn pickbtn" style="position:relative;overflow:hidden">นำเข้าจากไฟล์สำรอง…<input type="file" id="impFile" accept=".json,application/json" style="position:absolute;inset:0;opacity:0;cursor:pointer" aria-label="เลือกไฟล์สำรอง"></span>` : ""}
+  </div>
+  <div id="impBox"></div>
+  <h3 style="margin-top:28px">ขั้นตอนของแต่ละประเภท</h3>
+  <p class="hint">ขั้นที่มีพื้นสีฟ้าคือฝั่งหน่วยงาน: ไม่นับว่าทีมล่าช้า และใช้นับวันรอ · หากต้องการปรับขั้นตอน แจ้งผู้ดูแลบอร์ด</p>
+  ${TYPE_KEYS.map(k => `<div class="flow"><span class="ty ${k}">${TYPES[k].label}</span>${TYPES[k].stages.map((s, i) => `${i ? '<span class="arrow">→</span>' : ""}<span class="pill" style="${s[2] === "agency" ? "background:var(--info-soft);color:var(--info)" : ""}">${esc(s[1])}</span>`).join("")}</div>`).join("")}`;
+}
+async function loadStorage() {
+  const box = $("#storeBox"); if (!box || !S.assets) return;
+  let res; try { res = await S.assets.list(); } catch (e) { box.innerHTML = `<p class="muted" style="margin:0">${esc(assetErr(e))}</p>`; return; }
+  const u = res.usage || {}, used = u.bytes || 0, max = u.maxBytes || 0;
+  const refs = new Set(S.items.flatMap(t => attOf(t).map(a => a.id)));
+  const orphans = res.assets.filter(a => !refs.has(a.id));
+  if (!$("#storeBox")) return;
+  box.innerHTML = `<div class="load"><span>ใช้ไป</span><span class="meter"><i class="${max && used / max > .85 ? "bad" : ""}" style="width:${max ? Math.min(100, used / max * 100) : 0}%"></i></span><span class="mono">${fmtSize(used)}${max ? " / " + fmtSize(max) : ""}</span></div>
+    <span class="muted" style="font-size:13px">${u.files || 0} ไฟล์ · แผนฟรีของ Supabase เก็บได้รวม 1 GB</span>
+    ${orphans.length ? `<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span style="font-size:13px">มี ${orphans.length} ไฟล์ (${fmtSize(orphans.reduce((s, a) => s + a.sizeBytes, 0))}) ที่ไม่ได้ผูกกับเรื่องใด</span>${S.canWrite ? `<button class="btn sm" type="button" id="cleanBtn">ลบไฟล์ที่ไม่ได้ใช้</button>` : ""}</div>` : ""}`;
+  const cb = $("#cleanBtn");
+  if (cb) cb.onclick = async () => {
+    if (!cb.dataset.armed) { cb.dataset.armed = "1"; cb.textContent = `ยืนยันลบ ${orphans.length} ไฟล์`; cb.classList.add("danger"); return; }
+    cb.disabled = true; let n = 0, skip = 0;
+    for (const a of orphans) { try { await S.assets.delete(a.id); n++; } catch { skip++; } }
+    toast(`ลบแล้ว ${n} ไฟล์${skip ? ` · ลบไม่สำเร็จ ${skip} ไฟล์` : ""}`);
+    loadStorage();
+  };
+}
+function dl(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+function toCsv() {
+  const cols = [["ประเภท", t => TYPES[typeOf(t)].label], ["เรื่อง", t => t.title], ["โครงการ", t => t.project], ["ผู้รับผิดชอบ", whoTxt], ["ขั้นตอน", stageLabel],
+    ["พื้นที่", t => t.area], ["จุด/ที่ตั้ง", t => t.location], ["หน่วยงาน", t => t.agency], ["เลขที่หนังสือ", t => t.letterNo], ["วันส่งหนังสือ", t => t.letterDate],
+    ["นัดติดตาม", t => t.followUpDate], ["วันหน่วยงานตอบ", t => t.replyDate], ["วันเริ่ม", t => t.start], ["กำหนด (ทีม)", t => t.due], ["วันปิดเรื่อง", t => t.doneAt],
+    ["สำคัญ", t => t.important ? "ใช่" : ""], ["ด่วน", t => t.urgent ? "ใช่" : ""], ["หมายเหตุ", t => t.note], ["จำนวนไฟล์แนบ", t => attOf(t).length],
+    ["ลิงก์", t => linksOf(t).map(l => l.url).join(" ")], ["แก้ไขล่าสุด", t => t.updatedAt], ["แก้ไขโดย", t => t.updatedBy]];
+  const q = v => { const x = String(v ?? ""); return /[",\n]/.test(x) ? `"${x.replace(/"/g, '""')}"` : x; };
+  return "\ufeff" + [cols.map(c => q(c[0])).join(","), ...S.items.map(t => cols.map(c => q(c[1](t))).join(","))].join("\r\n");
+}
+function bindSettings() {
+  loadStorage();
+  const stampName = todayISO();
+  const ej = $("#expJson"); if (ej) ej.onclick = () => dl(`บอร์ดงานทีม-สำรอง-${stampName}.json`, JSON.stringify({ app: "team-board", version: 1, exportedAt: new Date().toISOString(), config: S.cfg, tasks: S.items }, null, 1), "application/json");
+  const ec = $("#expCsv"); if (ec) ec.onclick = () => dl(`บอร์ดงานทีม-${stampName}.csv`, toCsv(), "text/csv");
+  const pw = $("#pwBtn");
+  if (pw) pw.onclick = async () => {
+    const v = $("#newPw").value; if (v.length < 8) { toast("รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร"); return; }
+    pw.disabled = true; const { error } = await SB.auth.updateUser({ password: v }); pw.disabled = false;
+    if (error) toast("เปลี่ยนรหัสผ่านไม่สำเร็จ: " + error.message); else { $("#newPw").value = ""; toast("เปลี่ยนรหัสผ่านแล้ว"); }
+  };
+  const imp = $("#impFile");
+  if (imp) imp.onchange = async () => {
+    const f = imp.files[0]; imp.value = ""; if (!f) return;
+    let obj; try { obj = JSON.parse(await (f.text ? f.text() : new Promise((ok, no) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = no; fr.readAsText(f); }))); } catch { toast("อ่านไฟล์ไม่ได้ ต้องเป็นไฟล์ JSON ที่ดาวน์โหลดจากบอร์ด"); return; }
+    const tasks = Array.isArray(obj.tasks) ? obj.tasks.filter(t => t && t.id && t.title) : [];
+    const cfg = obj.config && typeof obj.config === "object" ? obj.config : null;
+    if (!tasks.length && !cfg) { toast("ไม่พบข้อมูลในไฟล์นี้"); return; }
+    const known = new Set(S.items.map(t => t.id));
+    const clean = tasks.map(t => ({ ...t, attachments: attOf(t).filter(a => String(a.id).includes("/")) }));
+    const dropped = tasks.reduce((n, t) => n + attOf(t).filter(a => !String(a.id).includes("/")).length, 0);
+    const box = $("#impBox");
+    box.innerHTML = `<div class="panel" style="margin-top:10px;display:grid;gap:8px"><b>พบ ${tasks.length} เรื่อง${cfg ? " และการตั้งค่า" : ""}</b>
+      <span style="font-size:13.5px">${tasks.filter(t => known.has(String(t.id))).length} เรื่องมีอยู่แล้ว จะถูกแทนที่ด้วยข้อมูลในไฟล์ · ${tasks.filter(t => !known.has(String(t.id))).length} เรื่องใหม่${cfg ? " · การตั้งค่าปัจจุบันจะถูกแทนที่" : ""}${dropped ? ` · ไฟล์แนบ ${dropped} ไฟล์จากระบบเดิมย้ายตามมาไม่ได้ (เหลือแค่ข้อมูลเรื่อง)` : ""}</span>
+      <div style="display:flex;gap:8px"><button class="btn primary" type="button" id="impGo">นำเข้า</button><button class="btn ghost" type="button" id="impNo">ยกเลิก</button></div></div>`;
+    $("#impNo").onclick = () => box.innerHTML = "";
+    $("#impGo").onclick = async () => { $("#impGo").disabled = true; if (await write(() => api.importAll(cfg, clean), "นำเข้าข้อมูลแล้ว")) box.innerHTML = ""; else $("#impGo").disabled = false; };
+  };
+  const b = $("#saveSet"); if (!b) return;
+  b.onclick = () => {
+    const lines = id => [...new Set($("#" + id).value.split("\n").map(s => s.trim()).filter(Boolean))];
+    const c = { ...S.cfg, assignees: lines("sA"), projects: lines("sP"), agencies: lines("sG"), areas: lines("sR"), categories: lines("sC"),
+      followupDays: Math.min(120, Math.max(1, +$("#sF").value || 15)), weekStart: $("#sWeek").value };
+    write(() => api.saveCfg(c), "บันทึกการตั้งค่าแล้ว");
+  };
+}
+
+/* ---------- item dialog ---------- */
+function openItem(id, preset = {}) {
+  const src = id ? S.items.find(x => x.id === id) : { type: S.filters.t || "letter", start: todayISO(), ...preset };
+  if (!src) return;
+  const t = structuredClone(src);
+  let type = typeOf(t);
+  let checklist = (t.checklist || []).map(x => ({ ...x }));
+  let followups = (t.followups || []).map(x => ({ ...x }));
+  let people = [...who(t)];
+  let posts = postsOf(t).map(x => ({ ...x }));
+  let files = attOf(t).map(x => ({ ...x }));
+  let links = linksOf(t).map(x => ({ ...x }));
+  let pending = [], busy = "", fileErrs = [], saved = false;
+  const canFiles = !!S.assets && S.canWrite;
+  const ro = S.canWrite ? "" : "disabled";
+  const f = $("#tf");
+  const field = (k, label, html, cls = "") => `<label class="${cls}">${label}${html}</label>`;
+  const inp = (k, typ = "text", extra = "") => `<input type="${typ}" id="t_${k}" value="${esc(t[k] ?? "")}" ${ro} ${extra}>`;
+  const draw = () => {
+    if (!stages(type).some(s => s[0] === t.status)) t.status = stages(type)[0][0];
+    const typeSec = {
+      letter: `<fieldset><legend>หนังสือและการติดตาม</legend>
+        ${field("agency", "หน่วยงานปลายทาง", `<select id="t_agency" ${ro}>${opts(S.cfg.agencies, t.agency, "—")}</select>`)}
+        ${field("letterNo", "เลขที่หนังสือ", inp("letterNo"))}
+        ${field("letterDate", "วันที่ส่งหนังสือ", inp("letterDate", "date"))}
+        ${field("followUpDate", "นัดติดตามครั้งถัดไป", inp("followUpDate", "date"))}
+        ${field("traffyId", "เลขเรื่อง Traffy Fondue (ถ้ามี)", inp("traffyId"))}
+        ${field("replyDate", "วันที่หน่วยงานตอบรับ", inp("replyDate", "date"))}
+        ${field("replySummary", "ผลการตอบกลับ/การแก้ไข", `<textarea id="t_replySummary" rows="2" ${ro}>${esc(t.replySummary || "")}</textarea>`, "full")}
+        <div class="full"><span class="muted" style="font-size:12.5px">ประวัติการติดตาม</span>
+          <ul class="log" id="fuLog">${followups.length ? followups.map((x, i) => `<li><span class="mono">${fmtDY(x.date)}</span><span style="flex:1">${esc(x.note)}</span>${S.canWrite ? `<button class="btn ghost sm" type="button" data-rmfu="${i}" aria-label="ลบบันทึก">ลบ</button>` : ""}</li>`).join("") : `<li class="muted">ยังไม่มี</li>`}</ul>
+          ${S.canWrite ? `<div class="cl-row fu" style="margin-top:8px"><input type="date" id="fuDate" value="${todayISO()}" style="flex:none"><input type="text" id="fuNote" placeholder="เช่น โทรตามฝ่ายโยธา แจ้งว่าอยู่ระหว่างตั้งงบ"><button class="btn sm" type="button" id="fuAdd">เพิ่ม</button></div>` : ""}
+        </div></fieldset>`,
+      event: `<fieldset><legend>กิจกรรม</legend>
+        ${field("eventDate", "วันจัดกิจกรรม", inp("eventDate", "date"))}
+        ${field("venue", "สถานที่จัด", inp("venue"))}
+        ${field("target", "จำนวนผู้รับเป้าหมาย (คน)", inp("target", "number", 'min="0"'))}
+        ${field("delivered", "ผู้รับจริง (คน)", inp("delivered", "number", 'min="0"'))}</fieldset>`,
+      content: `<fieldset><legend>ช่องทางเผยแพร่</legend>
+        <div class="full" style="display:grid;gap:8px"><span class="muted" style="font-size:12.5px">ติ๊กช่องทางที่จะโพสต์ แล้วใส่วันโพสต์และลิงก์ของแต่ละช่องทาง</span>
+        ${[...PLATFORMS, ...posts.map(x => x.platform).filter(p => !PLATFORMS.includes(p))].map(pl => { const x = posts.find(q => q.platform === pl);
+          return `<div class="prow"><label class="pick"><input type="checkbox" data-plat="${esc(pl)}" ${x ? "checked" : ""} ${ro}>${esc(pl)}</label>${x
+            ? `<input type="date" data-pdate="${esc(pl)}" value="${esc(x.date || "")}" aria-label="วันโพสต์ ${esc(pl)}" ${ro}><span style="display:flex;gap:6px;align-items:center;min-width:0"><input type="url" data-purl="${esc(pl)}" value="${esc(x.url || "")}" placeholder="ลิงก์โพสต์ https://" aria-label="ลิงก์โพสต์ ${esc(pl)}" ${ro}>${safeUrl(x.url) ? `<a href="${esc(safeUrl(x.url))}" target="_blank" rel="noopener" style="font-size:13px;white-space:nowrap">เปิด</a>` : ""}</span>`
+            : `<span class="muted nopost" style="font-size:12.5px;grid-column:span 2">ไม่โพสต์ช่องทางนี้</span>`}</div>`; }).join("")}
+        </div></fieldset>`,
+      task: ""
+    }[type];
+    f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">${id ? "แก้ไขเรื่อง" : "เพิ่มเรื่อง"}</h2><button class="dlg-x" type="button" id="t_x" aria-label="ปิด">×</button></div>
+    <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-ttype="${k}" aria-pressed="${k === type}" ${ro}>${TYPES[k].label}</button>`).join("")}</div>
+    <div class="form">
+      ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
+      ${field("project", "โครงการ", `<select id="t_project" ${ro}>${opts(S.cfg.projects, t.project, "—")}</select>`, "full")}
+      <div class="full"><span class="muted" style="font-size:12.5px">ผู้รับผิดชอบ (เลือกได้หลายคน)</span>
+        <div class="picks" style="margin-top:4px">${[...S.cfg.assignees, ...people.filter(n => !S.cfg.assignees.includes(n))].map(n => `<label class="pick"><input type="checkbox" data-who="${esc(n)}" ${people.includes(n) ? "checked" : ""} ${ro}>${esc(n)}</label>`).join("") || `<span class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</span>`}</div></div>
+      ${field("status", "ขั้นตอน", `<select id="t_status" ${ro}>${stageOpts(type, t.status)}</select>`)}
+      ${field("area", "พื้นที่", `<select id="t_area" ${ro}>${opts(S.cfg.areas, t.area, "—")}</select>`)}
+      ${field("category", "หมวดหมู่", `<select id="t_category" ${ro}>${opts(S.cfg.categories, t.category, "—")}</select>`)}
+      ${field("location", "จุด / ที่ตั้ง", inp("location", "text", 'placeholder="เช่น ป้ายหน้าตลาดเตาปูน ฝั่งขาออก"'))}
+      ${field("mapUrl", "ลิงก์แผนที่", inp("mapUrl", "url", 'placeholder="https://maps.google.com/..."'))}
+      ${field("start", "วันเริ่ม", inp("start", "date"))}
+      ${field("due", type === "letter" ? "กำหนดส่งหนังสือ (ทีม)" : "กำหนดเสร็จ (ทีม)", inp("due", "date"))}
+      ${field("time", "เวลา", inp("time", "time"))}
+      <div class="full" style="display:flex;gap:16px;flex-wrap:wrap">
+        <label class="chk"><input type="checkbox" id="t_important" ${t.important ? "checked" : ""} ${ro}> สำคัญ</label>
+        <label class="chk"><input type="checkbox" id="t_urgent" ${t.urgent ? "checked" : ""} ${ro}> ด่วน</label>
+        ${safeUrl(t.mapUrl) ? `<a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
+      </div>
+      ${typeSec}
+      <div class="full"><span class="muted" style="font-size:12.5px">เช็กลิสต์</span>
+        <div class="cl" id="cl">${checklist.map((c, i) => `<div class="cl-row"><input type="checkbox" data-cli="${i}" ${c.done ? "checked" : ""} ${ro} aria-label="ทำแล้ว"><input type="text" data-clt="${i}" value="${esc(c.t)}" ${ro}>${S.canWrite ? `<button class="btn ghost sm" type="button" data-clr="${i}" aria-label="ลบรายการ">ลบ</button>` : ""}</div>`).join("")}</div>
+        ${S.canWrite ? `<button class="btn ghost sm" type="button" id="clAdd" style="margin-top:6px">+ เพิ่มรายการ</button>` : ""}
+      </div>
+      <div class="full" style="display:grid;gap:8px"><span class="muted" style="font-size:12.5px">ไฟล์แนบ ${files.length ? `· ${files.length} ไฟล์` : ""}</span>
+        ${files.length ? `<div class="att">${files.map((a, i) => { const th = thumbHtml(a);
+          return `<div class="att-i"><button class="att-th" type="button" data-dview="${i}" aria-label="ดู ${esc(a.name)}">${th}</button>
+            <div class="att-b">${S.canWrite ? `<input type="text" data-fname="${i}" value="${esc(a.name)}" aria-label="ชื่อไฟล์">` : `<span class="nm">${esc(a.name)}</span>`}
+              <span class="mt"><span>${fmtSize(a.size || 0)}</span><button type="button" data-dview="${i}">ดูไฟล์</button>${pending.includes(a.id) ? "<span>ยังไม่บันทึก</span>" : ""}</span></div>
+            ${canFiles ? `<button class="btn ghost sm" type="button" data-frm="${i}">ลบ</button>` : ""}</div>`; }).join("")}</div>` : ""}
+        ${busy ? `<div class="busy" role="status">${esc(busy)}</div>` : ""}
+        ${fileErrs.length ? `<ul class="errs" role="alert">${fileErrs.map(x => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
+        ${canFiles ? `<div class="upl"><span class="btn sm pickbtn">+ แนบไฟล์ (เลือกได้หลายไฟล์)<input type="file" id="t_files" multiple aria-label="แนบไฟล์"></span><span class="muted" style="font-size:12px">ไม่เกิน 50 MB ต่อไฟล์ · รูป วิดีโอ PDF Word Excel ฯลฯ</span></div>`
+          : S.canWrite ? `<span class="busy">โหมดทดลอง: ต้องเข้าสู่ระบบก่อนจึงจะแนบไฟล์ได้</span>` : ""}
+      </div>
+      <div class="full" style="display:grid;gap:6px"><span class="muted" style="font-size:12.5px">ลิงก์ไฟล์ภายนอก (เช่น Google Drive สำหรับวิดีโอที่ใหญ่เกิน 50 MB)</span>
+        ${links.map((l, i) => S.canWrite ? `<div class="lk-row"><input type="text" data-lname="${i}" value="${esc(l.name)}" placeholder="ชื่อไฟล์" aria-label="ชื่อลิงก์"><input type="url" data-lurl="${i}" value="${esc(l.url)}" placeholder="https://drive.google.com/..." aria-label="ลิงก์"><button class="btn ghost sm" type="button" data-lrm="${i}">ลบ</button></div>`
+          : `<div>${safeUrl(l.url) ? `<a href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">${esc(l.name || l.url)}</a>` : esc(l.name)}</div>`).join("")}
+        ${S.canWrite ? `<button class="btn ghost sm" type="button" id="lkAdd" style="justify-self:start">+ เพิ่มลิงก์</button>` : ""}
+      </div>
+      ${field("note", "หมายเหตุ", `<textarea id="t_note" rows="3" ${ro}>${esc(t.note || "")}</textarea>`, "full")}
+      ${field("doneAt", "วันที่ปิดเรื่อง/เสร็จ", inp("doneAt", "date"))}
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:0" id="t_meta"></p>
+    <div class="dlg-f">
+      ${id && S.canWrite ? `<button class="btn danger" type="button" id="t_del">ลบ</button><button class="btn" type="button" id="t_dup">ทำสำเนา</button>` : ""}
+      <span class="sp"></span>
+      <button class="btn ghost" type="button" id="t_cancel">ปิด</button>
+      ${S.canWrite ? `<button class="btn primary" type="submit">${id ? "บันทึก" : "เพิ่มเรื่อง"}</button>` : ""}
+    </div>`;
+    bindDlg();
+    hydrate($("#tf"));
+  };
+  const collect = () => {
+    const v = k => { const el = $("#t_" + k); return el ? el.value : t[k]; };
+    ["title", "project", "status", "area", "category", "location", "mapUrl", "start", "due", "time", "note", "doneAt",
+      "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered"]
+      .forEach(k => { if ($("#t_" + k)) t[k] = v(k); });
+    if (document.querySelector("[data-who]")) people = [...document.querySelectorAll("[data-who]")].filter(el => el.checked).map(el => el.dataset.who);
+    if (document.querySelector("[data-plat]")) posts = [...document.querySelectorAll("[data-plat]")].filter(el => el.checked).map(el => {
+      const pl = el.dataset.plat, d = byAttr("data-pdate", pl), u = byAttr("data-purl", pl), old = posts.find(q => q.platform === pl) || {};
+      return { platform: pl, date: d ? d.value : (old.date || ""), url: u ? u.value.trim() : (old.url || "") }; });
+    t.important = $("#t_important").checked; t.urgent = $("#t_urgent").checked;
+    document.querySelectorAll("[data-clt]").forEach(el => checklist[+el.dataset.clt].t = el.value);
+    document.querySelectorAll("[data-cli]").forEach(el => checklist[+el.dataset.cli].done = el.checked);
+    document.querySelectorAll("[data-fname]").forEach(el => { const a = files[+el.dataset.fname]; if (a) a.name = el.value.trim() || a.name; });
+    document.querySelectorAll("[data-lname]").forEach(el => { const l = links[+el.dataset.lname]; if (l) l.name = el.value; });
+    document.querySelectorAll("[data-lurl]").forEach(el => { const l = links[+el.dataset.lurl]; if (l) l.url = el.value.trim(); });
+  };
+  const saveFiles = () => id ? write(() => api.save(id, stamp({ attachments: files }))) : Promise.resolve(true);
+  const bindDlg = () => {
+    document.querySelectorAll("[data-ttype]").forEach(b => b.onclick = () => { collect(); type = b.dataset.ttype; draw(); });
+    $("#t_cancel").onclick = () => $("#dlg").close();
+    $("#t_x").onclick = () => $("#dlg").close();
+    document.querySelectorAll("[data-plat]").forEach(el => el.onchange = () => { collect(); draw(); });
+    const add = $("#clAdd"); if (add) add.onclick = () => { collect(); checklist.push({ t: "", done: false }); draw(); const last = document.querySelector(`[data-clt="${checklist.length - 1}"]`); if (last) last.focus(); };
+    document.querySelectorAll("[data-clr]").forEach(b => b.onclick = () => { collect(); checklist.splice(+b.dataset.clr, 1); draw(); });
+    const fa = $("#fuAdd"); if (fa) fa.onclick = () => { collect(); const note = $("#fuNote").value.trim(); if (!note) { $("#fuNote").focus(); return; }
+      followups.push({ date: $("#fuDate").value || todayISO(), note }); t.followUpDate = addDays(todayISO(), +S.cfg.followupDays || 15); draw(); };
+    document.querySelectorAll("[data-dview]").forEach(b => b.onclick = () => { collect(); openViewer(files.map(a => ({ ...a, item: t.title })), +b.dataset.dview); });
+    const fi = $("#t_files");
+    if (fi) fi.onchange = async () => {
+      collect();
+      const list = [...fi.files]; fi.value = ""; fileErrs = [];
+      let added = 0;
+      for (let i = 0; i < list.length; i++) {
+        const fl = list[i], ty = fileType(fl);
+        if (!ty) { fileErrs.push(`${fl.name}: ไม่รองรับไฟล์ประเภทนี้ (วิดีโอ .MOV จาก iPhone หรือไฟล์ Word/Excel ให้ใช้ลิงก์ Google Drive แทน)`); continue; }
+        if (fl.size > MAX_FILE) { fileErrs.push(`${fl.name}: ${fmtSize(fl.size)} ใหญ่เกิน 50 MB (เพดานของแผนฟรี) ให้อัปโหลดขึ้น Google Drive แล้วใส่เป็นลิงก์`); continue; }
+        busy = `กำลังอัปโหลด ${i + 1}/${list.length}: ${fl.name}`; draw();
+        try {
+          const res = await S.assets.upload(fl, { type: ty });
+          files.push({ id: res.id, name: fl.name, type: res.contentType, size: res.sizeBytes, at: new Date().toISOString(), by: S.myId || "" });
+          added++;
+          if (!id) pending.push(res.id);
+        } catch (err) {
+          fileErrs.push(`${fl.name}: ${assetErr(err)}`);
+          if (["rate_limited", "quota_or_state", "not_granted", "capability_disabled"].includes(err && err.code)) break;
+        }
+        collect();
+      }
+      busy = "";
+      if (added && id) { if (await saveFiles()) toast(`แนบไฟล์แล้ว ${added} ไฟล์`); }
+      else if (added) toast(`อัปโหลดแล้ว ${added} ไฟล์ กดเพิ่มเรื่องเพื่อบันทึก`);
+      draw();
+    };
+    document.querySelectorAll("[data-frm]").forEach(b => b.onclick = async () => {
+      if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "ยืนยันลบ"; b.classList.add("danger"); return; }
+      collect();
+      const a = files[+b.dataset.frm]; if (!a) return;
+      b.disabled = true;
+      try { await S.assets.delete(a.id); }
+      catch (err) { b.disabled = false; toast(assetErr(err)); return; }
+      files = files.filter(x => x.id !== a.id); pending = pending.filter(x => x !== a.id);
+      if (await saveFiles()) toast("ลบไฟล์แล้ว");
+      draw();
+    });
+    const lk = $("#lkAdd"); if (lk) lk.onclick = () => { collect(); links.push({ name: "", url: "" }); draw(); const el = document.querySelector(`[data-lname="${links.length - 1}"]`); if (el) el.focus(); };
+    document.querySelectorAll("[data-lrm]").forEach(b => b.onclick = () => { collect(); links.splice(+b.dataset.lrm, 1); draw(); });
+    document.querySelectorAll("[data-rmfu]").forEach(b => b.onclick = () => { collect(); followups.splice(+b.dataset.rmfu, 1); draw(); });
+    const del = $("#t_del");
+    if (del) del.onclick = async () => {
+      if (!del.dataset.armed) { del.dataset.armed = "1"; del.textContent = "กดอีกครั้งเพื่อยืนยันการลบ"; return; }
+      if (await write(() => api.del(id), "ลบแล้ว")) {
+        if (S.assets) for (const a of files) { try { await S.assets.delete(a.id); } catch {} }
+        $("#dlg").close();
+      }
+    };
+    const dup = $("#t_dup");
+    if (dup) dup.onclick = () => { collect(); const { id: _i, updatedAt, updatedBy, createdAt, letterNo, letterDate, followUpDate, replyDate, replySummary, doneAt, rejectCount, attachments, links: _l, ...rest } = t;
+      $("#dlg").close(); openItem(null, { ...rest, assignees: people, posts: posts.map(x => ({ platform: x.platform, date: "", url: "" })), type, status: stages(type)[0][0], checklist: checklist.map(c => ({ t: c.t, done: false })), followups: [], location: "" }); toast("สำเนาพร้อมแก้ไข ใส่จุดใหม่แล้วกดเพิ่มเรื่อง"); };
+    if (id && src.updatedAt) {
+      const when = new Date(src.updatedAt).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
+      const n = /@/.test(src.updatedBy || "") ? src.updatedBy : "";
+      const m = $("#t_meta"); if (m) m.textContent = `แก้ไขล่าสุด ${when}${n ? " โดย " + n : ""}`;
+    }
+  };
+  f.onsubmit = async e => {
+    e.preventDefault();
+    collect();
+    if (busy) { toast("รออัปโหลดไฟล์ให้เสร็จก่อน"); return; }
+    if (!t.title.trim()) { $("#t_title").focus(); return; }
+    const badLink = links.find(l => l.url && !safeUrl(l.url));
+    if (badLink) { toast("ลิงก์ต้องขึ้นต้นด้วย https://"); return; }
+    const d = { ...t, type, attachments: files, links: links.filter(l => l.url), title: t.title.trim(), checklist: checklist.filter(c => c.t.trim()), followups, assignees: people, assignee: "",
+      posts: type === "content" ? posts : postsOf(t), platform: "", postDate: "", postUrl: "" };
+    delete d.difficulty;
+    ["target", "delivered"].forEach(k => { if (d[k] !== undefined && d[k] !== "") d[k] = +d[k]; });
+    delete d.id;
+    const patch = autoPatch(id ? src : { status: "" }, d);
+    const ok = id ? await write(() => api.save(id, stamp(patch)), "บันทึกแล้ว")
+                  : await write(() => api.add(stamp({ ...patch, createdAt: new Date().toISOString() })), "เพิ่มเรื่องแล้ว");
+    if (ok) { saved = true; pending = []; $("#dlg").close(); }
+  };
+  $("#dlg").onclose = () => {
+    if (!saved && pending.length && S.assets) pending.forEach(pid => S.assets.delete(pid).catch(() => {}));
+    pending = [];
+  };
+  draw();
+  $("#dlg").showModal();
+  if (!id) $("#t_title").focus();
+}
+
+/* quick follow-up logging from the follow tab */
+function openFollow(id) {
+  const t = S.items.find(x => x.id === id); if (!t) return;
+  $("#dlg").onclose = null;
+  const f = $("#tf");
+  f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">บันทึกการติดตาม</h2><button class="dlg-x" type="button" id="q_x" aria-label="ปิด">×</button></div>
+  <p style="margin:0"><b>${esc(t.title)}</b><br><span class="muted">${esc(t.agency || "")}${t.letterNo ? " · หนังสือ " + esc(t.letterNo) : ""}${t.letterDate ? " · ส่ง " + fmtDY(t.letterDate) : ""}</span></p>
+  <div class="form">
+    <label>วันที่ติดตาม<input type="date" id="q_date" value="${todayISO()}"></label>
+    <label>นัดติดตามครั้งถัดไป<input type="date" id="q_next" value="${addDays(todayISO(), +S.cfg.followupDays || 15)}"></label>
+    <label class="full">ได้ความว่าอย่างไร<textarea id="q_note" rows="3" placeholder="เช่น โทรคุยฝ่ายโยธาเขต แจ้งว่าบรรจุในแผนซ่อมเดือนหน้า"></textarea></label>
+    <label class="full">ขั้นตอนหลังติดตาม<select id="q_stage">${stages("letter").filter(s => ["sent", "acting", "escalate", "resolved", "unresolved"].includes(s[0])).map(s => `<option value="${s[0]}"${s[0] === t.status ? " selected" : ""}>${esc(s[1])}</option>`).join("")}</select></label>
+  </div>
+  <div class="dlg-f"><span class="sp"></span><button class="btn ghost" type="button" id="q_cancel">ปิด</button><button class="btn primary" type="submit">บันทึก</button></div>`;
+  $("#q_cancel").onclick = () => $("#dlg").close();
+  $("#q_x").onclick = () => $("#dlg").close();
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const note = $("#q_note").value.trim(); if (!note) { $("#q_note").focus(); return; }
+    const d = { followups: [...(t.followups || []), { date: $("#q_date").value || todayISO(), note }], followUpDate: $("#q_next").value, status: $("#q_stage").value };
+    if (await write(() => api.save(t.id, stamp(autoPatch(t, d))), "บันทึกการติดตามแล้ว")) $("#dlg").close();
+  };
+  $("#dlg").showModal();
+  $("#q_note").focus();
+}
+
+/* ---------- drag & drop ---------- */
+function bindDnd() {
+  document.querySelectorAll(".card[draggable=true]").forEach(c => c.addEventListener("dragstart", e => { e.dataTransfer.setData("text/plain", c.dataset.id); e.dataTransfer.effectAllowed = "move"; }));
+  document.querySelectorAll("[data-drop]").forEach(z => {
+    z.addEventListener("dragover", e => { e.preventDefault(); z.classList.add("over"); });
+    z.addEventListener("dragleave", () => z.classList.remove("over"));
+    z.addEventListener("drop", e => {
+      e.preventDefault(); z.classList.remove("over");
+      const t = S.items.find(x => x.id === e.dataTransfer.getData("text/plain")); if (!t) return;
+      if (z.dataset.drop === "status") { if (t.status !== z.dataset.val) patchItem(t, { status: z.dataset.val }); }
+      else { const q = z.dataset.val, p = { important: q === "q1" || q === "q2", urgent: q === "q1" || q === "q3" };
+        if (p.important !== !!t.important || p.urgent !== !!t.urgent) patchItem(t, p); }
+    });
+  });
+}
+
+/* ---------- events ---------- */
+document.addEventListener("click", e => {
+  if (e.target.closest("dialog")) return;
+  const tab = e.target.closest(".tab");
+  if (tab) { S.view = tab.dataset.v; store("tb.view", S.view); render(); return; }
+  if (e.target.closest("select")) return;
+  const bt = e.target.closest("[data-btype]");
+  if (bt) { S.boardType = bt.dataset.btype; store("tb.btype", S.boardType); render(); return; }
+  const fu = e.target.closest("[data-follow]");
+  if (fu) { openFollow(fu.dataset.follow); return; }
+  const pj = e.target.closest("[data-proj]");
+  if (pj) { S.filters.p = pj.dataset.proj; store("tb.f", S.filters); S.view = "table"; render(); return; }
+  const sortTh = e.target.closest("th[data-sort]");
+  if (sortTh) { S.sort = sortTh.dataset.sort; render(); return; }
+  const cal = e.target.closest("[data-cal]");
+  if (cal) { const n = +cal.dataset.cal, d = n === 0 ? new Date() : new Date(S.calY, S.calM + n, 1); S.calY = d.getFullYear(); S.calM = d.getMonth(); render(); return; }
+  const more = e.target.closest("[data-day]");
+  if (more) { const k = more.dataset.day, items = calEntries().filter(x => x[0] === k);
+    $("#dayList").innerHTML = `<div class="panel" style="margin-top:12px"><h3>${fmtDY(k)}</h3><ul class="alist">${items.map(([, , lab, t]) => `<li data-open="${t.id}"><span class="when plain">${lab}</span><span class="t">${esc(t.title)}</span><span class="muted">${esc(whoTxt(t))}</span>${pill(t)}</li>`).join("")}</ul></div>`; return; }
+  const vb = e.target.closest("[data-view]");
+  if (vb) { const t = S.items.find(x => x.id === vb.dataset.view); if (t) openViewer(attOf(t).map(a => ({ ...a, item: t.title })), +vb.dataset.vi); return; }
+  const gb = e.target.closest("[data-gview]");
+  if (gb) { openViewer(S.gallery || [], +gb.dataset.gview); return; }
+  const o = e.target.closest("[data-open]");
+  if (o) openItem(o.dataset.open);
+});
+document.addEventListener("change", e => {
+  const s = e.target.closest("select[data-status]");
+  if (s) { const t = S.items.find(x => x.id === s.dataset.status); if (t) patchItem(t, { status: s.value }); }
+});
+["#fq", "#ft", "#fa", "#fp", "#fr", "#fh"].forEach(id => $(id).addEventListener("input", () => {
+  S.filters = { t: $("#ft").value, a: $("#fa").value, p: $("#fp").value, r: $("#fr").value, h: $("#fh").checked };
+  store("tb.f", S.filters); render();
+}));
+$("#fBtn").onclick = () => { S.fOpen = !S.fOpen; renderFilters(); };
+$("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.filters.a] } : {}), ...(S.filters.p ? { project: S.filters.p } : {}),
+  ...(S.view === "board" ? { type: S.boardType } : {}) });
+
+/* ---------- boot ---------- */
+(function boot() {
+  const d = new Date(); S.calY = d.getFullYear(); S.calM = d.getMonth();
+  const v = recall("tb.view"); if (v && TABS.some(t => t[0] === v)) S.view = v;
+  const bt = recall("tb.btype"); if (TYPES[bt]) S.boardType = bt;
+  const r = recall("tb.range");
+  if (Array.isArray(r)) { S.from = r[0] || ""; S.to = r[1] || ""; }
+  else { S.from = iso(new Date(d.getFullYear(), d.getMonth(), 1)); S.to = iso(new Date(d.getFullYear(), d.getMonth() + 1, 0)); }
+  const f = recall("tb.f");
+  if (f && typeof f === "object") S.filters = { t: TYPES[f.t] ? f.t : "", a: f.a || "", p: f.p || "", r: f.r || "", h: !!f.h };
+  render();
+  const start = a => {
+    api = a;
+    api.subCfg(c => { S.cfg = { ...structuredClone(DEFAULT_CFG), ...(c || {}), weights: (c && c.weights && "done" in c.weights) ? { done: +c.weights.done || 0, ontime: +c.weights.ontime || 0 } : { ...DEFAULT_CFG.weights } }; render(); });
+    api.subItems(list => { S.items = list; render(); });
+  };
+  const demo = msg => { showBanner(msg); start(memoryApi()); };
+  const URL_ = window.SUPABASE_URL || "", KEY_ = window.SUPABASE_ANON_KEY || "";
+  if (!/^https:\/\/.+\.supabase\.co/.test(URL_) || !KEY_ || /ใส่|YOUR/i.test(KEY_)) {
+    demo("โหมดทดลอง: ยังไม่ได้ตั้งค่าไฟล์ config.js (ใส่ Project URL และ anon key ของ Supabase) ข้อมูลที่เพิ่มตอนนี้จะไม่ถูกบันทึก");
+    return;
+  }
+  if (!window.supabase || !window.supabase.createClient) { demo("โหลดระบบฐานข้อมูลไม่สำเร็จ ตรวจอินเทอร์เน็ตแล้วรีเฟรชหน้า"); return; }
+  SB = window.supabase.createClient(URL_, KEY_, { auth: { persistSession: true, autoRefreshToken: true } });
+  const showLogin = () => { $("#app").hidden = true; $("#login").hidden = false; setTimeout(() => $("#lgEmail").focus(), 0); };
+  const authed = user => {
+    $("#login").hidden = true; $("#app").hidden = false;
+    S.myId = user.id; S.myEmail = user.email || "";
+    $("#who").textContent = S.myEmail;
+    $("#logoutBtn").hidden = false;
+    S.assets = sbAssets(); S.downloads = true;
+    applyWriteMode();
+    if (!api) start(sbApi());
+  };
+  $("#loginForm").onsubmit = async e => {
+    e.preventDefault();
+    const err = $("#lgErr"); err.hidden = true; $("#lgBtn").disabled = true;
+    const { data, error } = await SB.auth.signInWithPassword({ email: $("#lgEmail").value.trim(), password: $("#lgPass").value });
+    $("#lgBtn").disabled = false;
+    if (error) { err.textContent = /invalid/i.test(error.message) ? "อีเมลหรือรหัสผ่านไม่ถูกต้อง" : "เข้าสู่ระบบไม่สำเร็จ: " + error.message; err.hidden = false; return; }
+    authed(data.user);
+  };
+  $("#logoutBtn").onclick = async () => { await SB.auth.signOut(); location.reload(); };
+  SB.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT" && api) location.reload(); });
+  SB.auth.getSession().then(({ data }) => { if (data && data.session) authed(data.session.user); else showLogin(); })
+    .catch(() => showLogin());
+})();
+})();
+</script>
+</body>
+</html>
