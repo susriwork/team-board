@@ -92,6 +92,19 @@ h3{font:600 15px/1.3 var(--f-display);margin:0 0 8px}
 .alist{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .alist li{display:flex;gap:10px;align-items:baseline;padding:7px 8px;border-radius:6px;cursor:pointer;flex-wrap:wrap}
 .alist li:hover{background:var(--sunk)}
+.agenda{display:grid;gap:14px}
+.ag-day h4{margin:0 0 4px;display:flex;align-items:center;gap:8px;font:600 14px var(--f-display);color:var(--ink);padding-bottom:4px;border-bottom:1px solid var(--line)}
+.ag-rel{font:500 12px var(--f-body);padding:1px 8px;border-radius:99px;background:var(--sunk);color:var(--muted)}
+.ag-day.is-today .ag-rel{background:var(--warn-soft);color:var(--warn)}
+.ag-day.is-tmr .ag-rel{background:var(--info-soft);color:var(--info)}
+.ag-day.is-today h4{border-bottom-color:var(--orange,var(--accent))}
+.ag-day ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.ag-day li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;padding:7px 6px;border-radius:6px;cursor:pointer}
+.ag-day li:hover{background:var(--sunk)}
+.ag-time{font:600 13px var(--f-mono);color:var(--accent);padding-top:2px}
+.ag-body{display:grid;gap:3px;min-width:0}
+.ag-title{font-weight:500;overflow-wrap:anywhere}
+.ag-meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12.5px;color:var(--muted)}
 .alist .t{flex:1 1 160px;min-width:0;overflow-wrap:anywhere}
 .when{font:500 12px var(--f-mono);padding:1px 7px;border-radius:99px;white-space:nowrap}
 .when.over{background:var(--danger-soft);color:var(--danger)}
@@ -447,6 +460,7 @@ const parse = s => { if (!s) return null; const [y, m, d] = s.split("-").map(Num
 const todayISO = () => iso(new Date());
 const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
 const diffDays = (a, b) => Math.round((parse(a) - parse(b)) / 864e5);
+const TDOW = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
 const fmtD = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]}` : ""; };
 const fmtDY = s => { const d = parse(s); return d ? `${d.getDate()} ${TMON[d.getMonth()]} ${String(d.getFullYear() + 543).slice(2)}` : ""; };
 const store = (k, v) => { const j = JSON.stringify(v); try { sessionStorage.setItem(k, j); } catch {} try { localStorage.setItem(k, j); } catch {} };
@@ -812,6 +826,13 @@ function vHome() {
   const evDate = t => typeOf(t) === "appt" ? t.apptDate : t.eventDate;
   const events = L.filter(t => ["event", "appt"].includes(typeOf(t)) && evDate(t) && evDate(t) >= today && !isClosed(t) && ownerOf(t) !== "hold").sort((a, b) => (evDate(a) + (a.time || "")) < (evDate(b) + (b.time || "")) ? -1 : 1).slice(0, 10);
   const whenEv = t => { const d = diffDays(evDate(t), today); return `<span class="when ${d === 0 ? "today" : d === 1 ? "tmr" : "week"}">${d === 0 ? "วันนี้" : d === 1 ? "พรุ่งนี้" : fmtD(evDate(t))}${t.time ? " " + esc(t.time) : ""}</span>`; };
+  const agenda = list => {
+    const days = []; list.forEach(t => { const k = evDate(t); const g = days.find(x => x.k === k); g ? g.items.push(t) : days.push({ k, items: [t] }); });
+    return `<div class="agenda">${days.map(({ k, items }) => { const dd = diffDays(k, today), dt = parse(k);
+      const rel = dd === 0 ? "วันนี้" : dd === 1 ? "พรุ่งนี้" : dd < 7 ? `อีก ${dd} วัน` : "";
+      return `<section class="ag-day${dd === 0 ? " is-today" : dd === 1 ? " is-tmr" : ""}"><h4><b>${TDOW[dt.getDay()]} ${fmtD(k)}</b>${rel ? `<span class="ag-rel">${rel}</span>` : ""}</h4>
+        <ul>${items.map(t => `<li data-open="${t.id}"><span class="ag-time">${t.time ? esc(t.time) : "ทั้งวัน"}</span><span class="ag-body"><span class="ag-title">${esc(t.title)}</span><span class="ag-meta">${tyBadge(t)}<span>${esc(whoTxt(t) || "ไม่ระบุผู้รับผิดชอบ")}</span>${t.venue ? `<span>· ${esc(t.venue)}</span>` : ""}</span></span></li>`).join("")}</ul></section>`; }).join("")}</div>`;
+  };
   const li = (t, right) => `<li data-open="${t.id}">${tyBadge(t)}<span class="t">${esc(t.title)}</span><span class="muted">${esc(whoTxt(t) || "—")}</span>${right}</li>`;
   const section = (b, title) => {
     const items = L.filter(t => bucket(t) === b).sort(byDue);
@@ -834,7 +855,7 @@ function vHome() {
     ${section("over", "งานทีมเลยกำหนด")}
     <div class="panel"><h3>ถึงวันโทรตามหน่วยงาน <span class="muted mono">${fdue.length}</span></h3>${fdue.length ? `<ul class="alist">${fdue.map(t => li(t, `<span class="when over">รอ ${waitDays(t) ?? "-"} วัน</span>`)).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
     ${section("today", "ครบกำหนดวันนี้")}${section("tmr", "ครบกำหนดพรุ่งนี้")}${section("week", "ภายใน 7 วันข้างหน้า")}
-    <div class="panel"><h3>นัดหมายและกิจกรรมที่จะถึง</h3>${events.length ? `<ul class="alist">${events.map(t => li(t, whenEv(t))).join("")}</ul>` : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
+    <div class="panel"><h3>นัดหมายและกิจกรรมที่จะถึง</h3>${events.length ? agenda(events) : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
     <div class="panel" style="grid-column:1/-1"><h3>ความคืบหน้ารายโครงการ</h3>
       <div class="legend"><span><i style="background:var(--muted)"></i>ทีมกำลังทำ</span><span><i style="background:var(--info)"></i>รอหน่วยงาน</span><span><i style="background:var(--accent)"></i>ปิดแล้ว</span><span><i style="background:var(--line)"></i>พักไว้</span></div>
       ${projects.length ? `<div class="proj">${projects.map(([p, a, w, d, h, n]) => `<div class="proj-row" data-proj="${esc(p)}"><div class="top"><span>${esc(p)}</span><span class="mono muted">${d}/${n}</span></div>
