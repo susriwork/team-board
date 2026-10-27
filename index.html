@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>บอร์ดงานทีม</title>
+<title>ทีมส้มบางซื่อ 🍊</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap">
 <style>
 /* Layout: sticky top bar with tabs + filter strip; each view is a full-width working surface. Case-tracking office tool for a district council team. */
 :root{
   --bg:#f3f6f5; --surface:#ffffff; --sunk:#e9eeec; --line:#d5ddda;
-  --ink:#16242a; --muted:#5c6b70; --accent:#1d6e58; --accent-ink:#ffffff; --accent-soft:#dcece6; --field-line:#b3c0bc; --ph:#97a3a7; --lbl:#2b3a40;
+  --ink:#16242a; --muted:#5c6b70; --accent:#1d6e58; --accent-ink:#ffffff; --accent-soft:#dcece6; --field-line:#b3c0bc; --ph:#97a3a7; --lbl:#2b3a40; --orange:#f26b1d; --orange-ink:#e8641a; --orange-soft:#ffc49a;
   --danger:#b3261e; --danger-soft:#fbe4e1; --warn:#8a5a00; --warn-soft:#fdf0d5; --info:#235b8f; --info-soft:#e1ecf7;
   --violet:#6b4fa0; --violet-soft:#ece6f6; --done:#8a979b;
   --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
@@ -21,12 +21,12 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
-  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3; --orange:#f27a33; --orange-ink:#ff9a55; --orange-soft:#7a3f1c;
   --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
   --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
-  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3; --orange:#f27a33; --orange-ink:#ff9a55; --orange-soft:#7a3f1c;
   --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
   --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}
 *{box-sizing:border-box}
@@ -207,6 +207,14 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 .form label.pick,.form label.chk{font-weight:400}
 .form .muted{font-weight:400}
 .flbl{font-size:13px;font-weight:600;color:var(--lbl)}
+/* ธีม: เขียวเดิม + ส้ม */
+header.top{border-top:5px solid var(--orange)}
+header.top .brand{color:var(--orange-ink)}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--orange);border-bottom-width:3px}
+.stat{border-top:3px solid var(--orange-soft)}
+.stat b{color:var(--accent)}
+.stat.alert b{color:var(--danger)} .stat.wait b{color:var(--info)}
+.panel h3{color:var(--accent)}
 /* หน้าต่างกรอกเรื่อง: ฟอนต์ไทยมีหัว อ่านง่าย หัวข้อตัวหนา */
 #dlg{font-family:"Noto Sans Thai Looped",var(--f-body)}
 #dlg .form label,#dlg .flbl{font-weight:700}
@@ -351,7 +359,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 <body>
 <div class="login" id="login" hidden>
   <form id="loginForm" autocomplete="on">
-    <h2 style="margin:0">บอร์ดงานทีม</h2>
+    <h2 style="margin:0">ทีมส้มบางซื่อ 🍊</h2>
     <p class="muted" style="margin:0;font-size:14px">เข้าสู่ระบบด้วยอีเมลและรหัสผ่านที่ผู้ดูแลสร้างให้</p>
     <label for="lgEmail">อีเมล<input type="text" id="lgEmail" inputmode="email" autocapitalize="off" autocomplete="username" required></label>
     <label for="lgPass">รหัสผ่าน<input type="password" id="lgPass" autocomplete="current-password" required></label>
@@ -364,7 +372,7 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 <header class="top">
   <div class="wrap">
     <div class="bar">
-      <div class="brand">บอร์ดงานทีม <small id="who"></small></div>
+      <div class="brand">ทีมส้มบางซื่อ 🍊 <small id="who"></small></div>
       <button class="btn" id="mineBtn" type="button" aria-pressed="false" hidden>งานของฉัน</button>
       <button class="btn" id="fBtn" type="button" aria-expanded="false" aria-controls="filters">ตัวกรอง</button>
       <button class="btn primary" id="addBtn" type="button">+ เพิ่มเรื่อง</button>
@@ -423,7 +431,7 @@ const DEFAULT_CFG = {
   followupDays: 15, weekStart: "mon", weights: { done: 50, ontime: 50 }
 };
 const STAGE_COLORS = ["#7d8a8f", "#c58a14", "#2f7fbf", "#8a6fb8", "#235b8f", "#4f9aa0", "#c0453b", "#1d8a68", "#9aa3a6", "#b0b7bb"];
-const TABS = [["home", "ภาพรวม"], ["table", "รายการเรื่อง"], ["board", "บอร์ด"], ["follow", "ติดตามหนังสือ"], ["cal", "ปฏิทิน"],
+const TABS = [["home", "ภาพรวม"], ["cal", "ปฏิทิน"], ["table", "รายการเรื่อง"], ["board", "บอร์ด"], ["follow", "ติดตามหนังสือ"],
   ["matrix", "จัดลำดับ"], ["files", "ไฟล์แนบ"], ["report", "สรุปผลงาน"], ["kpi", "ประเมินทีม"], ["settings", "ตั้งค่า"]];
 const TMON = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
 const TMON_FULL = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
@@ -1642,7 +1650,7 @@ $("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.
   const authed = user => {
     $("#login").hidden = true; $("#app").hidden = false;
     S.myId = user.id; S.myEmail = (user.email || "").toLowerCase();
-    $("#who").textContent = S.myEmail;
+    $("#who").textContent = "";
     $("#logoutBtn").hidden = false;
     $("#mineBtn").hidden = false;
     S.mine = recall("tb.mine") === true;
@@ -1650,6 +1658,8 @@ $("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.
     applyWriteMode();
     SB.from("members").select("name,role,see_names").eq("email", S.myEmail).maybeSingle().then(({ data }) => {
       S.me = data || null; S.seeNames = (data && Array.isArray(data.see_names)) ? data.see_names : []; S.isAdmin = !!(data && data.role === "admin"); S.seeAll = !!(data && (data.role === "admin" || data.role === "viewall"));
+      $("#who").textContent = data && data.name ? data.name : S.myEmail;
+      $("#who").title = S.myEmail;
       if (!data) showBanner("บัญชีนี้ยังไม่ได้ผูกชื่อในทีม จึงเห็นเฉพาะงานของทุกคน ให้ผู้ดูแลเพิ่มอีเมลนี้ในตั้งค่า → สมาชิกและสิทธิ์");
       render();
     });
