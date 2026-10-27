@@ -426,7 +426,7 @@ header.top .brand{color:var(--orange-ink)}
 const TYPES = {
   letter: { label: "เรื่องส่งหนังสือ", short: "หนังสือ", stages: [
     ["none", "—", "team"], ["intake", "รับเรื่อง/สำรวจ", "team"], ["gather", "รวบรวมข้อมูล", "team"], ["draft", "ร่างหนังสือ", "team"],
-    ["sign", "รอ ส.ก. ลงนาม", "team"], ["sent", "ส่งแล้ว รอหน่วยงาน", "agency"], ["acting", "หน่วยงานรับเรื่อง/กำลังแก้", "agency"],
+    ["sign", "รอ ส.ก. ลงนาม", "team"], ["sent", "ส่งแล้ว รอหน่วยงาน", "agency"], ["acting", "หน่วยงานรับเรื่อง/กำลังแก้", "agency"], ["resend", "ส่งหนังสือติดตามอีกครั้ง", "agency"],
     ["escalate", "ยกระดับในสภา", "team"], ["resolved", "แก้ไขแล้ว ปิดเรื่อง", "done"], ["unresolved", "ไม่ได้รับการแก้ไข ปิดเรื่อง", "done"],
     ["cancel", "ยกเลิก", "cancel"]] },
   task: { label: "งานทั่วไป", short: "งาน", stages: [
@@ -645,7 +645,9 @@ function vFiles() {
   ${lk.length ? `<h3 style="margin-top:24px">ลิงก์ไฟล์ภายนอก <span class="muted mono">${lk.length}</span></h3><ul class="alist">${lk.map(l => `<li>${safeUrl(l.url) ? `<a class="t" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener">${esc(l.name || l.url)}</a>` : `<span class="t">${esc(l.name)}</span>`}<button class="it muted" type="button" data-open="${l.itemId}" style="border:0;background:none;cursor:pointer;text-decoration:underline">${esc(l.item)}</button></li>`).join("")}</ul>` : ""}`;
 }
 const prog = t => { const c = t.checklist || []; return c.length ? `<span class="prog">✓ ${c.filter(x => x.done).length}/${c.length}</span>` : ""; };
-const byDue = (a, b) => (a.due || "9999") < (b.due || "9999") ? -1 : (a.due || "9999") > (b.due || "9999") ? 1 : 0;
+// เรียงตามวันสำคัญของเรื่อง: นัดหมาย = วันนัด+เวลา, กิจกรรม = วันจัด, อื่น ๆ = กำหนดส่ง (ไม่มีวัน = ไว้ท้าย)
+const sortKey = t => { const ty = typeOf(t), d = ty === "appt" ? (t.apptDate || t.due) : ty === "event" ? (t.eventDate || t.due) : t.due; return (d || "9999-99-99") + " " + (t.time || "99:99"); };
+const byDue = (a, b) => { const x = sortKey(a), y = sortKey(b); return x < y ? -1 : x > y ? 1 : 0; };
 const opts = (list, cur, blank) => (blank !== undefined ? `<option value="">${blank}</option>` : "") + list.map(v => `<option${v === cur ? " selected" : ""}>${esc(v)}</option>`).join("");
 const stageOpts = (type, cur) => stages(type).map(s => `<option value="${s[0]}"${s[0] === cur ? " selected" : ""}>${esc(s[1])}</option>`).join("");
 
@@ -674,6 +676,7 @@ function autoPatch(t, next) {
     if (!val("followUpDate")) p.followUpDate = addDays(val("letterDate"), +S.cfg.followupDays || 15);
   }
   if (st[0] === "acting" && !val("replyDate")) p.replyDate = today;
+  if (st[0] === "resend" && !(next.followUpDate && next.followUpDate > today && next.followUpDate !== t.followUpDate)) p.followUpDate = addDays(today, +S.cfg.followupDays || 15);
   if (st[2] === "done" && !val("doneAt")) p.doneAt = today;
   if (st[3]) p.rejectCount = (t.rejectCount || 0) + 1;
   return p;
@@ -1564,7 +1567,7 @@ function openFollow(id) {
     <label>วันที่ติดตาม<input type="date" id="q_date" value="${todayISO()}"></label>
     <label>นัดติดตามครั้งถัดไป<input type="date" id="q_next" value="${addDays(todayISO(), +S.cfg.followupDays || 15)}"></label>
     <label class="full">ได้ความว่าอย่างไร<textarea id="q_note" rows="3" placeholder="เช่น โทรคุยฝ่ายโยธาเขต แจ้งว่าบรรจุในแผนซ่อมเดือนหน้า"></textarea></label>
-    <label class="full">ขั้นตอนหลังติดตาม<select id="q_stage">${stages("letter").filter(s => ["sent", "acting", "escalate", "resolved", "unresolved"].includes(s[0])).map(s => `<option value="${s[0]}"${s[0] === t.status ? " selected" : ""}>${esc(s[1])}</option>`).join("")}</select></label>
+    <label class="full">ขั้นตอนหลังติดตาม<select id="q_stage">${stages("letter").filter(s => ["sent", "acting", "resend", "escalate", "resolved", "unresolved"].includes(s[0])).map(s => `<option value="${s[0]}"${s[0] === t.status ? " selected" : ""}>${esc(s[1])}</option>`).join("")}</select></label>
   </div>
   <div class="dlg-f"><span class="sp"></span><button class="btn ghost" type="button" id="q_cancel">ปิด</button><button class="btn primary" type="submit">บันทึก</button></div>`;
   $("#q_cancel").onclick = () => $("#dlg").close();
