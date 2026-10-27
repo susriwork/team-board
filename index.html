@@ -11,7 +11,7 @@
 /* Layout: sticky top bar with tabs + filter strip; each view is a full-width working surface. Case-tracking office tool for a district council team. */
 :root{
   --bg:#f3f6f5; --surface:#ffffff; --sunk:#e9eeec; --line:#d5ddda;
-  --ink:#16242a; --muted:#5c6b70; --accent:#1d6e58; --accent-ink:#ffffff; --accent-soft:#dcece6;
+  --ink:#16242a; --muted:#5c6b70; --accent:#1d6e58; --accent-ink:#ffffff; --accent-soft:#dcece6; --field-line:#b3c0bc; --ph:#97a3a7; --lbl:#2b3a40;
   --danger:#b3261e; --danger-soft:#fbe4e1; --warn:#8a5a00; --warn-soft:#fdf0d5; --info:#235b8f; --info-soft:#e1ecf7;
   --violet:#6b4fa0; --violet-soft:#ece6f6; --done:#8a979b;
   --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
@@ -21,12 +21,12 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
-  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3;
   --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
   --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#101719; --surface:#172124; --sunk:#0c1214; --line:#2a383c;
-  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c;
+  --ink:#e4ecea; --muted:#94a5a9; --accent:#5cc4a1; --accent-ink:#06231a; --accent-soft:#16352c; --field-line:#3e5054; --ph:#66787c; --lbl:#c9d6d3;
   --danger:#ff8a80; --danger-soft:#3a1d1b; --warn:#f2c46b; --warn-soft:#33280f; --info:#8cbdf0; --info-soft:#16283a;
   --violet:#c3a8f0; --violet-soft:#2a2140; --done:#6d7b7f; color-scheme:dark}
 *{box-sizing:border-box}
@@ -51,7 +51,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .filters{display:flex;gap:8px;flex-wrap:wrap;padding-block:10px;border-top:1px solid var(--line);align-items:center}
 .filters input[type=search]{flex:1 1 180px;min-width:0}
 .filters select{max-width:min(100%,240px)}
-select,input[type=text],input[type=url],input[type=search],input[type=date],input[type=time],input[type=number],textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-height:36px;min-width:0}
+select,input[type=text],input[type=url],input[type=search],input[type=date],input[type=time],input[type=number],input[type=email],input[type=tel],input[type=password],textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-height:36px;min-width:0}
 textarea{resize:vertical;width:100%}
 label.chk{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 14px;cursor:pointer;font-weight:500;min-height:36px}
@@ -200,7 +200,13 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 .dlg{padding:20px;display:grid;gap:14px}
 .form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .form .full{grid-column:1/-1}
-.form label{display:grid;gap:4px;font-size:12.5px;color:var(--muted);min-width:0}
+.form label{display:grid;gap:5px;font-size:13px;font-weight:600;color:var(--lbl);min-width:0}
+.form input:not([type=checkbox]),.form select,.form textarea{font-weight:400;font-size:15px;color:var(--ink);border-color:var(--field-line)}
+.form input:not([type=checkbox]):focus,.form select:focus,.form textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+.form ::placeholder{color:var(--ph);font-weight:400;opacity:1}
+.form label.pick,.form label.chk{font-weight:400}
+.form .muted{font-weight:400}
+.flbl{font-size:13px;font-weight:600;color:var(--lbl)}
 .form input:not([type=checkbox]),.form select{width:100%}
 .form .cl-row input[type=text]{width:auto;flex:1 1 auto;min-width:0}
 .form .cl-row input[type=date]{width:auto;flex:none}
@@ -1290,7 +1296,7 @@ function openItem(id, preset = {}) {
         ${field("traffyId", "เลขเรื่อง Traffy Fondue (ถ้ามี)", inp("traffyId"))}
         ${field("replyDate", "วันที่หน่วยงานตอบรับ", inp("replyDate", "date"))}
         ${field("replySummary", "ผลการตอบกลับ/การแก้ไข", `<textarea id="t_replySummary" rows="2" ${ro}>${esc(t.replySummary || "")}</textarea>`, "full")}
-        <div class="full"><span class="muted" style="font-size:12.5px">ประวัติการติดตาม</span>
+        <div class="full"><span class="flbl">ประวัติการติดตาม</span>
           <ul class="log" id="fuLog">${followups.length ? followups.map((x, i) => `<li><span class="mono">${fmtDY(x.date)}</span><span style="flex:1">${esc(x.note)}</span>${S.canWrite ? `<button class="btn ghost sm" type="button" data-rmfu="${i}" aria-label="ลบบันทึก">ลบ</button>` : ""}</li>`).join("") : `<li class="muted">ยังไม่มี</li>`}</ul>
           ${S.canWrite ? `<div class="cl-row fu" style="margin-top:8px"><input type="date" id="fuDate" value="${todayISO()}" style="flex:none"><input type="text" id="fuNote" placeholder="เช่น โทรตามฝ่ายโยธา แจ้งว่าอยู่ระหว่างตั้งงบ"><button class="btn sm" type="button" id="fuAdd">เพิ่ม</button></div>` : ""}
         </div></fieldset>`,
@@ -1320,7 +1326,7 @@ function openItem(id, preset = {}) {
     <div class="form">
       ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
       ${field("project", "โครงการ", combo("project", t.project, ro), "full")}
-      <div class="full"><span class="muted" style="font-size:12.5px">ผู้รับผิดชอบ (เลือกได้หลายคน)</span>
+      <div class="full"><span class="flbl">ผู้รับผิดชอบ (เลือกได้หลายคน)</span>
         <div class="picks" style="margin-top:4px">${S.cfg.assignees.length > 1 ? `<label class="pick"><input type="checkbox" id="whoAll" ${isAll(people) ? "checked" : ""} ${ro}>ทุกคน</label>` : ""}${[...S.cfg.assignees, ...people.filter(n => !S.cfg.assignees.includes(n))].map(n => `<label class="pick"><input type="checkbox" data-who="${esc(n)}" ${people.includes(n) ? "checked" : ""} ${ro}>${esc(n)}</label>`).join("") || `<span class="muted">เพิ่มชื่อสมาชิกในแท็บตั้งค่า</span>`}</div>
         ${ro ? "" : `<div class="who-add"><input type="text" id="whoNew" placeholder="พิมพ์ชื่ออื่น เช่น คนนอกทีม หน่วยงาน" maxlength="60" aria-label="เพิ่มชื่อผู้รับผิดชอบอื่น"><button type="button" class="btn" id="whoNewAdd">+ เพิ่มชื่อ</button></div>`}</div>
       ${field("status", "ขั้นตอน", `<select id="t_status" ${ro}>${stageOpts(type, t.status)}</select>`)}
@@ -1337,11 +1343,11 @@ function openItem(id, preset = {}) {
         ${!isAppt && safeUrl(t.mapUrl) ? `<a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
       </div>
       ${typeSec}
-      <div class="full"${isAppt && !checklist.length ? " hidden" : ""}><span class="muted" style="font-size:12.5px">เช็กลิสต์</span>
+      <div class="full"${isAppt && !checklist.length ? " hidden" : ""}><span class="flbl">เช็กลิสต์</span>
         <div class="cl" id="cl">${checklist.map((c, i) => `<div class="cl-row"><input type="checkbox" data-cli="${i}" ${c.done ? "checked" : ""} ${ro} aria-label="ทำแล้ว"><input type="text" data-clt="${i}" value="${esc(c.t)}" ${ro}>${S.canWrite ? `<button class="btn ghost sm" type="button" data-clr="${i}" aria-label="ลบรายการ">ลบ</button>` : ""}</div>`).join("")}</div>
         ${S.canWrite ? `<button class="btn ghost sm" type="button" id="clAdd" style="margin-top:6px">+ เพิ่มรายการ</button>` : ""}
       </div>
-      <div class="full" style="display:grid;gap:8px"><span class="muted" style="font-size:12.5px">ไฟล์แนบ ${files.length ? `· ${files.length} ไฟล์` : ""}</span>
+      <div class="full" style="display:grid;gap:8px"><span class="flbl">ไฟล์แนบ ${files.length ? `· ${files.length} ไฟล์` : ""}</span>
         ${files.length ? `<div class="att">${files.map((a, i) => { const th = thumbHtml(a);
           return `<div class="att-i"><button class="att-th" type="button" data-dview="${i}" aria-label="ดู ${esc(a.name)}">${th}</button>
             <div class="att-b">${S.canWrite ? `<input type="text" data-fname="${i}" value="${esc(a.name)}" aria-label="ชื่อไฟล์">` : `<span class="nm">${esc(a.name)}</span>`}
