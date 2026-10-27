@@ -78,6 +78,8 @@ h3{font:600 15px/1.3 var(--f-display);margin:0 0 8px}
 .ty.letter{background:var(--info-soft);color:var(--info)}
 .ty.event{background:var(--warn-soft);color:var(--warn)}
 .ty.content{background:var(--violet-soft);color:var(--violet)}
+.ty.appt{background:var(--accent-soft);color:var(--accent)}
+.chip.k-appt{border-left-color:var(--danger)}
 
 /* overview */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
@@ -391,11 +393,13 @@ const TYPES = {
   event: { label: "กิจกรรม", short: "กิจกรรม", stages: [
     ["plan", "วางแผน", "team"], ["prep", "เตรียมงาน", "team"], ["ready", "พร้อมจัด", "team"], ["held", "จัดแล้ว รอสรุป", "team"],
     ["done", "สรุปผลแล้ว", "done"], ["hold", "เลื่อน/พักไว้", "hold"], ["cancel", "ยกเลิก", "cancel"]] },
+  appt: { label: "นัดหมาย", short: "นัดหมาย", stages: [
+    ["booked", "รอวันนัด", "appt"], ["attended", "ไปแล้ว", "done"], ["postponed", "เลื่อนนัด", "hold"], ["cancel", "ยกเลิก", "cancel"]] },
   content: { label: "คอนเทนต์/คลิป", short: "คอนเทนต์", stages: [
     ["idea", "ไอเดีย", "team"], ["shoot", "ถ่ายทำ/เก็บภาพ", "team"], ["edit", "ตัดต่อ/ทำกราฟิก", "team"], ["review", "รอตรวจ", "team"],
     ["rework", "ถูกตีกลับ", "team", 1], ["posted", "โพสต์แล้ว", "done"], ["cancel", "ยกเลิก", "cancel"]] }
 };
-const TYPE_KEYS = ["letter", "task", "event", "content"];
+const TYPE_KEYS = ["letter", "task", "event", "appt", "content"];
 const PLATFORMS = ["TikTok", "Facebook", "Instagram", "YouTube", "LINE", "X"];
 const DEFAULT_CFG = {
   projects: [], categories: ["งานเอกสาร", "ออกแบบ", "ประสานงาน", "ลงพื้นที่", "การเงิน", "คลิป"], assignees: [],
@@ -599,7 +603,7 @@ const stageOpts = (type, cur) => stages(type).map(s => `<option value="${s[0]}"$
 function filtered({ keepClosed = false, ignoreType = false } = {}) {
   const q = $("#fq").value.trim().toLowerCase(), { t, a, p, r, h } = S.filters;
   return S.items.filter(x =>
-    (!q || [x.title, x.note, x.location, x.letterNo, x.agency, x.traffyId, whoTxt(x), ...attOf(x).map(a => a.name), ...linksOf(x).map(l => l.name)].join(" ").toLowerCase().includes(q)) &&
+    (!q || [x.title, x.note, x.location, x.letterNo, x.agency, x.traffyId, x.venue, x.organizer, whoTxt(x), ...attOf(x).map(a => a.name), ...linksOf(x).map(l => l.name)].join(" ").toLowerCase().includes(q)) &&
     (ignoreType || !t || typeOf(x) === t) && (!a || who(x).includes(a)) && (!p || x.project === p) && (!r || x.area === r) &&
     (keepClosed || !h || !isClosed(x)));
 }
@@ -763,7 +767,9 @@ function vHome() {
   const teamOpen = L.filter(isTeamOpen), over = L.filter(t => bucket(t) === "over");
   const waiting = L.filter(isAgency), fdue = L.filter(followDue);
   const today = todayISO();
-  const events = L.filter(t => typeOf(t) === "event" && t.eventDate && t.eventDate >= today && !isClosed(t)).sort((a, b) => a.eventDate < b.eventDate ? -1 : 1).slice(0, 8);
+  const evDate = t => typeOf(t) === "appt" ? t.apptDate : t.eventDate;
+  const events = L.filter(t => ["event", "appt"].includes(typeOf(t)) && evDate(t) && evDate(t) >= today && !isClosed(t) && ownerOf(t) !== "hold").sort((a, b) => (evDate(a) + (a.time || "")) < (evDate(b) + (b.time || "")) ? -1 : 1).slice(0, 10);
+  const whenEv = t => { const d = diffDays(evDate(t), today); return `<span class="when ${d === 0 ? "today" : d === 1 ? "tmr" : "week"}">${d === 0 ? "วันนี้" : d === 1 ? "พรุ่งนี้" : fmtD(evDate(t))}${t.time ? " " + esc(t.time) : ""}</span>`; };
   const li = (t, right) => `<li data-open="${t.id}">${tyBadge(t)}<span class="t">${esc(t.title)}</span><span class="muted">${esc(whoTxt(t) || "—")}</span>${right}</li>`;
   const section = (b, title) => {
     const items = L.filter(t => bucket(t) === b).sort(byDue);
@@ -786,7 +792,7 @@ function vHome() {
     ${section("over", "งานทีมเลยกำหนด")}
     <div class="panel"><h3>ถึงวันโทรตามหน่วยงาน <span class="muted mono">${fdue.length}</span></h3>${fdue.length ? `<ul class="alist">${fdue.map(t => li(t, `<span class="when over">รอ ${waitDays(t) ?? "-"} วัน</span>`)).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
     ${section("today", "ครบกำหนดวันนี้")}${section("tmr", "ครบกำหนดพรุ่งนี้")}${section("week", "ภายใน 7 วันข้างหน้า")}
-    <div class="panel"><h3>กิจกรรมที่จะถึง</h3>${events.length ? `<ul class="alist">${events.map(t => li(t, `<span class="when week">${fmtD(t.eventDate)}</span>`)).join("")}</ul>` : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
+    <div class="panel"><h3>นัดหมายและกิจกรรมที่จะถึง</h3>${events.length ? `<ul class="alist">${events.map(t => li(t, whenEv(t))).join("")}</ul>` : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
     <div class="panel" style="grid-column:1/-1"><h3>ความคืบหน้ารายโครงการ</h3>
       <div class="legend"><span><i style="background:var(--muted)"></i>ทีมกำลังทำ</span><span><i style="background:var(--info)"></i>รอหน่วยงาน</span><span><i style="background:var(--accent)"></i>ปิดแล้ว</span><span><i style="background:var(--line)"></i>พักไว้</span></div>
       ${projects.length ? `<div class="proj">${projects.map(([p, a, w, d, h, n]) => `<div class="proj-row" data-proj="${esc(p)}"><div class="top"><span>${esc(p)}</span><span class="mono muted">${d}/${n}</span></div>
@@ -828,7 +834,7 @@ function mItem(t, extraHtml = "") {
   </div>`;
 }
 function card(t) {
-  const extra = typeOf(t) === "letter" && t.agency ? `<span>${esc(t.agency)}</span>` : typeOf(t) === "event" && t.eventDate ? `<span>จัด ${fmtD(t.eventDate)}</span>` : typeOf(t) === "content" && postsOf(t).length ? `<span>${esc(postsOf(t).map(x => x.platform).join(" · "))}</span>` : "";
+  const extra = typeOf(t) === "letter" && t.agency ? `<span>${esc(t.agency)}</span>` : typeOf(t) === "event" && t.eventDate ? `<span>จัด ${fmtD(t.eventDate)}</span>` : typeOf(t) === "appt" && t.apptDate ? `<span>นัด ${fmtD(t.apptDate)}${t.time ? " " + esc(t.time) : ""}${t.venue ? " · " + esc(t.venue) : ""}</span>` : typeOf(t) === "content" && postsOf(t).length ? `<span>${esc(postsOf(t).map(x => x.platform).join(" · "))}</span>` : "";
   const wait = isAgency(t) && t.letterDate ? `<span class="when ${followDue(t) ? "over" : "week"}">รอ ${waitDays(t)} วัน</span>` : "";
   return `<div class="card ${isClosed(t) ? "closed" : ""} ${bucket(t) === "over" ? "overdue" : ""}" draggable="${S.canWrite}" data-id="${t.id}" data-open="${t.id}">
     <div class="ct">${esc(t.title)}</div>
@@ -883,6 +889,7 @@ function calEntries() {
     if (t.due && isTeamOpen(t)) out.push([t.due, "due", "กำหนด", t]);
     if (t.followUpDate && isAgency(t)) out.push([t.followUpDate, "follow", "ตาม", t]);
     if (typeOf(t) === "event" && t.eventDate && ownerOf(t) !== "cancel") out.push([t.eventDate, "event", "จัดงาน", t]);
+    if (typeOf(t) === "appt" && t.apptDate && !["cancel", "hold"].includes(ownerOf(t))) out.push([t.apptDate, "appt", "นัด" + (t.time ? " " + t.time : ""), t]);
     if (typeOf(t) === "content" && ownerOf(t) !== "cancel") postsOf(t).forEach(x => { if (x.date) out.push([x.date, "post", "โพสต์ " + x.platform, t]); });
   });
   return out;
@@ -904,7 +911,7 @@ function vCal() {
   }
   return `<div class="cal-h"><h2>${TMON_FULL[S.calM]} ${S.calY + 543}</h2>
     <button class="btn" type="button" data-cal="-1" aria-label="เดือนก่อน">‹</button><button class="btn" type="button" data-cal="0">เดือนนี้</button><button class="btn" type="button" data-cal="1" aria-label="เดือนถัดไป">›</button></div>
-    <div class="legend"><span><i style="background:var(--accent)"></i>กำหนดส่งงานทีม</span><span><i style="background:var(--info)"></i>นัดติดตามหนังสือ</span><span><i style="background:var(--warn)"></i>วันจัดกิจกรรม</span><span><i style="background:var(--violet)"></i>วันโพสต์</span></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>กำหนดส่งงานทีม</span><span><i style="background:var(--info)"></i>นัดติดตามหนังสือ</span><span><i style="background:var(--warn)"></i>วันจัดกิจกรรม</span><span><i style="background:var(--danger)"></i>นัดหมาย</span><span><i style="background:var(--violet)"></i>วันโพสต์</span></div>
     <div class="cal-scroll only-wide"><div class="cal">${cells}</div></div><div id="dayList" class="only-wide"></div>
     <div class="agenda only-narrow">${(() => { const days = Object.keys(byDay).filter(k => { const dd = parse(k); return dd.getFullYear() === S.calY && dd.getMonth() === S.calM; }).sort();
       return days.length ? days.map(k => { const dd = parse(k); return `<div class="ad ${k === today ? "today" : ""}"><div class="ad-d"><b>${dd.getDate()}</b><span>${DOW[dd.getDay()]}</span></div>
@@ -935,16 +942,17 @@ function reportData() {
   const byAgency = {};
   sent.forEach(t => { const k = t.agency || "ไม่ระบุหน่วยงาน"; const r = byAgency[k] = byAgency[k] || { sent: 0, replied: 0, resolved: 0, waiting: 0, days: [] };
     r.sent++; if (t.replyDate) { r.replied++; r.days.push(diffDays(t.replyDate, t.letterDate)); } if (stageOf(t)[0] === "resolved") r.resolved++; if (isAgency(t)) r.waiting++; });
-  const touched = all.filter(t => inRange(t.letterDate) || inRange(t.doneAt) || inRange(t.eventDate) || postsOf(t).some(x => inRange(x.date)) || inRange(t.due));
+  const touched = all.filter(t => inRange(t.letterDate) || inRange(t.doneAt) || inRange(t.eventDate) || inRange(t.apptDate) || postsOf(t).some(x => inRange(x.date)) || inRange(t.due));
   const byArea = {};
   touched.forEach(t => { const k = t.area || "ไม่ระบุพื้นที่"; const r = byArea[k] = byArea[k] || { n: 0, letters: 0, closed: 0 }; r.n++; if (typeOf(t) === "letter") r.letters++; if (ownerOf(t) === "done") r.closed++; });
   const events = all.filter(t => typeOf(t) === "event" && inRange(t.eventDate) && ["held", "done"].includes(stageOf(t)[0]));
+  const appts = all.filter(t => typeOf(t) === "appt" && inRange(t.apptDate) && stageOf(t)[0] === "attended");
   const posted = all.filter(t => typeOf(t) === "content" && stageOf(t)[0] === "posted");
   const postEntries = posted.flatMap(t => postsOf(t).filter(x => inRange(x.date || t.doneAt)));
   const posts = posted.filter(t => postsOf(t).some(x => inRange(x.date || t.doneAt)) || (!postsOf(t).length && inRange(t.doneAt)));
   const byPlat = {}; postEntries.forEach(x => byPlat[x.platform || "ไม่ระบุ"] = (byPlat[x.platform || "ไม่ระบุ"] || 0) + 1);
   return { sent, replied, resolved, unresolved, avgReply: avg(replyDays), waitingNow: letters.filter(isAgency), byAgency, byArea, events,
-    people: events.reduce((s, t) => s + (+t.delivered || 0), 0), posts, postEntries, byPlat, avg };
+    people: events.reduce((s, t) => s + (+t.delivered || 0), 0), appts, posts, postEntries, byPlat, avg };
 }
 function vReport() {
   const R = reportData(), n = v => v == null ? "–" : v.toFixed(1);
@@ -960,6 +968,7 @@ function vReport() {
     <div class="stat wait"><span>ยังรอหน่วยงาน (ตอนนี้)</span><b>${R.waitingNow.length}</b></div>
     <div class="stat ${longWait ? "alert" : ""}"><span>รอเกิน 30 วัน</span><b>${longWait}</b></div>
     <div class="stat"><span>กิจกรรมที่จัด · ผู้รับ</span><b>${R.events.length} <small class="muted" style="font-size:15px">· ${R.people} คน</small></b></div>
+    <div class="stat"><span>ไปตามนัดหมาย</span><b>${R.appts.length}</b></div>
     <div class="stat"><span>คอนเทนต์ที่โพสต์ · ช่องทาง</span><b>${R.posts.length} <small class="muted" style="font-size:15px">· ${R.postEntries.length} โพสต์</small></b></div>
   </div>
   <div class="sumgrid">
@@ -980,6 +989,7 @@ function reportText() {
   lines.push(`• ยังรอหน่วยงานดำเนินการ ${R.waitingNow.length} เรื่อง`);
   Object.entries(R.byAgency).forEach(([k, r]) => lines.push(`   - ${k}: ส่ง ${r.sent} / แก้แล้ว ${r.resolved} / รอ ${r.waiting}`));
   if (R.events.length) lines.push(`• จัดกิจกรรม ${R.events.length} ครั้ง ผู้ได้รับประโยชน์ ${R.people} คน`);
+  if (R.appts.length) lines.push(`• เข้าร่วมตามนัดหมาย ${R.appts.length} ครั้ง`);
   if (R.posts.length) lines.push(`• ผลิตคอนเทนต์ ${R.posts.length} ชิ้น เผยแพร่ ${R.postEntries.length} โพสต์ (${Object.entries(R.byPlat).map(([k, v]) => k + " " + v).join(", ")})`);
   return lines.join("\n");
 }
@@ -1167,6 +1177,7 @@ function openItem(id, preset = {}) {
   const inp = (k, typ = "text", extra = "") => `<input type="${typ}" id="t_${k}" value="${esc(t[k] ?? "")}" ${ro} ${extra}>`;
   const draw = () => {
     if (!stages(type).some(s => s[0] === t.status)) t.status = stages(type)[0][0];
+    const isAppt = type === "appt";
     const typeSec = {
       letter: `<fieldset><legend>หนังสือและการติดตาม</legend>
         ${field("agency", "หน่วยงานปลายทาง", `<select id="t_agency" ${ro}>${opts(S.cfg.agencies, t.agency, "—")}</select>`)}
@@ -1180,6 +1191,11 @@ function openItem(id, preset = {}) {
           <ul class="log" id="fuLog">${followups.length ? followups.map((x, i) => `<li><span class="mono">${fmtDY(x.date)}</span><span style="flex:1">${esc(x.note)}</span>${S.canWrite ? `<button class="btn ghost sm" type="button" data-rmfu="${i}" aria-label="ลบบันทึก">ลบ</button>` : ""}</li>`).join("") : `<li class="muted">ยังไม่มี</li>`}</ul>
           ${S.canWrite ? `<div class="cl-row fu" style="margin-top:8px"><input type="date" id="fuDate" value="${todayISO()}" style="flex:none"><input type="text" id="fuNote" placeholder="เช่น โทรตามฝ่ายโยธา แจ้งว่าอยู่ระหว่างตั้งงบ"><button class="btn sm" type="button" id="fuAdd">เพิ่ม</button></div>` : ""}
         </div></fieldset>`,
+      appt: `<fieldset><legend>นัดหมาย</legend>
+        ${field("apptDate", "วันนัด", inp("apptDate", "date"))}
+        ${field("time", "เวลา", inp("time", "time"))}
+        ${field("venue", "สถานที่", inp("venue", "text", 'placeholder="เช่น สำนักงานเขตบางซื่อ ห้องประชุม 2"'), "full")}
+        ${field("organizer", "ผู้นัด / หน่วยงาน", inp("organizer", "text", 'placeholder="เช่น ผอ.เขตบางซื่อ, ชุมชนวงศ์สว่าง"'), "full")}</fieldset>`,
       event: `<fieldset><legend>กิจกรรม</legend>
         ${field("eventDate", "วันจัดกิจกรรม", inp("eventDate", "date"))}
         ${field("venue", "สถานที่จัด", inp("venue"))}
@@ -1204,18 +1220,18 @@ function openItem(id, preset = {}) {
       ${field("status", "ขั้นตอน", `<select id="t_status" ${ro}>${stageOpts(type, t.status)}</select>`)}
       ${field("area", "พื้นที่", `<select id="t_area" ${ro}>${opts(S.cfg.areas, t.area, "—")}</select>`)}
       ${field("category", "หมวดหมู่", `<select id="t_category" ${ro}>${opts(S.cfg.categories, t.category, "—")}</select>`)}
-      ${field("location", "จุด / ที่ตั้ง", inp("location", "text", 'placeholder="เช่น ป้ายหน้าตลาดเตาปูน ฝั่งขาออก"'))}
+      ${isAppt ? "" : field("location", "จุด / ที่ตั้ง", inp("location", "text", 'placeholder="เช่น ป้ายหน้าตลาดเตาปูน ฝั่งขาออก"'))}
       ${field("mapUrl", "ลิงก์แผนที่", inp("mapUrl", "url", 'placeholder="https://maps.google.com/..."'))}
-      ${field("start", "วันเริ่ม", inp("start", "date"))}
-      ${field("due", type === "letter" ? "กำหนดส่งหนังสือ (ทีม)" : "กำหนดเสร็จ (ทีม)", inp("due", "date"))}
-      ${field("time", "เวลา", inp("time", "time"))}
+      ${isAppt ? "" : field("start", "วันเริ่ม", inp("start", "date"))}
+      ${isAppt ? "" : field("due", type === "letter" ? "กำหนดส่งหนังสือ (ทีม)" : "กำหนดเสร็จ (ทีม)", inp("due", "date"))}
+      ${isAppt ? "" : field("time", "เวลา", inp("time", "time"))}
       <div class="full" style="display:flex;gap:16px;flex-wrap:wrap">
         <label class="chk"><input type="checkbox" id="t_important" ${t.important ? "checked" : ""} ${ro}> สำคัญ</label>
         <label class="chk"><input type="checkbox" id="t_urgent" ${t.urgent ? "checked" : ""} ${ro}> ด่วน</label>
         ${safeUrl(t.mapUrl) ? `<a href="${esc(safeUrl(t.mapUrl))}" target="_blank" rel="noopener" style="font-size:13px">เปิดแผนที่</a>` : ""}
       </div>
       ${typeSec}
-      <div class="full"><span class="muted" style="font-size:12.5px">เช็กลิสต์</span>
+      <div class="full"${isAppt && !checklist.length ? " hidden" : ""}><span class="muted" style="font-size:12.5px">เช็กลิสต์</span>
         <div class="cl" id="cl">${checklist.map((c, i) => `<div class="cl-row"><input type="checkbox" data-cli="${i}" ${c.done ? "checked" : ""} ${ro} aria-label="ทำแล้ว"><input type="text" data-clt="${i}" value="${esc(c.t)}" ${ro}>${S.canWrite ? `<button class="btn ghost sm" type="button" data-clr="${i}" aria-label="ลบรายการ">ลบ</button>` : ""}</div>`).join("")}</div>
         ${S.canWrite ? `<button class="btn ghost sm" type="button" id="clAdd" style="margin-top:6px">+ เพิ่มรายการ</button>` : ""}
       </div>
@@ -1236,7 +1252,7 @@ function openItem(id, preset = {}) {
         ${S.canWrite ? `<button class="btn ghost sm" type="button" id="lkAdd" style="justify-self:start">+ เพิ่มลิงก์</button>` : ""}
       </div>
       ${field("note", "หมายเหตุ", `<textarea id="t_note" rows="3" ${ro}>${esc(t.note || "")}</textarea>`, "full")}
-      ${field("doneAt", "วันที่ปิดเรื่อง/เสร็จ", inp("doneAt", "date"))}
+      ${isAppt ? "" : field("doneAt", "วันที่ปิดเรื่อง/เสร็จ", inp("doneAt", "date"))}
     </div>
     <p class="muted" style="font-size:12.5px;margin:0" id="t_meta"></p>
     <div class="dlg-f">
@@ -1251,7 +1267,7 @@ function openItem(id, preset = {}) {
   const collect = () => {
     const v = k => { const el = $("#t_" + k); return el ? el.value : t[k]; };
     ["title", "project", "status", "area", "category", "location", "mapUrl", "start", "due", "time", "note", "doneAt",
-      "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered"]
+      "agency", "letterNo", "letterDate", "followUpDate", "traffyId", "replyDate", "replySummary", "eventDate", "venue", "target", "delivered", "apptDate", "organizer"]
       .forEach(k => { if ($("#t_" + k)) t[k] = v(k); });
     if (document.querySelector("[data-who]")) people = [...document.querySelectorAll("[data-who]")].filter(el => el.checked).map(el => el.dataset.who);
     if (document.querySelector("[data-plat]")) posts = [...document.querySelectorAll("[data-plat]")].filter(el => el.checked).map(el => {
