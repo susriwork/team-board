@@ -1,7 +1,3 @@
-// ตั้งค่าการเชื่อมต่อ Supabase
-// หาค่าได้ที่ Supabase Dashboard > Project Settings > API Keys (หรือปุ่ม Connect ด้านบน)
-// คีย์นี้เป็นคีย์สาธารณะ ใส่ในหน้าเว็บได้ ข้อมูลถูกป้องกันด้วยสิทธิ์ใน schema.sql
-// ห้ามใส่ secret key หรือ service_role key ในไฟล์นี้เด็ดขาด
-
-window.SUPABASE_URL = "https://ใส่รหัสโปรเจกต์.supabase.co";
-window.SUPABASE_ANON_KEY = "ใส่ Publishable key (sb_publishable_...) หรือ anon key";
+// Supabase connection for team board (publishable key only - never put a secret/service_role key here)
+window.SUPABASE_URL = "https://opdfouljjehkkzbbqpio.supabase.co";
+window.SUPABASE_ANON_KEY = "sb_publishable_cJuCd3TrPdwUCIXz4JB5UQ_Ju00BLc4";
