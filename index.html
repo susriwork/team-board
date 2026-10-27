@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>บอร์ดงานทีม</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Thai+Looped:wght@400;600;700&display=swap">
 <style>
 /* Layout: sticky top bar with tabs + filter strip; each view is a full-width working surface. Case-tracking office tool for a district council team. */
 :root{
@@ -207,6 +207,10 @@ dialog::backdrop{background:rgba(10,20,22,.45)}
 .form label.pick,.form label.chk{font-weight:400}
 .form .muted{font-weight:400}
 .flbl{font-size:13px;font-weight:600;color:var(--lbl)}
+/* หน้าต่างกรอกเรื่อง: ฟอนต์ไทยมีหัว อ่านง่าย หัวข้อตัวหนา */
+#dlg{font-family:"Noto Sans Thai Looped",var(--f-body)}
+#dlg .form label,#dlg .flbl{font-weight:700}
+#dlg .form label.pick,#dlg .form label.chk{font-weight:400}
 .form input:not([type=checkbox]),.form select{width:100%}
 .form .cl-row input[type=text]{width:auto;flex:1 1 auto;min-width:0}
 .form .cl-row input[type=date]{width:auto;flex:none}
