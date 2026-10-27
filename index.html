@@ -1171,6 +1171,9 @@ function vSettings() {
   <h3 style="margin-top:28px">กลุ่ม LINE ที่ใช้บอทได้</h3>
   <p class="hint">เชิญบัญชี LINE ทีมส้มบางซื่อเข้ากลุ่ม แล้วกด "อนุญาต" ที่กลุ่มนั้น บอทจะตอบเฉพาะกลุ่มที่อนุญาต · ในกลุ่มพิมพ์ <b>ตารางงาน</b> เพื่อดูนัดหมาย 14 วัน หรือ <b>ตารางงาน จด พฤ5 13:00 เรื่อง [ชื่อ]</b> เพื่อจดนัด · ในกลุ่มแสดงเฉพาะนัดหมายและกิจกรรม</p>
   <div class="tbl-wrap" style="max-width:760px"><table><thead><tr><th>กลุ่ม</th><th>สถานะ</th><th>เข้ากลุ่มเมื่อ</th><th></th></tr></thead><tbody id="lgRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
+  ${SB ? `<h3 style="margin-top:28px">วันลาของทีม</h3>
+  <p class="hint">จดผ่านกลุ่ม LINE ด้วย <b>ตารางงาน ลา 1-8 พ.ย. นนท์ลาไปสอบ</b> หรือบรรทัดที่ขึ้นต้นด้วย * ในตารางที่วาง · แสดงท้ายข้อความ "ตารางงาน" ในกลุ่มจนกว่าจะพ้นวันลา</p>
+  <div class="tbl-wrap" style="max-width:760px"><table><thead><tr><th>ช่วงวัน</th><th>รายละเอียด</th><th>ผู้จด</th><th></th></tr></thead><tbody id="lvRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
   <h3 style="margin-top:28px">สำรองและย้ายข้อมูล</h3>
   <p class="hint">ดาวน์โหลดไฟล์สำรองเก็บไว้เป็นระยะ (เช่น สัปดาห์ละครั้ง) ไฟล์ JSON ใช้นำเข้ากลับได้ ไฟล์ CSV เปิดด้วย Excel หรือ Google Sheets · ไฟล์แนบดาวน์โหลดทั้งหมดได้จากหน้า Storage ใน Supabase</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1242,6 +1245,21 @@ function lineCell(m) {
   return (live ? `<span class="mono" style="font-weight:600;font-size:15px">${esc(m.line_code)}</span> <span class="muted" style="font-size:12px">ถึง ${fmtD(m.line_code_exp.slice(0, 10))}</span> ` : `<span class="muted">ยังไม่ผูก</span> `)
     + `<button class="btn ghost sm" type="button" data-mline="${esc(m.email)}">${live ? "รหัสใหม่" : "สร้างรหัส"}</button>`;
 }
+async function bindLeaves() {
+  const body = $("#lvRows"); if (!body || !SB) return;
+  const { data, error } = await SB.from("leaves").select("id,start_date,end_date,note,created_by").gte("end_date", todayISO()).order("start_date");
+  if (!$("#lvRows")) return;
+  if (error) { body.innerHTML = `<tr><td colspan="4" class="muted">ยังไม่ได้ตั้งค่าวันลา</td></tr>`; return; }
+  const rng = l => l.start_date === l.end_date ? fmtDY(l.start_date) : `${fmtD(l.start_date)} – ${fmtDY(l.end_date)}`;
+  body.innerHTML = (data || []).map(l => `<tr><td class="mono" style="white-space:nowrap">${rng(l)}</td><td>${esc(l.note)}</td><td class="muted" style="font-size:12.5px">${esc((l.created_by || "").replace(/^LINE:?\s*/, ""))}</td>
+    <td>${S.canWrite ? `<button class="btn ghost sm" type="button" data-lvdel="${esc(l.id)}">ลบ</button>` : ""}</td></tr>`).join("")
+    || `<tr><td colspan="4" class="muted">ไม่มีวันลาที่จะถึง</td></tr>`;
+  body.querySelectorAll("[data-lvdel]").forEach(b => b.onclick = async () => {
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "ยืนยันลบ"; b.classList.add("danger"); return; }
+    const { error } = await SB.from("leaves").delete().eq("id", b.dataset.lvdel);
+    toast(error ? "ลบไม่สำเร็จ: " + error.message : "ลบวันลาแล้ว"); bindLeaves();
+  });
+}
 async function bindGroups() {
   const body = $("#lgRows"); if (!body || !SB) return;
   const { data, error } = await SB.from("line_groups").select("group_id,name,allowed,joined_at,left_at").order("joined_at", { ascending: false });
@@ -1303,7 +1321,7 @@ function bindSettings() {
   const stampName = todayISO();
   const ej = $("#expJson"); if (ej) ej.onclick = () => dl(`บอร์ดงานทีม-สำรอง-${stampName}.json`, JSON.stringify({ app: "team-board", version: 1, exportedAt: new Date().toISOString(), config: S.cfg, tasks: S.items }, null, 1), "application/json");
   const ec = $("#expCsv"); if (ec) ec.onclick = () => dl(`บอร์ดงานทีม-${stampName}.csv`, toCsv(), "text/csv");
-  bindMembers(); bindGroups();
+  bindMembers(); bindGroups(); bindLeaves();
   const pw = $("#pwBtn");
   if (pw) pw.onclick = async () => {
     const v = $("#newPw").value; if (v.length < 8) { toast("รหัสผ่านต้องยาวอย่างน้อย 8 ตัวอักษร"); return; }
