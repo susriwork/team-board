@@ -1918,11 +1918,31 @@ $("#addBtn").onclick = () => S.view === "leave" && SB && S.canWrite ? openLeaveD
     const { data, error } = await SB.auth.signInWithPassword({ email: raw.includes("@") ? raw : raw + "@team-board.local", password: $("#lgPass").value });
     $("#lgBtn").disabled = false;
     if (error) { err.textContent = /invalid/i.test(error.message) ? "อีเมลหรือรหัสผ่านไม่ถูกต้อง" : "เข้าสู่ระบบไม่สำเร็จ: " + error.message; err.hidden = false; return; }
-    authed(data.user);
+    markAct(true); authed(data.user);
   };
   $("#logoutBtn").onclick = async () => { await SB.auth.signOut(); location.reload(); };
+  // ออกจากระบบอัตโนมัติเมื่อไม่ได้ใช้งานเกิน 12 ชั่วโมง (นับรวมทุกแท็บในเครื่องเดียวกัน)
+  const IDLE_MS = 12 * 60 * 60 * 1000, ACT_KEY = "tb.active";
+  const lastAct = () => { try { return +localStorage.getItem(ACT_KEY) || 0; } catch { return 0; } };
+  const markAct = (force) => { const n = Date.now(); if (!force && n - lastAct() < 60000) return; try { localStorage.setItem(ACT_KEY, String(n)); } catch {} };
+  const idleOver = () => { const l = lastAct(); return l > 0 && Date.now() - l > IDLE_MS; };
+  let idleOut = false;
+  const idleLogout = async () => {
+    if (idleOut) return; idleOut = true;
+    try { sessionStorage.setItem("tb.idleout", "1"); } catch {}
+    try { localStorage.removeItem(ACT_KEY); } catch {}
+    try { await SB.auth.signOut({ scope: "local" }); } catch {}
+    location.reload();
+  };
+  const idleCheck = async () => { if (!api || idleOut) return false; const { data } = await SB.auth.getSession(); if (data && data.session && idleOver()) { idleLogout(); return true; } return false; };
+  ["pointerdown", "keydown", "touchstart", "wheel"].forEach(ev => addEventListener(ev, () => { if (api && !idleOut && !idleOver()) markAct(); }, { passive: true, capture: true }));
+  document.addEventListener("visibilitychange", async () => { if (document.visibilityState === "visible" && !(await idleCheck()) && api) markAct(); });
+  setInterval(idleCheck, 5 * 60 * 1000);
+  try { if (sessionStorage.getItem("tb.idleout")) { sessionStorage.removeItem("tb.idleout"); const er = $("#lgErr"); er.textContent = "ออกจากระบบอัตโนมัติแล้ว เพราะไม่ได้ใช้งานเกิน 12 ชั่วโมง กรุณาเข้าสู่ระบบอีกครั้ง"; er.hidden = false; } } catch {}
   SB.auth.onAuthStateChange((ev) => { if (ev === "SIGNED_OUT" && api) location.reload(); });
-  SB.auth.getSession().then(({ data }) => { if (data && data.session) authed(data.session.user); else showLogin(); })
+  SB.auth.getSession().then(({ data }) => {
+    if (data && data.session) { if (idleOver()) { idleLogout(); return; } markAct(true); authed(data.session.user); } else showLogin();
+  })
     .catch(() => showLogin());
 })();
 })();
