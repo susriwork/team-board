@@ -385,12 +385,12 @@ header.top .brand{color:var(--orange-ink)}
   .board .col.is-empty{display:none}
   .quad{min-height:0}
   /* ตารางในหน้าตั้งค่า/วันลา เป็นการ์ด */
-  table.stack thead{display:none}
-  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
-  table.stack tr{padding:10px 12px;border-bottom:1px solid var(--line)}
-  table.stack td{border:0;padding:2px 0;white-space:normal!important}
-  table.stack td:empty{display:none}
-  .tbl-wrap:has(table.stack){overflow:visible}
+  table.cardtbl thead{display:none}
+  table.cardtbl,table.cardtbl tbody,table.cardtbl tr,table.cardtbl td{display:block;width:100%}
+  table.cardtbl tr{padding:10px 12px;border-bottom:1px solid var(--line)}
+  table.cardtbl td{border:0;padding:2px 0;white-space:normal!important}
+  table.cardtbl td:empty{display:none}
+  .tbl-wrap:has(table.cardtbl){overflow:visible}
   /* กันมือถือซูมเองตอนแตะช่องกรอก */
   input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
   h2{font-size:20px}
@@ -1080,7 +1080,7 @@ function vLeave() {
   const now = all.filter(l => l.start_date <= today && l.end_date >= today), next = all.filter(l => l.start_date > today), past = all.filter(l => l.end_date < today).reverse();
   const row = l => `<tr><td class="mono" style="white-space:nowrap">${esc(leaveRangeTxt(l))}<div class="muted" style="font-size:12px">${leaveDays(l)} วัน</div></td><td><b>${esc(l.person || "—")}</b></td><td>${esc(l.note)}</td>
     <td class="muted" style="font-size:12.5px">${esc((l.created_by || "").replace(/^LINE:?\s*/, "LINE · "))}</td><td>${S.canWrite ? `<button class="btn ghost sm" type="button" data-lvdel="${esc(l.id)}">ลบ</button>` : ""}</td></tr>`;
-  const table = (list, empty) => `<div class="tbl-wrap"><table class="stack"><thead><tr><th>ช่วงวัน</th><th>ใคร</th><th>รายละเอียด</th><th>ผู้จด</th><th></th></tr></thead><tbody>${list.length ? list.map(row).join("") : `<tr><td colspan="5" class="muted">${empty}</td></tr>`}</tbody></table></div>`;
+  const table = (list, empty) => `<div class="tbl-wrap"><table class="cardtbl"><thead><tr><th>ช่วงวัน</th><th>ใคร</th><th>รายละเอียด</th><th>ผู้จด</th><th></th></tr></thead><tbody>${list.length ? list.map(row).join("") : `<tr><td colspan="5" class="muted">${empty}</td></tr>`}</tbody></table></div>`;
   return `<h2>วันลาของทีม</h2>
   <p class="hint">วันลาแสดงในปฏิทิน (แถบลายเทา) และท้ายข้อความ "ตารางงาน" ในกลุ่ม LINE · จดในกลุ่มได้ด้วย <b>ตารางงาน ลา 1-8 พ.ย. นนท์ลาไปสอบ</b></p>
   ${S.canWrite ? `<div class="panel" style="max-width:760px;margin-bottom:18px"><h3>จดวันลา</h3>
@@ -1310,7 +1310,7 @@ function vSettings() {
   ${SB && S.isAdmin ? `<h3 style="margin-top:28px">สมาชิกและสิทธิ์การมองเห็น</h3>
   <p class="hint"><b>ผูก LINE:</b> กด "สร้างรหัส" ที่ชื่อสมาชิก แล้วให้สมาชิก <a href="${LINE_OA_ADD}" target="_blank" rel="noopener">เพิ่มเพื่อน LINE ทีมส้มบางซื่อ</a> และพิมพ์รหัส 6 หลักในแชตส่วนตัวกับบอท จากนั้นพิมพ์ "วันนี้" หรือ "งานของฉัน" เพื่อดูงานของตัวเองได้ (ไม่บังคับ ใช้ในกลุ่มอย่างเดียวก็ได้)</p>
   <p class="hint">ผูกอีเมลที่ใช้ล็อกอินกับชื่อในทีม · <b>สมาชิก</b> เห็นงานที่ตนรับผิดชอบ งานของทุกคน/ไม่ระบุผู้รับผิดชอบ และงานของคนที่ติ๊กใน "เห็นงานของ" · <b>เห็นงานทั้งหมด</b> เห็นงานของทุกคน แต่แก้สิทธิ์สมาชิกไม่ได้ · <b>ผู้ดูแล</b> มีบัญชีเดียว เห็นงานทั้งหมดและจัดการสมาชิกได้ · บัญชีที่ไม่ได้อยู่ในรายชื่อนี้จะเห็นเฉพาะงานของทุกคน</p>
-  <div class="tbl-wrap" style="max-width:960px"><table class="stack"><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th>เห็นงานของ</th><th>LINE</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="6" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
+  <div class="tbl-wrap" style="max-width:960px"><table class="cardtbl"><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th>เห็นงานของ</th><th>LINE</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="6" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;max-width:760px">
     <label class="set-row" for="mEmail" style="flex:2 1 220px">อีเมล<input type="text" id="mEmail" inputmode="email" placeholder="name@gmail.com"></label>
     <label class="set-row" for="mName" style="flex:1 1 140px">ชื่อในทีม<select id="mName">${opts(S.cfg.assignees, "", "— เลือก —")}</select></label>
@@ -1319,8 +1319,8 @@ function vSettings() {
     <button class="btn primary" type="button" id="mAdd">บันทึกสมาชิก</button>
   </div>
   <h3 style="margin-top:28px">กลุ่ม LINE ที่ใช้บอทได้</h3>
-  <p class="hint">เชิญบัญชี LINE ทีมส้มบางซื่อเข้ากลุ่ม แล้วกด "อนุญาต" ที่กลุ่มนั้น บอทจะตอบเฉพาะกลุ่มที่อนุญาต · ในกลุ่มพิมพ์ <b>ตารางงาน</b> เพื่อดูนัดหมาย 14 วัน หรือ <b>ตารางงาน จด พฤ5 13:00 เรื่อง [ชื่อ]</b> เพื่อจดนัด · ในกลุ่มแสดงเฉพาะนัดหมายและกิจกรรม</p>
-  <div class="tbl-wrap" style="max-width:760px"><table class="stack"><thead><tr><th>กลุ่ม</th><th>สถานะ</th><th>เข้ากลุ่มเมื่อ</th><th></th></tr></thead><tbody id="lgRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
+  <p class="hint">เชิญบัญชี LINE ทีมส้มบางซื่อเข้ากลุ่ม แล้วกด "อนุญาต" ที่กลุ่มนั้น บอทจะตอบเฉพาะกลุ่มที่อนุญาต · ในกลุ่มพิมพ์ <b>ตารางงาน</b> เพื่อดูนัดหมายถึงสิ้นเดือนหน้า · <b>ตารางงาน จด พฤ5 13:00 เรื่อง [ชื่อ]</b> เพื่อจดนัด · <b>บันทึก …</b> เพื่อจดเรื่องรอตรวจสอบ หรือวันลา · ในกลุ่มแสดงเฉพาะนัดหมายและกิจกรรม</p>
+  <div class="tbl-wrap" style="max-width:760px"><table class="cardtbl"><thead><tr><th>กลุ่ม</th><th>สถานะ</th><th>เข้ากลุ่มเมื่อ</th><th></th></tr></thead><tbody id="lgRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
   <h3 style="margin-top:28px">สำรองและย้ายข้อมูล</h3>
   <p class="hint">ดาวน์โหลดไฟล์สำรองเก็บไว้เป็นระยะ (เช่น สัปดาห์ละครั้ง) ไฟล์ JSON ใช้นำเข้ากลับได้ ไฟล์ CSV เปิดด้วย Excel หรือ Google Sheets · ไฟล์แนบดาวน์โหลดทั้งหมดได้จากหน้า Storage ใน Supabase</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
