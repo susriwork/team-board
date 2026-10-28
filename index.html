@@ -160,10 +160,7 @@ td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:ta
 .board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;scroll-behavior:smooth}
 .board .col{flex:1 0 250px;max-width:340px}
 .board .col.is-empty{flex:0 0 150px}
-.btop{display:none;overflow-x:auto;overflow-y:hidden;height:16px;margin-bottom:6px}
-.btop>div{height:1px}
 @media (min-width:641px){
-  .btop{display:block}
   .board{scrollbar-width:none}
   .board::-webkit-scrollbar{display:none}
 }
@@ -987,22 +984,13 @@ function card(t) {
     ${S.canWrite && S.view === "board" ? `<select class="only-narrow" data-status="${t.id}" aria-label="ย้ายขั้นตอน">${stageOpts(typeOf(t), stageOf(t)[0])}</select>` : ""}
   </div>`;
 }
-// บอร์ดบนจอคอม: แถบเลื่อนซ้าย-ขวาอยู่ด้านบนบอร์ด (ซิงก์กับบอร์ด)
-function fitBoard() {
-  const bd = document.querySelector(".board"), tp = document.querySelector(".btop"); if (!bd || !tp) return;
-  tp.firstElementChild.style.width = bd.scrollWidth + "px";
-  tp.style.display = innerWidth > 640 && bd.scrollWidth > bd.clientWidth + 1 ? "" : "none";
-  let setTp = -1;
-  tp.onscroll = () => { if (Math.abs(tp.scrollLeft - setTp) < 2) return; setTp = -1; bd.style.scrollBehavior = "auto"; bd.scrollLeft = tp.scrollLeft; bd.style.scrollBehavior = ""; };
-  bd.onscroll = () => { if (Math.abs(tp.scrollLeft - bd.scrollLeft) < 2) return; setTp = bd.scrollLeft; tp.scrollLeft = bd.scrollLeft; };
-}
-addEventListener("resize", () => { if (S.view === "board") fitBoard(); });
+function fitBoard() {}
 function vBoard() {
   const type = S.boardType;
   const L = filtered({ ignoreType: true }).filter(t => typeOf(t) === type);
   return `<div class="board-h"><div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-btype="${k}" aria-pressed="${k === type}">${TYPES[k].label} <span class="mono">${S.items.filter(t => typeOf(t) === k).length}</span></button>`).join("")}</div>
     <span class="hint only-wide" style="margin:0">ลากการ์ดเพื่อเปลี่ยนขั้นตอน · เลื่อนซ้าย-ขวาด้วยปุ่มลูกศร หรือ Shift + ล้อเมาส์</span><span class="bscroll only-wide"><button class="btn" type="button" data-bscroll="-1" aria-label="เลื่อนไปทางซ้าย">‹</button><button class="btn" type="button" data-bscroll="1" aria-label="เลื่อนไปทางขวา">›</button></span><span class="hint only-narrow" style="margin:0">เลื่อนซ้าย-ขวาเพื่อดูขั้นตอนอื่น · เปลี่ยนขั้นตอนจากช่องเลือกใต้การ์ด</span></div>
-  ${L.length || S.items.length ? `<div class="btop" aria-hidden="true"><div></div></div><div class="board">${stages(type).map(st => {
+  ${L.length || S.items.length ? `<div class="board">${stages(type).map(st => {
     const items = L.filter(t => stageOf(t)[0] === st[0]).sort(byDue);
     return `<section class="col ${st[2] === "agency" ? "agency" : ""}${items.length ? "" : " is-empty"}" data-drop="status" data-val="${st[0]}"><div class="col-h"><span>${esc(st[1])}</span>${st[2] === "agency" ? "<small>ฝั่งหน่วยงาน</small>" : ""}<span class="n">${items.length}</span></div>${items.map(card).join("")}</section>`;
   }).join("")}</div>` : emptyState()}`;
