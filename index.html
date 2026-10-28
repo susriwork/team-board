@@ -157,7 +157,16 @@ td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:ta
 
 /* kanban */
 .board-h{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px;align-items:start}
+.board{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;align-items:flex-start;scroll-behavior:smooth}
+.board .col{flex:1 0 250px;max-width:340px}
+.board .col.is-empty{flex:0 0 150px}
+@media (min-width:641px){
+  .board{overflow-y:hidden}
+  .board .col{max-height:100%;overflow-y:auto;overscroll-behavior:contain}
+  .board .col-h{position:sticky;top:-10px;z-index:1;background:var(--sunk);margin:-10px -10px 0;padding:10px 14px 6px}
+}
+.bscroll{display:inline-flex;gap:6px;margin-left:auto}
+.bscroll .btn{min-width:40px;font-size:18px;line-height:1;padding:6px 10px}
 .col{background:var(--sunk);border-radius:var(--r);padding:10px;min-height:120px;display:flex;flex-direction:column;gap:8px}
 .col.agency{background:var(--info-soft)}
 .col.over{outline:2px dashed var(--accent);outline-offset:-2px}
@@ -357,7 +366,7 @@ header.top .brand{color:var(--orange-ink)}
   .filters:not(.open){display:none}
   .bar{padding-block:10px 0}
   .brand{font-size:18px}
-  .board{grid-auto-columns:82%;scroll-snap-type:x mandatory}
+  .board{scroll-snap-type:x mandatory}.board .col{flex:0 0 82%;max-width:none}
   .col{scroll-snap-align:start}
   .card{cursor:pointer}
   dialog{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border:0;border-radius:0}
@@ -877,6 +886,7 @@ function render() {
   const mo = $("#mineOff"); if (mo) mo.onclick = () => setMine(false);
   if (S.view === "settings") bindSettings();
   if (S.view === "leave") bindLeave();
+  if (S.view === "board") fitBoard();
   if (S.view === "kpi" || S.view === "report") bindRange();
   if (S.view === "kpi") bindWeights();
   if (S.view === "board" || S.view === "matrix") bindDnd();
@@ -975,11 +985,19 @@ function card(t) {
     ${S.canWrite && S.view === "board" ? `<select class="only-narrow" data-status="${t.id}" aria-label="ย้ายขั้นตอน">${stageOpts(typeOf(t), stageOf(t)[0])}</select>` : ""}
   </div>`;
 }
+// บอร์ดบนจอคอม: ให้สูงพอดีหน้าจอ แถบเลื่อนซ้าย-ขวาจะอยู่ในจอเสมอ แต่ละคอลัมน์เลื่อนขึ้นลงเอง
+function fitBoard() {
+  const bd = document.querySelector(".board"); if (!bd) return;
+  if (innerWidth <= 640) { bd.style.height = ""; return; }
+  const top = bd.getBoundingClientRect().top + Math.min(scrollY, 0);
+  bd.style.height = Math.max(360, innerHeight - top - 16) + "px";
+}
+addEventListener("resize", () => { if (S.view === "board") fitBoard(); });
 function vBoard() {
   const type = S.boardType;
   const L = filtered({ ignoreType: true }).filter(t => typeOf(t) === type);
   return `<div class="board-h"><div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-btype="${k}" aria-pressed="${k === type}">${TYPES[k].label} <span class="mono">${S.items.filter(t => typeOf(t) === k).length}</span></button>`).join("")}</div>
-    <span class="hint only-wide" style="margin:0">ลากการ์ดเพื่อเปลี่ยนขั้นตอน</span><span class="hint only-narrow" style="margin:0">เลื่อนซ้าย-ขวาเพื่อดูขั้นตอนอื่น · เปลี่ยนขั้นตอนจากช่องเลือกใต้การ์ด</span></div>
+    <span class="hint only-wide" style="margin:0">ลากการ์ดเพื่อเปลี่ยนขั้นตอน · เลื่อนซ้าย-ขวาด้วยปุ่มลูกศร หรือ Shift + ล้อเมาส์</span><span class="bscroll only-wide"><button class="btn" type="button" data-bscroll="-1" aria-label="เลื่อนไปทางซ้าย">‹</button><button class="btn" type="button" data-bscroll="1" aria-label="เลื่อนไปทางขวา">›</button></span><span class="hint only-narrow" style="margin:0">เลื่อนซ้าย-ขวาเพื่อดูขั้นตอนอื่น · เปลี่ยนขั้นตอนจากช่องเลือกใต้การ์ด</span></div>
   ${L.length || S.items.length ? `<div class="board">${stages(type).map(st => {
     const items = L.filter(t => stageOf(t)[0] === st[0]).sort(byDue);
     return `<section class="col ${st[2] === "agency" ? "agency" : ""}${items.length ? "" : " is-empty"}" data-drop="status" data-val="${st[0]}"><div class="col-h"><span>${esc(st[1])}</span>${st[2] === "agency" ? "<small>ฝั่งหน่วยงาน</small>" : ""}<span class="n">${items.length}</span></div>${items.map(card).join("")}</section>`;
@@ -1804,6 +1822,8 @@ document.addEventListener("click", e => {
   if (e.target.closest("dialog")) return;
   const tab = e.target.closest(".tab");
   if (tab) { S.view = tab.dataset.v; store("tb.view", S.view); render(); return; }
+  const bsc = e.target.closest("[data-bscroll]");
+  if (bsc) { const bd = document.querySelector(".board"); if (bd) bd.scrollBy({ left: +bsc.dataset.bscroll * Math.max(260, bd.clientWidth * 0.6), behavior: "smooth" }); return; }
   const bn = e.target.closest("[data-bnav]");
   if (bn) { const k = bn.dataset.bnav; if (k === "__more") { toggleSheet(!document.querySelector(".msheet")); return; } toggleSheet(false); S.view = k; store("tb.view", S.view); render(); try { window.scrollTo(0, 0); } catch (_) {} return; }
   if (e.target.closest("[data-logout]")) { toggleSheet(false); const lb = $("#logoutBtn"); if (lb) lb.click(); return; }
