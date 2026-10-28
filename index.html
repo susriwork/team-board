@@ -366,7 +366,44 @@ header.top .brand{color:var(--orange-ink)}
   .dlg-f{position:sticky;bottom:0;background:var(--surface);padding-block:10px;border-top:1px solid var(--line);margin:0 -16px;padding-inline:16px}
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat b{font-size:24px}
+  /* มือถือ: เมนูล่าง + ปุ่มเพิ่มลอย */
+  #tabs{display:none}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+  .bnav{display:grid!important}
+  #logoutBtn{display:none!important}
+  #addBtn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:30;border-radius:999px;padding:12px 18px;box-shadow:0 6px 18px rgba(0,0,0,.22);font-size:15px}
+  .bar{gap:8px}.bar .btn{min-height:38px;padding:6px 12px}
+  header.top .wrap:first-child{padding-bottom:8px}
+  /* ภาพรวม: ซ่อนกล่องที่ว่าง, รายการสองบรรทัด */
+  .grid2 .panel.is-empty{display:none}
+  .alist li{flex-wrap:wrap;row-gap:4px;padding:9px 6px;border-bottom:1px solid var(--line);border-radius:0}
+  .alist li:last-child{border-bottom:0}
+  .alist .t{flex:1 1 calc(100% - 80px)}
+  .alist li > .muted,.alist li > .when{order:3}
+  .alist li > .when{margin-left:auto}
+  /* บอร์ด: ซ่อนคอลัมน์ว่าง */
+  .board .col.is-empty{display:none}
+  .quad{min-height:0}
+  /* ตารางในหน้าตั้งค่า/วันลา เป็นการ์ด */
+  table.stack thead{display:none}
+  table.stack,table.stack tbody,table.stack tr,table.stack td{display:block;width:100%}
+  table.stack tr{padding:10px 12px;border-bottom:1px solid var(--line)}
+  table.stack td{border:0;padding:2px 0;white-space:normal!important}
+  table.stack td:empty{display:none}
+  .tbl-wrap:has(table.stack){overflow:visible}
+  /* กันมือถือซูมเองตอนแตะช่องกรอก */
+  input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}
+  h2{font-size:20px}
 }
+.bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:25;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);box-shadow:0 -2px 10px rgba(0,0,0,.06)}
+.bnav button{border:0;background:none;padding:8px 2px 9px;display:grid;justify-items:center;gap:2px;font:500 11.5px var(--f-body);color:var(--muted);cursor:pointer;min-height:56px}
+.bnav button svg{width:22px;height:22px}
+.bnav button[aria-current="true"]{color:var(--accent);font-weight:700}
+.bnav button[aria-current="true"] svg{stroke:var(--orange,var(--accent))}
+.msheet{position:fixed;inset:auto 0 calc(56px + env(safe-area-inset-bottom,0px)) 0;z-index:26;background:var(--surface);border-top:1px solid var(--line);border-radius:16px 16px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.18);padding:10px 12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.msheet button{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 6px;font:500 13.5px var(--f-body);color:var(--ink);cursor:pointer}
+.msheet button[aria-current="true"]{border-color:var(--accent);color:var(--accent);font-weight:700}
+.msheet-bg{position:fixed;inset:0;z-index:24;background:rgba(0,0,0,.25)}
 .login{min-height:80vh;display:grid;place-items:center;padding:24px 16px}
 .login form{width:min(380px,100%);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:12px}
 .login label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
@@ -789,7 +826,27 @@ const patchItem = (t, d) => write(() => api.save(t.id, stamp(autoPatch(t, d))));
 function showBanner(msg) { S.bannerMsg = msg; const b = document.getElementById("banner"); if (b) { b.textContent = msg; b.hidden = false; } }
 
 /* ---------- shell ---------- */
+const BNAV = [["home", "ภาพรวม", '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>'], ["cal", "ปฏิทิน", '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],
+  ["table", "รายการ", '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'], ["board", "บอร์ด", '<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/>']];
+function renderBnav() {
+  let nav = $("#bnav");
+  if (!nav) { nav = document.createElement("nav"); nav.id = "bnav"; nav.className = "bnav"; nav.setAttribute("aria-label", "เมนูหลัก"); document.body.appendChild(nav); }
+  const more = !BNAV.some(b => b[0] === S.view);
+  nav.innerHTML = BNAV.map(([k, l, icon]) => `<button type="button" data-bnav="${k}" aria-current="${S.view === k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon}</svg>${l}</button>`).join("")
+    + `<button type="button" data-bnav="__more" aria-current="${more}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>${more ? esc((TABS.find(t => t[0] === S.view) || [, "เพิ่มเติม"])[1]) : "เพิ่มเติม"}</button>`;
+}
+function toggleSheet(open) {
+  document.querySelectorAll(".msheet,.msheet-bg").forEach(x => x.remove());
+  if (!open) return;
+  const n = S.items.filter(followDue).length;
+  const bg = document.createElement("div"); bg.className = "msheet-bg"; bg.onclick = () => toggleSheet(false);
+  const sh = document.createElement("div"); sh.className = "msheet"; sh.setAttribute("role", "menu");
+  sh.innerHTML = TABS.filter(t => !BNAV.some(b => b[0] === t[0])).map(([k, l]) => `<button type="button" data-bnav="${k}" aria-current="${S.view === k}">${l}${k === "follow" && n ? ` (${n})` : ""}</button>`).join("")
+    + `${SB ? `<button type="button" data-logout="1">ออกจากระบบ</button>` : ""}`;
+  document.body.append(bg, sh);
+}
 function renderTabs() {
+  renderBnav();
   const n = S.items.filter(followDue).length;
   $("#tabs").innerHTML = TABS.map(([k, l]) => `<button class="tab" role="tab" type="button" data-v="${k}" aria-selected="${S.view === k}">${l}${k === "follow" && n ? `<span class="badge">${n}</span>` : ""}</button>`).join("");
 }
@@ -847,7 +904,7 @@ function vHome() {
   const li = (t, right) => `<li data-open="${t.id}">${tyBadge(t)}<span class="t">${esc(t.title)}</span><span class="muted">${esc(whoTxt(t) || "—")}</span>${right}</li>`;
   const section = (b, title) => {
     const items = L.filter(t => bucket(t) === b).sort(byDue);
-    return `<div class="panel"><h3>${title} <span class="muted mono">${items.length}</span></h3>${items.length ? `<ul class="alist">${items.map(t => li(t, whenTag(t))).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>`;
+    return `<div class="panel${items.length ? "" : " is-empty"}"><h3>${title} <span class="muted mono">${items.length}</span></h3>${items.length ? `<ul class="alist">${items.map(t => li(t, whenTag(t))).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>`;
   };
   const projects = S.cfg.projects.map(p => {
     const mine = L.filter(t => t.project === p && ownerOf(t) !== "cancel");
@@ -864,7 +921,7 @@ function vHome() {
   </div>
   <div class="grid2">
     ${section("over", "งานทีมเลยกำหนด")}
-    <div class="panel"><h3>ถึงวันโทรตามหน่วยงาน <span class="muted mono">${fdue.length}</span></h3>${fdue.length ? `<ul class="alist">${fdue.map(t => li(t, `<span class="when over">รอ ${waitDays(t) ?? "-"} วัน</span>`)).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
+    <div class="panel${fdue.length ? "" : " is-empty"}"><h3>ถึงวันโทรตามหน่วยงาน <span class="muted mono">${fdue.length}</span></h3>${fdue.length ? `<ul class="alist">${fdue.map(t => li(t, `<span class="when over">รอ ${waitDays(t) ?? "-"} วัน</span>`)).join("")}</ul>` : `<p class="muted">ไม่มี</p>`}</div>
     ${section("today", "ครบกำหนดวันนี้")}${section("tmr", "ครบกำหนดพรุ่งนี้")}${section("week", "ภายใน 7 วันข้างหน้า")}
     <div class="panel"><h3>นัดหมายและกิจกรรมที่จะถึง</h3>${events.length ? agenda(events) : `<p class="muted">ไม่มีกิจกรรมที่กำหนดวันไว้</p>`}</div>
     ${leavePanel(today)}
@@ -925,7 +982,7 @@ function vBoard() {
     <span class="hint only-wide" style="margin:0">ลากการ์ดเพื่อเปลี่ยนขั้นตอน</span><span class="hint only-narrow" style="margin:0">เลื่อนซ้าย-ขวาเพื่อดูขั้นตอนอื่น · เปลี่ยนขั้นตอนจากช่องเลือกใต้การ์ด</span></div>
   ${L.length || S.items.length ? `<div class="board">${stages(type).map(st => {
     const items = L.filter(t => stageOf(t)[0] === st[0]).sort(byDue);
-    return `<section class="col ${st[2] === "agency" ? "agency" : ""}" data-drop="status" data-val="${st[0]}"><div class="col-h"><span>${esc(st[1])}</span>${st[2] === "agency" ? "<small>ฝั่งหน่วยงาน</small>" : ""}<span class="n">${items.length}</span></div>${items.map(card).join("")}</section>`;
+    return `<section class="col ${st[2] === "agency" ? "agency" : ""}${items.length ? "" : " is-empty"}" data-drop="status" data-val="${st[0]}"><div class="col-h"><span>${esc(st[1])}</span>${st[2] === "agency" ? "<small>ฝั่งหน่วยงาน</small>" : ""}<span class="n">${items.length}</span></div>${items.map(card).join("")}</section>`;
   }).join("")}</div>` : emptyState()}`;
 }
 
@@ -1015,7 +1072,7 @@ function leavePanel(today) {
   if (!SB) return "";
   const to = iso(new Date(parse(today).getTime() + 13 * 864e5));
   const L = (S.leaves || []).filter(l => l.end_date >= today && l.start_date <= to);
-  return `<div class="panel"><h3>ใครลาช่วงนี้ <span class="muted mono">${L.length}</span></h3>${L.length ? `<ul class="alist">${L.map(l => `<li data-v="leave" class="tab-link"><span class="when ${l.start_date <= today ? "today" : "week"}">${l.start_date <= today ? "ลาอยู่" : fmtD(l.start_date)}</span><span class="t">${esc(l.note)}</span><span class="muted mono">${esc(leaveRangeTxt(l))}</span></li>`).join("")}</ul>` : `<p class="muted">ไม่มีใครลาใน 14 วันข้างหน้า</p>`}</div>`;
+  return `<div class="panel${L.length ? "" : " is-empty"}"><h3>ใครลาช่วงนี้ <span class="muted mono">${L.length}</span></h3>${L.length ? `<ul class="alist">${L.map(l => `<li data-v="leave" class="tab-link"><span class="when ${l.start_date <= today ? "today" : "week"}">${l.start_date <= today ? "ลาอยู่" : fmtD(l.start_date)}</span><span class="t">${esc(l.note)}</span><span class="muted mono">${esc(leaveRangeTxt(l))}</span></li>`).join("")}</ul>` : `<p class="muted">ไม่มีใครลาใน 14 วันข้างหน้า</p>`}</div>`;
 }
 function vLeave() {
   if (!SB) return `<p class="muted">ต้องเชื่อมต่อฐานข้อมูลก่อน</p>`;
@@ -1023,7 +1080,7 @@ function vLeave() {
   const now = all.filter(l => l.start_date <= today && l.end_date >= today), next = all.filter(l => l.start_date > today), past = all.filter(l => l.end_date < today).reverse();
   const row = l => `<tr><td class="mono" style="white-space:nowrap">${esc(leaveRangeTxt(l))}<div class="muted" style="font-size:12px">${leaveDays(l)} วัน</div></td><td><b>${esc(l.person || "—")}</b></td><td>${esc(l.note)}</td>
     <td class="muted" style="font-size:12.5px">${esc((l.created_by || "").replace(/^LINE:?\s*/, "LINE · "))}</td><td>${S.canWrite ? `<button class="btn ghost sm" type="button" data-lvdel="${esc(l.id)}">ลบ</button>` : ""}</td></tr>`;
-  const table = (list, empty) => `<div class="tbl-wrap"><table><thead><tr><th>ช่วงวัน</th><th>ใคร</th><th>รายละเอียด</th><th>ผู้จด</th><th></th></tr></thead><tbody>${list.length ? list.map(row).join("") : `<tr><td colspan="5" class="muted">${empty}</td></tr>`}</tbody></table></div>`;
+  const table = (list, empty) => `<div class="tbl-wrap"><table class="stack"><thead><tr><th>ช่วงวัน</th><th>ใคร</th><th>รายละเอียด</th><th>ผู้จด</th><th></th></tr></thead><tbody>${list.length ? list.map(row).join("") : `<tr><td colspan="5" class="muted">${empty}</td></tr>`}</tbody></table></div>`;
   return `<h2>วันลาของทีม</h2>
   <p class="hint">วันลาแสดงในปฏิทิน (แถบลายเทา) และท้ายข้อความ "ตารางงาน" ในกลุ่ม LINE · จดในกลุ่มได้ด้วย <b>ตารางงาน ลา 1-8 พ.ย. นนท์ลาไปสอบ</b></p>
   ${S.canWrite ? `<div class="panel" style="max-width:760px;margin-bottom:18px"><h3>จดวันลา</h3>
@@ -1037,6 +1094,37 @@ function vLeave() {
   <h3>กำลังลา <span class="muted mono">${now.length}</span></h3>${table(now, "วันนี้ไม่มีใครลา")}
   <h3 style="margin-top:22px">ที่จะถึง <span class="muted mono">${next.length}</span></h3>${table(next, "ยังไม่มีวันลาที่จะถึง")}
   ${past.length ? `<details style="margin-top:22px"><summary class="muted" style="cursor:pointer">วันลาที่ผ่านมา (${past.length})</summary>${table(past.slice(0, 60), "")}</details>` : ""}`;
+}
+function openLeaveDlg(pre = {}) {
+  const f = $("#tf"), today = todayISO(), sel = pre.people || [];
+  f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">เพิ่มเรื่อง</h2><button class="dlg-x" type="button" id="lv_x" aria-label="ปิด">×</button></div>
+    <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-backtype="${k}" aria-pressed="false">${TYPES[k].label}</button>`).join("")}<button type="button" aria-pressed="true">วันลา</button></div>
+    <div class="form">
+      <div class="full"><span class="flbl">ใครลา</span><div class="picks" style="margin-top:4px">${S.cfg.assignees.map(n => `<label class="pick"><input type="checkbox" data-dlvwho="${esc(n)}" ${sel.includes(n) ? "checked" : ""}>${esc(n)}</label>`).join("")}</div></div>
+      <label>ตั้งแต่วันที่<input type="date" id="dlv_s" value="${today}" required></label>
+      <label>ถึงวันที่<input type="date" id="dlv_e" value="${today}" required></label>
+      <label class="full">รายละเอียด<input type="text" id="dlv_n" maxlength="200" placeholder="เช่น ลาไปสอบ, ลาไปต่างจังหวัด, ลาป่วย"></label>
+      <p class="full muted" style="margin:0;font-size:12.5px">วันลาจะขึ้นในแท็บวันลา ปฏิทิน และท้ายข้อความ "ตารางงาน" ในกลุ่ม LINE</p>
+    </div>
+    <div class="dlg-f"><span class="sp"></span><button class="btn ghost" type="button" id="lv_cancel">ปิด</button><button class="btn primary" type="submit">บันทึกวันลา</button></div>`;
+  const close = () => $("#dlg").close();
+  $("#lv_x").onclick = close; $("#lv_cancel").onclick = close;
+  $("#dlv_s").onchange = () => { if ($("#dlv_e").value < $("#dlv_s").value) $("#dlv_e").value = $("#dlv_s").value; };
+  f.querySelectorAll("[data-backtype]").forEach(b => b.onclick = () => { close(); openItem(null, { type: b.dataset.backtype }); });
+  $("#dlg").onclose = null;
+  f.onsubmit = async e => {
+    e.preventDefault();
+    const people = [...f.querySelectorAll("[data-dlvwho]")].filter(x => x.checked).map(x => x.dataset.dlvwho);
+    const start = $("#dlv_s").value, end = $("#dlv_e").value || start, detail = $("#dlv_n").value.trim().replace(/\s+/g, " ");
+    if (!people.length) { toast("เลือกชื่อคนที่ลา"); return; }
+    if (!start || end < start) { toast("วันสิ้นสุดต้องไม่ก่อนวันเริ่ม"); return; }
+    const note = people.some(n => detail.includes(n)) ? detail : `${people.join(" ")}${detail ? (/^ลา/.test(detail) ? "" : "ลา") + detail : "ลา"}`;
+    const { error } = await SB.from("leaves").insert({ person: people.join(" "), start_date: start, end_date: end, note, created_by: S.me ? S.me.name : (S.myEmail || "") });
+    if (error) { toast("บันทึกไม่สำเร็จ: " + error.message); return; }
+    close(); toast("บันทึกวันลาแล้ว"); loadLeaves();
+  };
+  if (!$("#dlg").open) $("#dlg").showModal();
+  setTimeout(() => { const c = f.querySelector("[data-dlvwho]"); if (c) c.focus(); }, 0);
 }
 function bindLeave() {
   const add = $("#lvAdd");
@@ -1222,7 +1310,7 @@ function vSettings() {
   ${SB && S.isAdmin ? `<h3 style="margin-top:28px">สมาชิกและสิทธิ์การมองเห็น</h3>
   <p class="hint"><b>ผูก LINE:</b> กด "สร้างรหัส" ที่ชื่อสมาชิก แล้วให้สมาชิก <a href="${LINE_OA_ADD}" target="_blank" rel="noopener">เพิ่มเพื่อน LINE ทีมส้มบางซื่อ</a> และพิมพ์รหัส 6 หลักในแชตส่วนตัวกับบอท จากนั้นพิมพ์ "วันนี้" หรือ "งานของฉัน" เพื่อดูงานของตัวเองได้ (ไม่บังคับ ใช้ในกลุ่มอย่างเดียวก็ได้)</p>
   <p class="hint">ผูกอีเมลที่ใช้ล็อกอินกับชื่อในทีม · <b>สมาชิก</b> เห็นงานที่ตนรับผิดชอบ งานของทุกคน/ไม่ระบุผู้รับผิดชอบ และงานของคนที่ติ๊กใน "เห็นงานของ" · <b>เห็นงานทั้งหมด</b> เห็นงานของทุกคน แต่แก้สิทธิ์สมาชิกไม่ได้ · <b>ผู้ดูแล</b> มีบัญชีเดียว เห็นงานทั้งหมดและจัดการสมาชิกได้ · บัญชีที่ไม่ได้อยู่ในรายชื่อนี้จะเห็นเฉพาะงานของทุกคน</p>
-  <div class="tbl-wrap" style="max-width:960px"><table><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th>เห็นงานของ</th><th>LINE</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="6" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
+  <div class="tbl-wrap" style="max-width:960px"><table class="stack"><thead><tr><th>อีเมล</th><th>ชื่อในทีม</th><th>สิทธิ์</th><th>เห็นงานของ</th><th>LINE</th><th></th></tr></thead><tbody id="memRows"><tr><td colspan="6" class="muted">กำลังโหลด…</td></tr></tbody></table></div>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;max-width:760px">
     <label class="set-row" for="mEmail" style="flex:2 1 220px">อีเมล<input type="text" id="mEmail" inputmode="email" placeholder="name@gmail.com"></label>
     <label class="set-row" for="mName" style="flex:1 1 140px">ชื่อในทีม<select id="mName">${opts(S.cfg.assignees, "", "— เลือก —")}</select></label>
@@ -1232,7 +1320,7 @@ function vSettings() {
   </div>
   <h3 style="margin-top:28px">กลุ่ม LINE ที่ใช้บอทได้</h3>
   <p class="hint">เชิญบัญชี LINE ทีมส้มบางซื่อเข้ากลุ่ม แล้วกด "อนุญาต" ที่กลุ่มนั้น บอทจะตอบเฉพาะกลุ่มที่อนุญาต · ในกลุ่มพิมพ์ <b>ตารางงาน</b> เพื่อดูนัดหมาย 14 วัน หรือ <b>ตารางงาน จด พฤ5 13:00 เรื่อง [ชื่อ]</b> เพื่อจดนัด · ในกลุ่มแสดงเฉพาะนัดหมายและกิจกรรม</p>
-  <div class="tbl-wrap" style="max-width:760px"><table><thead><tr><th>กลุ่ม</th><th>สถานะ</th><th>เข้ากลุ่มเมื่อ</th><th></th></tr></thead><tbody id="lgRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
+  <div class="tbl-wrap" style="max-width:760px"><table class="stack"><thead><tr><th>กลุ่ม</th><th>สถานะ</th><th>เข้ากลุ่มเมื่อ</th><th></th></tr></thead><tbody id="lgRows"><tr><td colspan="4" class="muted">กำลังโหลด…</td></tr></tbody></table></div>` : ""}
   <h3 style="margin-top:28px">สำรองและย้ายข้อมูล</h3>
   <p class="hint">ดาวน์โหลดไฟล์สำรองเก็บไว้เป็นระยะ (เช่น สัปดาห์ละครั้ง) ไฟล์ JSON ใช้นำเข้ากลับได้ ไฟล์ CSV เปิดด้วย Excel หรือ Google Sheets · ไฟล์แนบดาวน์โหลดทั้งหมดได้จากหน้า Storage ใน Supabase</p>
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
@@ -1471,7 +1559,7 @@ function openItem(id, preset = {}) {
       task: ""
     }[type];
     f.innerHTML = `<div class="dlg-h"><h2 style="margin:0">${id ? "แก้ไขเรื่อง" : "เพิ่มเรื่อง"}</h2><span style="display:flex;gap:6px">${id ? `<button class="btn sm" type="button" id="t_newtab" title="เปิดเรื่องนี้ในแท็บใหม่ แล้วใช้แท็บนี้ทำอย่างอื่นต่อ">↗ เปิดในแท็บใหม่</button>` : ""}<button class="dlg-x" type="button" id="t_x" aria-label="ปิด">×</button></span></div>
-    <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-ttype="${k}" aria-pressed="${k === type}" ${ro}>${TYPES[k].label}</button>`).join("")}</div>
+    <div class="seg" role="group" aria-label="ประเภท">${TYPE_KEYS.map(k => `<button type="button" data-ttype="${k}" aria-pressed="${k === type}" ${ro}>${TYPES[k].label}</button>`).join("")}${!id && SB && S.canWrite ? `<button type="button" data-leaveform="1" aria-pressed="false">วันลา</button>` : ""}</div>
     <div class="form">
       ${field("title", "ชื่อเรื่อง", inp("title", "text", "required"), "full")}
       ${field("project", "โครงการ", combo("project", t.project, ro), "full")}
@@ -1546,6 +1634,7 @@ function openItem(id, preset = {}) {
   const bindDlg = () => {
     document.querySelectorAll("[data-ttype]").forEach(b => b.onclick = () => { collect(); type = b.dataset.ttype; draw(); });
     $("#t_cancel").onclick = () => $("#dlg").close();
+    const lf = document.querySelector("[data-leaveform]"); if (lf) lf.onclick = () => { collect(); $("#dlg").close(); openLeaveDlg({ people: people.filter(n => S.cfg.assignees.includes(n)) }); };
     $("#t_x").onclick = () => $("#dlg").close();
     const nt = $("#t_newtab"); if (nt) nt.onclick = () => openNewTab(S.view, id);
     document.querySelectorAll("[data-plat]").forEach(el => el.onchange = () => { collect(); draw(); });
@@ -1715,6 +1804,9 @@ document.addEventListener("click", e => {
   if (e.target.closest("dialog")) return;
   const tab = e.target.closest(".tab");
   if (tab) { S.view = tab.dataset.v; store("tb.view", S.view); render(); return; }
+  const bn = e.target.closest("[data-bnav]");
+  if (bn) { const k = bn.dataset.bnav; if (k === "__more") { toggleSheet(!document.querySelector(".msheet")); return; } toggleSheet(false); S.view = k; store("tb.view", S.view); render(); try { window.scrollTo(0, 0); } catch (_) {} return; }
+  if (e.target.closest("[data-logout]")) { toggleSheet(false); const lb = $("#logoutBtn"); if (lb) lb.click(); return; }
   const tl = e.target.closest(".tab-link[data-v]");
   if (tl) { S.view = tl.dataset.v; store("tb.view", S.view); render(); try { window.scrollTo(0, 0); } catch (_) {} return; }
   if (e.target.closest("select")) return;
@@ -1756,7 +1848,7 @@ $("#mineBtn").onclick = () => {
   if (!inTeam()) { toast(`บัญชี ${S.myName} ไม่ได้เป็นชื่อในทีม จึงไม่มีงานของตัวเอง`); return; }
   setMine(!mineOn());
 };
-$("#addBtn").onclick = () => openItem(null, { ...(S.filters.a ? { assignees: [S.filters.a] } : {}), ...(S.filters.p ? { project: S.filters.p } : {}),
+$("#addBtn").onclick = () => S.view === "leave" && SB && S.canWrite ? openLeaveDlg() : openItem(null, { ...(S.filters.a ? { assignees: [S.filters.a] } : {}), ...(S.filters.p ? { project: S.filters.p } : {}),
   ...(S.view === "board" ? { type: S.boardType } : {}) });
 
 /* ---------- boot ---------- */
